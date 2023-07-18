@@ -1,4 +1,4 @@
-FROM 		--platform=$TARGETOS/$TARGETARCH debian:bullseye-slim
+FROM 		--platform=$TARGETOS/$TARGETARCH debian:bullseye
 
 LABEL       author="Isaac A." maintainer="isaac@isaacs.site"
 
