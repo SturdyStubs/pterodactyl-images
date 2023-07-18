@@ -19,18 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         game:
-          - altv
-          - conan
-          - dayz
-          - interstellarrift
-          - mohaa
-          - riskofrain2
           - rust
-          - samp
-          - screeps
-          - staxel
-          - valheim
-          - wurm
     steps:
       - uses: actions/checkout@v3
 
