@@ -1,38 +1,28 @@
-FROM --platform=$TARGETOS/$TARGETARCH debian:bookworm-slim
+FROM 		--platform=$TARGETOS/$TARGETARCH debian:bullseye-slim
 
-LABEL author="Isaac A." maintainer="isaac@isaacs.site"
+LABEL       author="Isaac A." maintainer="isaac@isaacs.site"
 
-LABEL org.opencontainers.image.source="https://github.com/pterodactyl/yolks"
-LABEL org.opencontainers.image.licenses=MIT
+LABEL       org.opencontainers.image.source="https://github.com/pterodactyl/yolks"
+LABEL       org.opencontainers.image.licenses=MIT
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV         DEBIAN_FRONTEND=noninteractive
 
-# Enable multiarch support
-RUN dpkg --add-architecture i386
+RUN			dpkg --add-architecture i386 \
+			&& apt update \
+			&& apt upgrade -y \
+			&& apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 jq sed wget \
+			&& curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+			&& apt install -y nodejs \
+			&& mkdir /node_modules \
+			&& npm install --prefix / ws \
+			&& useradd -d /home/container -m container
 
-# Update and install required packages
-RUN apt update && apt upgrade -y \
-    && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 jq sed wget
+USER 		container
+ENV  		USER=container HOME=/home/container
 
-# Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt install -y nodejs
+WORKDIR 	/home/container
 
-# Create a directory for Node.js modules
-RUN mkdir /node_modules
+COPY 		./entrypoint.sh /entrypoint.sh
+COPY 		./wrapper.js /wrapper.js
 
-# Install 'ws' module
-RUN npm install --prefix /node_modules ws
-
-# Create the 'container' user and set the working directory
-RUN useradd -d /home/container -m container
-USER container
-ENV USER=container HOME=/home/container
-WORKDIR /home/container
-
-# Copy the necessary files
-COPY ./entrypoint.sh /entrypoint.sh
-COPY ./wrapper.js /wrapper.js
-
-# Set the default command
-CMD ["/bin/bash", "/entrypoint.sh"]
+CMD			[ "/bin/bash", "/entrypoint.sh" ]
