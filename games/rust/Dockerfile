@@ -6,7 +6,7 @@ LABEL       org.opencontainers.image.source="https://github.com/pterodactyl/yolk
 LABEL       org.opencontainers.image.licenses=MIT
 
 ENV         DEBIAN_FRONTEND=noninteractive
-
+WORKDIR 	/usr/app
 RUN			dpkg --add-architecture i386 \
 			&& apt update \
 			&& apt upgrade -y \
@@ -14,7 +14,7 @@ RUN			dpkg --add-architecture i386 \
 			&& curl -sL https://deb.nodesource.com/setup_18.x | bash - \
 			&& apt install -y nodejs \
 			&& mkdir /node_modules \
-			&& npm install 14 --prefix / ws \
+			&& npm install --prefix / ws \
 			&& useradd -d /home/container -m container
 
 USER 		container
