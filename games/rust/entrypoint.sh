@@ -16,7 +16,7 @@ fi
 MODIFIED_STARTUP=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
-if [[ "${FRAMEWORK}" == "carbon" ]] && [[ "${UPDATE_CARBON}" == 1 ]]; then
+if [[ "${FRAMEWORK}" == "carbon" ]] || [[ "${UPDATE_CARBON}" == 1 ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
     echo "Updating Carbon..."
     curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/may22_build/Carbon.Linux.Debug.tar.gz" | tar zx
