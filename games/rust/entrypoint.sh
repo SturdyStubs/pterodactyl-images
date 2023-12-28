@@ -32,7 +32,7 @@ elif [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
     curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/download/2.0.5482/Oxide.Rust-linux.zip" > umod.zip
     unzip -o -q umod.zip
     rm umod.zip
-    curl -sSL "https://assets.umod.org/compiler/Compiler.x86_x64"
+    curl -O /home/container "https://assets.umod.org/compiler/Compiler.x86_x64"
     echo "Done updating uMod!"
 # else Vanilla, do nothing
 fi
