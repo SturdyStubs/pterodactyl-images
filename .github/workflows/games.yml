@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         game:
-          - source
+          - carbon
           - rust
     steps:
       - uses: actions/checkout@v3
