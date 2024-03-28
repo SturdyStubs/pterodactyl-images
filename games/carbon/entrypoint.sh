@@ -16,7 +16,15 @@ fi
 MODIFIED_STARTUP=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
-if [[ "${FRAMEWORK}" == "carbon" ]]; then
+if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
+    # Oxide: https://github.com/OxideMod/Oxide.Rust
+    echo "Updating uMod..."
+    curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/latest/download/Oxide.Rust-linux.zip" > umod.zip
+    unzip -o -q umod.zip
+    rm umod.zip
+    echo "Done updating uMod!"
+
+elif [[ "${FRAMEWORK}" == "carbon" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
     echo "Updating Carbon..."
     curl -sSL "https://github.com/CarbonCommunity/Carbon.Core/releases/download/production_build/Carbon.Linux.Release.tar.gz" | tar zx
@@ -31,14 +39,6 @@ elif [[ -n "${MODDING_ROOT}" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-
-elif [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
-    # Oxide: https://github.com/OxideMod/Oxide.Rust
-    echo "Updating uMod..."
-    curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/latest/download/Oxide.Rust-linux.zip" > umod.zip
-    unzip -o -q umod.zip
-    rm umod.zip
-    echo "Done updating uMod!"
 
 elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
