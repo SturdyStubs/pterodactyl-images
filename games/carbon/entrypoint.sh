@@ -25,15 +25,12 @@ if [[ "${FRAMEWORK}" == "carbon" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
     # Oxide: https://github.com/OxideMod/Oxide.Rust
@@ -52,15 +49,12 @@ elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
@@ -71,15 +65,12 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
     
 elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
@@ -90,15 +81,12 @@ elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
@@ -109,15 +97,12 @@ elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
@@ -128,15 +113,12 @@ elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
@@ -147,15 +129,12 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
@@ -166,15 +145,12 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
@@ -185,15 +161,12 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
@@ -204,15 +177,12 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     export DOORSTOP_ENABLED=1
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-elif [[ -n "${CARBON_ROOT}" ]]; then
-    # Use CARBON_ROOT if defined and not equal to "carbon"
-    echo "Using ${CARBON_ROOT}..."
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "carbon"
+    echo "Using ${MODDING_ROOT}..."
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="${CARBON_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=${CARBON_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
-else
-    echo "No framework specified or invalid carbon directory provided."
-    exit 1
+    export DOORSTOP_TARGET_ASSEMBLY="${MODDING_ROOT}/managed/Carbon.Preloader.dll"
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 # else Vanilla, do nothing
 fi
 
