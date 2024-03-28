@@ -27,7 +27,7 @@ elif [[ "${FRAMEWORK}" == "carbon" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
@@ -37,7 +37,7 @@ elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
@@ -47,7 +47,7 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
     
 elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
@@ -57,7 +57,7 @@ elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
@@ -67,7 +67,7 @@ elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
@@ -77,7 +77,7 @@ elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
@@ -87,7 +87,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
@@ -97,7 +97,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
@@ -107,7 +107,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
@@ -117,7 +117,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 # else Vanilla, do nothing
 fi
