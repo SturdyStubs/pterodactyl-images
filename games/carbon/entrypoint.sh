@@ -39,6 +39,10 @@ elif [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
     unzip -o -q umod.zip
     rm umod.zip
     echo "Done updating uMod!"
+elif [[ -n "${MODDING_ROOT}" ]]; then
+    # Use MODDING_ROOT if defined and not equal to "oxide"
+    echo "Using ${MODDING_ROOT}..."
+    MODIFIED_STARTUP="LD_PRELOAD=${MODDING_ROOT}/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
     # Carbon: https://github.com/CarbonCommunity/Carbon.Core
