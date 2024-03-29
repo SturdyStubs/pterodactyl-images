@@ -12,11 +12,11 @@ else
     echo -e "Not updating game server as auto update was set to 0. Starting Server"
 fi
 
-if [[ "${$FRAMEWORK}" != "oxide" ]]; then
+if [[ "${FRAMEWORK}" != "oxide" ]]; then
     # Remove files in RustDedicated/Managed if not using Oxide
     echo "Cleaning Oxide files..."
-    mv /home/container/RustDedicated/Managed/oxide.ext.* ../../carbon/extentions
-    rm -rf /home/container/RustDedicated/Managed/oxide.* ../../carbon/extentions
+    mv /home/container/RustDedicated/Managed/oxide.ext.* /home/container/RustDedicated/carbon/extensions
+    rm -rf /home/container/RustDedicated/Managed/oxide.* /home/container/RustDedicated/carbon/extensions
 fi
 
 # Replace Startup Variables
