@@ -20,7 +20,6 @@
 # SOFTWARE.
 #
 
-FROM 		--platform=$TARGETOS/$TARGETARCH debian:bookworm-slim
 FROM 		node:latest
 
 LABEL       author="Isaac A." maintainer="isaac@isaacs.site"
