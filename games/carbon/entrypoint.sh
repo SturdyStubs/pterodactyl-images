@@ -4,6 +4,13 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
+echo "    .    --.-- .--.   .--. .   . .-..---.  .---. .--. .--."
+echo "   / \     |  :    :  |   )|   |(   ) |    |    :    :    "
+echo "  /___\    |  |    |  |--' |   | `-.  |    |--- | --.| --."
+echo " /     \   |  :    ;  |  \ :   ;(   ) |    |    :   |:   |"
+echo "'       `--'-- `--'   '   ` `-'  `-'  '    '---' `--' `--'"
+
+sleep 120
 # Define ANSI escape codes for colors
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
