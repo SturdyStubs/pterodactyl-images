@@ -8,7 +8,7 @@ export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
     echo "Checking MODDING_ROOT folder compatibility"
     if [[ "${MODDING_ROOT}" =~ "oxide" ]] || [[ ! "${MODDING_ROOT}" =~ "carbon" ]]; then
-        echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder contains the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"carbon\" for compatibility reasons."
+        echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"carbon\". Please change the MODDING_ROOT variable to contain the word \"carbon\" for compatibility reasons."
         exit 0
     fi
     echo "Compatibility check passed..."
@@ -18,7 +18,7 @@ fi
 if [[ "${FRAMEWORK}" =~ "oxide" ]]; then
     echo "Checking MODDING_ROOT folder compatibility"
     if [[ "${MODDING_ROOT}" =~ "carbon" ]] || [[ ! "${MODDING_ROOT}" =~ "oxide" ]];; then
-        echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder contains the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"oxide\" for compatibility reasons."
+        echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"oxide\" for compatibility reasons."
         exit 0
     fi
     echo "Compatibility check passed..."
