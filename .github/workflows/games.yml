@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - games/carbon/
+      - games/**
 jobs:
   push:
     name: "games:${{ matrix.game }}"
