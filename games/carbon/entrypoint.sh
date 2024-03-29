@@ -15,8 +15,8 @@ fi
 if [[ "${FRAMEWORK}" != "oxide" ]]; then
     # Remove files in RustDedicated/Managed if not using Oxide
     echo "Cleaning Oxide files..."
-    mv /home/container/RustDedicated_Data/Managed/oxide.ext.* /home/container/carbon/extensions
-    rm -rf /home/container/RustDedicated_Data/Managed/oxide.*
+    mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.* /home/container/carbon/extensions
+    rm -rf /home/container/RustDedicated_Data/Managed/Oxide.*
 fi
 
 # Replace Startup Variables
