@@ -4,17 +4,23 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
+# Define the ANSI escape code for red color
+RED='\033[0;31m'
+
+# Reset color back to normal
+NC='\033[0m'
+
 echo "Checking MODDING_ROOT folder compatibility with selected framework"
 # Check if carbon framework is being used, and if it is, make sure that the MODDING_ROOT contains the word carbon
 if [[ "${FRAMEWORK}" =~ "carbon" ]] && [[ ! "${MODDING_ROOT}" =~ "carbon" ]]; then
-    echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"carbon\". Please change the MODDING_ROOT variable to contain the word \"carbon\" for compatibility reasons."
-    exit 0
+    echo "${RED}ERROR: Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"carbon\". Please change the MODDING_ROOT variable to contain the word \"carbon\" for compatibility reasons.${NC}"
+    exit 1
 fi
 
 # Do the same for oxide
 if [[ "${FRAMEWORK}" =~ "oxide" ]] && [[ ! "${MODDING_ROOT}" =~ "oxide" ]]; then
-    echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"oxide\" for compatibility reasons."
-    exit 0
+    echo "${RED}ERROR: Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"oxide\" for compatibility reasons.${NC}"
+    exit 1
 fi
 
 echo "Compatibility check passed..."
@@ -28,7 +34,7 @@ if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
     else
         if [ ! -d "carbon" ] && [ "${MODDING_ROOT}" != "carbon" ]; then
             echo "Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server."
-            exit 0
+            exit 1
         elif [ ! -d "carbon" ] && [ "${MODDING_ROOT}" == "carbon" ]; then
             echo "${MODDING_ROOT} is set as the MODDING_ROOT folder, however it doesn't exist."
         else
