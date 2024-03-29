@@ -82,8 +82,8 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     shopt -u nullglob
 fi
 
-echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
-sleep 20
+#echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
+#sleep 20
 
 # if auto_update is not set or to 1 update
  if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
