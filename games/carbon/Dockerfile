@@ -33,7 +33,8 @@ RUN			dpkg --add-architecture i386 \
 			&& apt update \
 			&& apt upgrade -y \
 			&& apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
-			echo "Downloading Node.js setup script... DEBUG" \
+			&& sleep 10
+			&& echo "Downloading Node.js setup script... DEBUG" \
 			&&  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash - \
 			&& apt install -y nodejs \
 			&& mkdir /node_modules \
