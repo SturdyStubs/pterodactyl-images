@@ -1,6 +1,6 @@
 FROM node:latest
 
-LABEL author="SturdyStubs." maintainer=""sturdystubs@gmail.com"
+LABEL author="Isaac A." maintainer="isaac@isaacs.site"
 
 LABEL org.opencontainers.image.source="https://github.com/pterodactyl/yolks"
 LABEL org.opencontainers.image.licenses=MIT
