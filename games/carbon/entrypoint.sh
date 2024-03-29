@@ -7,7 +7,7 @@ export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 # Check if carbon framework is being used, and if it is, make sure that the MODDING_ROOT contains the word carbon
 if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
     echo "Checking MODDING_ROOT folder compatibility"
-    if [[ "${MODDING_ROOT}" =~ "oxide" ]]; then
+    if [[ "${MODDING_ROOT}" =~ "oxide" ]] || [[ ! "${MODDING_ROOT}" =~ "carbon" ]]; then
         echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder contains the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"carbon\" for compatibility reasons."
         exit 0
     fi
@@ -17,7 +17,7 @@ fi
 # Do the same for oxide
 if [[ "${FRAMEWORK}" =~ "oxide" ]]; then
     echo "Checking MODDING_ROOT folder compatibility"
-    if [[ "${MODDING_ROOT}" =~ "carbon" ]]; then
+    if [[ "${MODDING_ROOT}" =~ "carbon" ]] || [[ ! "${MODDING_ROOT}" =~ "oxide" ]];; then
         echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder contains the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"oxide\" for compatibility reasons."
         exit 0
     fi
