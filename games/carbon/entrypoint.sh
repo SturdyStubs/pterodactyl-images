@@ -1,22 +1,27 @@
 #!/bin/bash
-cd /home/container
 
-# Make internal Docker IP address available to processes.
-export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
-
-printf "    .    --.-- .--.   .--. .   . .-..---.  .---. .--. .--."
-printf "   / \     |  :    :  |   )|   |(   ) |    |    :    :    "
-printf "  /___\    |  |    |  |--' |   | `-.  |    |--- | --.| --."
-printf " /     \   |  :    ;  |  \ :   ;(   ) |    |    :   |:   |"
-printf "'       `--'-- `--'   '   ` `-'  `-'  '    '---' `--' `--'"
-
-sleep 120
 # Define ANSI escape codes for colors
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m\n'
+
+cd /home/container
+
+# Make internal Docker IP address available to processes.
+export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
+
+printf "##############################################"
+printf "#                 AIO RUST EGG               #"
+printf "#            Created By: SturdyStubs         #"
+printf "#--------------------------------------------#"
+printf "# For More Information See The Documentation #"
+printf "#       https://tinyurl.com/aiorustegg       #"
+printf "##############################################"
+
+printf "${BLUE}Starting Egg Now!${NC}"
+sleep 2
 
 echo "Checking MODDING_ROOT folder compatibility with selected framework"
 # Check if carbon framework is being used, and if it is, make sure that the MODDING_ROOT contains the word carbon
