@@ -4,6 +4,26 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
+# Check if carbon framework is being used, and if it is, make sure that the MODDING_ROOT contains the word carbon
+if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
+    echo "Checking MODDING_ROOT folder compatibility"
+    if [[ $"{MODDING_ROOT}" =~ "oxide" ]]; then
+        echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder contains the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"carbon\" for compatibility reasons."
+        exit 0
+    fi
+    echo "Compatibility check passed..."
+fi
+
+# Do the same for oxide
+if [[ "${FRAMEWORK}" =~ "oxide" ]]; then
+    echo "Checking MODDING_ROOT folder compatibility"
+    if [[ $"{MODDING_ROOT}" =~ "carbon" ]]; then
+        echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder contains the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"oxide\" for compatibility reasons."
+        exit 0
+    fi
+    echo "Compatibility check passed..."
+fi
+
 # Checking Carbon Root Directory Issues
 if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
     echo "Carbon framework detected!"
@@ -26,7 +46,7 @@ if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
     fi
 fi
 
-# Check the framework. If its not oxide, then we must be using carbon or vanilla.
+# Clean Up Files from Oxide to Vanilla/Carbon Switch
 if [[ "${FRAMEWORK}" != "oxide" ]]; then
     # Remove files in RustDedicated/Managed if not using Oxide
     echo "Modding Framework is set to: ${FRAMEWORK}"
