@@ -26,6 +26,8 @@ function filter(data) {
     const str = data.toString();
     if(str.startsWith("Fallback handler could not load library")) return; // Remove fallback
     if(str.includes("Filename:")) return; //Remove bindings.h
+	if(str.includes("ERROR: Shader ")) return; //Remove shader errors
+	if(str.includes("WARNING: Shader ")) return; //Remove shader errors
     if (str.startsWith("Loading Prefab Bundle ")) { // Rust seems to spam the same percentage, so filter out any duplicates.
         const percentage = str.substr("Loading Prefab Bundle ".length);
         if (seenPercentage[percentage]) return;
