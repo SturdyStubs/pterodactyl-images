@@ -9,7 +9,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m\n'
 
 echo "Checking MODDING_ROOT folder compatibility with selected framework"
 # Check if carbon framework is being used, and if it is, make sure that the MODDING_ROOT contains the word carbon
