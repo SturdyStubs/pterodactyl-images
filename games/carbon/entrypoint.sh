@@ -12,13 +12,14 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
-printf "##############################################\n"
-printf "#                 AIO RUST EGG               #\n"
-printf "#            Created By: SturdyStubs         #\n"
-printf "#--------------------------------------------#\n"
-printf "# For More Information See The Documentation #\n"
-printf "#       https://tinyurl.com/aiorustegg       #\n"
-printf "##############################################\n"
+printf "╭───────────────────────────────────────────────╮\n"
+printf "│                 AIO RUST EGG                  │\n"
+printf "│            Created By: SturdyStubs            │\n"
+printf "├───────────────────────────────────────────────┤\n"
+printf "│    For More Information See The Documentation │\n"
+printf "│        https://tinyurl.com/aiorustegg         │\n"
+printf "╰───────────────────────────────────────────────╯\n"
+
 
 printf "${BLUE}Starting Egg Now!${NC}"
 sleep 2
