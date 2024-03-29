@@ -65,8 +65,9 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
             if [ ${#files[@]} -gt 0 ]; then
                 echo "Moving Oxide Extensions to Carbon/Extensions folder..."
                 mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/${MODDING_ROOT}/extensions/
+                printf "${GREEN}Move files has completed successfully!${NC}"
             else
-                echo "No Oxide Extensions to Move... Skipping the move..."
+                printf "${GREEN}No Oxide Extensions to Move... Skipping the move...${NC}"
             fi
         else
             echo "${FRAMEWORK} does not support Oxide Extensions. Possibly because the framework is vanilla. If you see this and your framework isn't vanilla, then contact the developers."
@@ -76,7 +77,7 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
         rm -rfv RustDedicated_Data/Managed/*
         rm -rfv Oxide.Compiler
     else
-        echo "No Oxide files found to remove - continuing startup..."
+        printf "${GREEN}No Oxide files found to remove - continuing startup...${NC}"
     fi
     shopt -u nullglob
 fi
