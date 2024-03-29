@@ -12,24 +12,8 @@ else
     echo -e "Not updating game server as auto update was set to 0. Starting Server"
 fi
 
-if [[ "${FRAMEWORK}" != "oxide" ]]; then
-    # Remove files in RustDedicated/Managed if not using Oxide
-    echo "Cleaning Oxide files..."
-    mkdir -p /home/container/carbon/extensions/
-    shopt -s nullglob
-    files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
-    if [ ${#files[@]} -gt 0 ]; then
-        mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
-        rm -f /home/container/RustDedicated_Data/Managed/Oxide.*.dll
-        rm -f /home/container/Oxide.Compiler/
-    else
-        echo "No Oxide files found to remove - continuing startup..."
-    fi
-    shopt -u nullglob
-fi
-
 # Replace Startup Variables
-# MODIFIED_STARTUP=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
+MODIFIED_STARTUP=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
 if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
@@ -141,6 +125,22 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 # else Vanilla, do nothing
+fi
+
+if [[ "${FRAMEWORK}" != "oxide" ]]; then
+    # Remove files in RustDedicated/Managed if not using Oxide
+    echo "Cleaning Oxide files..."
+    mkdir -p /home/container/carbon/extensions/
+    shopt -s nullglob
+    files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
+    if [ ${#files[@]} -gt 0 ]; then
+        mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
+        rm -f /home/container/RustDedicated_Data/Managed/Oxide.*.dll
+        rm -f /home/container/Oxide.Compiler/
+    else
+        echo "No Oxide files found to remove - continuing startup..."
+    fi
+    shopt -u nullglob
 fi
 
 # Fix for Rust not starting
