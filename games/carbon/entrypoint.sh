@@ -4,15 +4,18 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
+# Check the framework. If its not oxide, then we must be using carbon or vanilla.
 if [[ "${FRAMEWORK}" != "oxide" ]]; then
     # Remove files in RustDedicated/Managed if not using Oxide
     echo "Modding Framework is set to: ${FRAMEWORK}"
     echo "Checking if there are left over Oxide files in RustDedicated_Data/Managed"
     mkdir -p /home/container/carbon/extensions/
     shopt -s nullglob
+    # Check if the Oxide.dll files exist
     files=(/home/container/RustDedicated_Data/Managed/Oxide.*.dll)
     if [ ${#files[@]} -gt 0 ]; then
         echo "Oxide Files Found! Cleaning Up"
+        # Check to see if any Oxide extensions need to be moved
         files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
         if [ ${#files[@]} -gt 0 ]; then
             echo "Moving Oxide Extensions to Carbon/Extensions folder..."
@@ -20,6 +23,7 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
         else
             echo "No Oxide Extensions to Move... Skipping the move..."
         fi
+        # Clean up the rust dedicated managed folder
         echo "Cleaning up RustDedicated_Data/Managed folder..."
         rm -rfv RustDedicated_Data/Managed/*
         rm -rfv Oxide.Compiler
@@ -29,8 +33,27 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     shopt -u nullglob
 fi
 
-#echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
-#sleep 10
+# Check to see if the framework is carbon
+if [[ "${FRAMEWORK}" == "carbon" ]]; then
+    echo "Carbon framework detected!"
+    echo "Checking the carbon root directory"
+    if [ -d ${MODDING_ROOT} ]; then
+        echo "${MODDING_ROOT} folder already exists... Skipping this part."
+    else
+        if [ ! -d "carbon" ]; then
+            echo "Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server."
+            exit 0
+        fi
+        echo "${MODDING_ROOT} folder does not exist. Creating new folder..."
+        mkdir -p /home/container/${MODDING_ROOT}
+        echo "Copying files and folders from default carbon directory."
+        cp -r /home/container/carbon/* ${MODDING_ROOT}
+        echo "Files copied"
+    fi
+fi
+
+echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
+sleep 10
 
 # if auto_update is not set or to 1 update
  if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
