@@ -8,16 +8,16 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     # Remove files in RustDedicated/Managed if not using Oxide
     echo "Cleaning Oxide files..."
     mkdir -p /home/container/carbon/extensions/
-    # shopt -s nullglob
+    shopt -s nullglob
     files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
     if [ ${#files[@]} -gt 0 ]; then
-        mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
-        rm -f /home/container/RustDedicated_Data/Managed/Oxide.*.dll
-        rm -f /home/container/Oxide.Compiler/
+        mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
+        rm -fv /home/container/RustDedicated_Data/Managed/Oxide.*.dll
+        rm -fv /home/container/Oxide.Compiler/
     else
         echo "No Oxide files found to remove - continuing startup..."
     fi
-    # shopt -u nullglob
+    shopt -u nullglob
 fi
 
 # if auto_update is not set or to 1 update
