@@ -12,13 +12,16 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
     if [ ${#files[@]} -gt 0 ]; then
         mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
-        rm -rv /home/container/RustDedicated_Data/Managed/
-        rm -fv /home/container/Oxide.Compiler/
+        rm -rv /home/container/RustDedicated_Data/Managed/*
+        rm -fv /home/container/Oxide.Compiler
     else
         echo "No Oxide files found to remove - continuing startup..."
     fi
     shopt -u nullglob
 fi
+
+echo -e "sleeping... checking managed"
+sleep 30
 
 # if auto_update is not set or to 1 update
  if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
