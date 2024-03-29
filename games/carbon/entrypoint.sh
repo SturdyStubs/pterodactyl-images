@@ -37,13 +37,17 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     files=(/home/container/RustDedicated_Data/Managed/Oxide.*.dll)
     if [ ${#files[@]} -gt 0 ]; then
         echo "Oxide Files Found! Cleaning Up"
-        # Check to see if any Oxide extensions need to be moved
-        files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
-        if [ ${#files[@]} -gt 0 ]; then
-            echo "Moving Oxide Extensions to Carbon/Extensions folder..."
-            mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
+        if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
+            # Check to see if any Oxide extensions need to be moved
+            files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
+            if [ ${#files[@]} -gt 0 ]; then
+                echo "Moving Oxide Extensions to Carbon/Extensions folder..."
+                mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/${MODDING_ROOT}/extensions/
+            else
+                echo "No Oxide Extensions to Move... Skipping the move..."
+            fi
         else
-            echo "No Oxide Extensions to Move... Skipping the move..."
+            echo "${FRAMEWORK} does not support Oxide Extensions. Possibly because the framework is vanilla. If you see this and your framework isn't vanilla, then contact the developers."
         fi
         # Clean up the rust dedicated managed folder
         echo "Cleaning up RustDedicated_Data/Managed folder..."
