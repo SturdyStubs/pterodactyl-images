@@ -1,4 +1,4 @@
-## Custom Carbon Egg (Created by SturdyStubs)
+## Custom Carbon Egg
 
 SturdyStubs has also created a Custom Carbon Egg as well. This is a newer addition to the Carbon egg collection. This egg includes all of the Carbon builds, as well as a build for Oxide. This enables you to easily test the difference in performance between Oxide and Carbon. It also includes some great QoL features!
 
@@ -59,3 +59,5 @@ This server installation guide is very similar to the Custom Rust Egg by MikeHaw
 12. Start your server by clicking the green "Create Server" button at the bottom of the page.
 
 And that's it! You now have a Custom Carbon Rust server installed and ready to use!
+
+## Credits to @BippyMiester for helping me create the egg
