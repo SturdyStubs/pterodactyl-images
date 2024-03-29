@@ -4,8 +4,8 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
-# Check to see if the framework is carbon
-if [[ "${FRAMEWORK}" == "carbon" ]]; then
+# Checking Carbon Root Directory Issues
+if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
     echo "Carbon framework detected!"
     echo "Checking the carbon root directory"
     if [ -d ${MODDING_ROOT} ]; then
