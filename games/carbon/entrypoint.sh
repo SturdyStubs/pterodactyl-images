@@ -4,25 +4,20 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
+echo "Checking MODDING_ROOT folder compatibility with selected framework"
 # Check if carbon framework is being used, and if it is, make sure that the MODDING_ROOT contains the word carbon
-if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
-    echo "Checking MODDING_ROOT folder compatibility"
-    if [[ "${MODDING_ROOT}" =~ "oxide" ]] || [[ ! "${MODDING_ROOT}" =~ "carbon" ]]; then
-        echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"carbon\". Please change the MODDING_ROOT variable to contain the word \"carbon\" for compatibility reasons."
-        exit 0
-    fi
-    echo "Compatibility check passed..."
+if [[ "${FRAMEWORK}" =~ "carbon" ]] && [[ ! "${MODDING_ROOT}" =~ "carbon" ]]; then
+    echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"carbon\". Please change the MODDING_ROOT variable to contain the word \"carbon\" for compatibility reasons."
+    exit 0
 fi
 
 # Do the same for oxide
-if [[ "${FRAMEWORK}" =~ "oxide" ]]; then
-    echo "Checking MODDING_ROOT folder compatibility"
-    if [[ "${MODDING_ROOT}" =~ "carbon" ]] || [[ ! "${MODDING_ROOT}" =~ "oxide" ]]; then
-        echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"oxide\" for compatibility reasons."
-        exit 0
-    fi
-    echo "Compatibility check passed..."
+if [[ "${FRAMEWORK}" =~ "oxide" ]] && [[ ! "${MODDING_ROOT}" =~ "oxide" ]]; then
+    echo "Your framework is ${FRAMEWORK} but your MODDING_ROOT folder does not contain the word \"oxide\". Please change the MODDING_ROOT variable to contain the word \"oxide\" for compatibility reasons."
+    exit 0
 fi
+
+echo "Compatibility check passed..."
 
 # Checking Carbon Root Directory Issues
 if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
