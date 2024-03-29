@@ -18,7 +18,7 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
             echo "Moving Oxide Extensions to Carbon/Extensions folder..."
             mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
         else
-            echo "No Oxide files found to remove - continuing startup..."
+            echo "No Oxide Extensions to Move... Skipping the move..."
         fi
         echo "Cleaning up RustDedicated_Data/Managed folder..."
         rm -rfv RustDedicated_Data/Managed/*
