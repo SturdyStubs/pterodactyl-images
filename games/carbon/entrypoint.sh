@@ -11,15 +11,18 @@ if [[ "${FRAMEWORK}" == "carbon" ]]; then
     if [ -d ${MODDING_ROOT} ]; then
         echo "${MODDING_ROOT} folder already exists... Skipping this part."
     else
-        if [ ! -d "carbon" ]; then
+        if [ ! -d "carbon" ] && [ "${MODDING_ROOT}" != "carbon" ]; then
             echo "Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server."
             exit 0
+        elif [ ! -d "carbon" ] && [ "${MODDING_ROOT}" == "carbon" ]
+            echo "${MODDING_ROOT} is set as the MODDING_ROOT folder, however it doesn't exist."
+        else
+            echo "${MODDING_ROOT} folder does not exist. Creating new folder..."
+            mkdir -p /home/container/${MODDING_ROOT}
+            echo "Copying files and folders from default carbon directory."
+            cp -r /home/container/carbon/* ${MODDING_ROOT}
+            echo "Files copied"
         fi
-        echo "${MODDING_ROOT} folder does not exist. Creating new folder..."
-        mkdir -p /home/container/${MODDING_ROOT}
-        echo "Copying files and folders from default carbon directory."
-        cp -r /home/container/carbon/* ${MODDING_ROOT}
-        echo "Files copied"
     fi
 fi
 
