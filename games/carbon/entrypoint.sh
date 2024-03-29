@@ -4,6 +4,25 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
+# Check to see if the framework is carbon
+if [[ "${FRAMEWORK}" == "carbon" ]]; then
+    echo "Carbon framework detected!"
+    echo "Checking the carbon root directory"
+    if [ -d ${MODDING_ROOT} ]; then
+        echo "${MODDING_ROOT} folder already exists... Skipping this part."
+    else
+        if [ ! -d "carbon" ]; then
+            echo "Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server."
+            exit 0
+        fi
+        echo "${MODDING_ROOT} folder does not exist. Creating new folder..."
+        mkdir -p /home/container/${MODDING_ROOT}
+        echo "Copying files and folders from default carbon directory."
+        cp -r /home/container/carbon/* ${MODDING_ROOT}
+        echo "Files copied"
+    fi
+fi
+
 # Check the framework. If its not oxide, then we must be using carbon or vanilla.
 if [[ "${FRAMEWORK}" != "oxide" ]]; then
     # Remove files in RustDedicated/Managed if not using Oxide
@@ -33,27 +52,8 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     shopt -u nullglob
 fi
 
-# Check to see if the framework is carbon
-if [[ "${FRAMEWORK}" == "carbon" ]]; then
-    echo "Carbon framework detected!"
-    echo "Checking the carbon root directory"
-    if [ -d ${MODDING_ROOT} ]; then
-        echo "${MODDING_ROOT} folder already exists... Skipping this part."
-    else
-        if [ ! -d "carbon" ]; then
-            echo "Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server."
-            exit 0
-        fi
-        echo "${MODDING_ROOT} folder does not exist. Creating new folder..."
-        mkdir -p /home/container/${MODDING_ROOT}
-        echo "Copying files and folders from default carbon directory."
-        cp -r /home/container/carbon/* ${MODDING_ROOT}
-        echo "Files copied"
-    fi
-fi
-
 echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
-sleep 10
+sleep 20
 
 # if auto_update is not set or to 1 update
  if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
