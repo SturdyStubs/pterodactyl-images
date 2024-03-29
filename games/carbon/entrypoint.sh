@@ -16,20 +16,13 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     # Remove files in RustDedicated/Managed if not using Oxide
     echo "Cleaning Oxide files..."
     mkdir -p /home/container/carbon/extensions
-    shopt -s nullglob
-    files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
-    if [ ${#files[@]} -gt 0 ]; then
-        mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions
-        rm -f /home/container/RustDedicated_Data/Managed/Oxide.*.dll
-    else
-        echo "No Oxide to remove - continuing startup..."
-    fi
-    shopt -u nullglob
+    mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions
+rm -rf /home/container/RustDedicated_Data/Managed/Oxide.*.dll
 fi
 
 # Replace Startup Variables
-MODIFIED_STARTUP=$(echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
-echo ":/home/container$ ${MODIFIED_STARTUP}"
+# MODIFIED_STARTUP=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
+# echo ":/home/container$ ${MODIFIED_STARTUP}"
 
 if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
     # Oxide: https://github.com/OxideMod/Oxide.Rust
