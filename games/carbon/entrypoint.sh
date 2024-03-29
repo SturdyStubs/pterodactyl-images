@@ -6,17 +6,26 @@ export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
 if [[ "${FRAMEWORK}" != "oxide" ]]; then
     # Remove files in RustDedicated/Managed if not using Oxide
-    echo "Cleaning Oxide files..."
+    echo "Modding Framework is set to: ${FRAMEWORK}"
+    echo "Checking if there are left over Oxide files in RustDedicated_Data/Managed"
     mkdir -p /home/container/carbon/extensions/
     shopt -s nullglob
-    files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
+    files=(/home/container/RustDedicated_Data/Managed/Oxide.*.dll)
     if [ ${#files[@]} -gt 0 ]; then
-        mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
+        echo "Oxide Files Found! Cleaning Up"
+        files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
+        if [ ${#files[@]} -gt 0 ]; then
+            echo "Moving Oxide Extensions to Carbon/Extensions folder..."
+            mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
+        else
+            echo "No Oxide files found to remove - continuing startup..."
+        fi
+        echo "Cleaning up RustDedicated_Data/Managed folder..."
+        rm -rfv RustDedicated_Data/Managed/*
+        rm -rfv Oxide.Compiler
     else
         echo "No Oxide files found to remove - continuing startup..."
     fi
-    rm -rfv RustDedicated_Data/Managed/*
-    rm -rfv Oxide.Compiler
     shopt -u nullglob
 fi
 
