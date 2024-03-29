@@ -21,7 +21,7 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
 fi
 
 echo -e "sleeping... checking managed"
-sleep 30
+sleep 10
 
 # if auto_update is not set or to 1 update
  if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
