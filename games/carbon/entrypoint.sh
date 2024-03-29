@@ -14,7 +14,7 @@ if [[ "${FRAMEWORK}" == "carbon" ]]; then
         if [ ! -d "carbon" ] && [ "${MODDING_ROOT}" != "carbon" ]; then
             echo "Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server."
             exit 0
-        elif [ ! -d "carbon" ] && [ "${MODDING_ROOT}" == "carbon" ]
+        elif [ ! -d "carbon" ] && [ "${MODDING_ROOT}" == "carbon" ]; then
             echo "${MODDING_ROOT} is set as the MODDING_ROOT folder, however it doesn't exist."
         else
             echo "${MODDING_ROOT} folder does not exist. Creating new folder..."
