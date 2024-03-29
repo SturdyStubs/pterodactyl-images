@@ -74,8 +74,10 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
         fi
         # Clean up the rust dedicated managed folder
         echo "Cleaning up RustDedicated_Data/Managed folder..."
-        rm -rfv RustDedicated_Data/Managed/*
-        rm -rfv Oxide.Compiler
+        rm -rf RustDedicated_Data/Managed/*
+        echo "Removing Oxide Compiler..."
+        rm -rf Oxide.Compiler
+        printf "${GREEN}Oxide files have been cleaned up!${NC}"
     else
         printf "${GREEN}No Oxide files found to remove - continuing startup...${NC}"
     fi
