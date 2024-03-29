@@ -4,12 +4,20 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
-
-## if auto_update is not set or to 1 update
-if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" = 1 ]; then
-	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
-else
-    echo -e "Not updating game server as auto update was set to 0. Starting Server"
+if [[ "${FRAMEWORK}" != "oxide" ]]; then
+    # Remove files in RustDedicated/Managed if not using Oxide
+    echo "Cleaning Oxide files..."
+    mkdir -p /home/container/carbon/extensions/
+    # shopt -s nullglob
+    files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
+    if [ ${#files[@]} -gt 0 ]; then
+        mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
+        rm -f /home/container/RustDedicated_Data/Managed/Oxide.*.dll
+        rm -f /home/container/Oxide.Compiler/
+    else
+        echo "No Oxide files found to remove - continuing startup..."
+    fi
+    # shopt -u nullglob
 fi
 
 # Replace Startup Variables
@@ -127,20 +135,11 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
 # else Vanilla, do nothing
 fi
 
-if [[ "${FRAMEWORK}" != "oxide" ]]; then
-    # Remove files in RustDedicated/Managed if not using Oxide
-    echo "Cleaning Oxide files..."
-    mkdir -p /home/container/carbon/extensions/
-    shopt -s nullglob
-    files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
-    if [ ${#files[@]} -gt 0 ]; then
-        mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
-        rm -f /home/container/RustDedicated_Data/Managed/Oxide.*.dll
-        rm -f /home/container/Oxide.Compiler/
-    else
-        echo "No Oxide files found to remove - continuing startup..."
-    fi
-    shopt -u nullglob
+## if auto_update is not set or to 1 update
+if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" = 1 ]; then
+	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
+else
+    echo -e "Not updating game server as auto update was set to 0. Starting Server"
 fi
 
 # Fix for Rust not starting
