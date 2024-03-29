@@ -32,6 +32,9 @@ ENV         DEBIAN_FRONTEND=noninteractive
 RUN			dpkg --add-architecture i386 \
 			&& apt update \
 			&& apt upgrade -y \
+			&& echo "Package: nodejs" >> /etc/apt/preferences.d/preferences \
+			&& echo "Pin: origin deb.nodesource.com" >> /etc/apt/preferences.d/preferences \
+			&& echo "Pin-Priority: 1001" >> /etc/apt/preferences.d/preferences \
 			&& apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
 			&& curl -sL https://deb.nodesource.com/setup_20.x | bash - \
 			&& apt install -y nodejs \
