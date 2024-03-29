@@ -13,9 +13,6 @@ RUN dpkg --add-architecture i386 \
     && apt upgrade -y \
     && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386
 
-# Clear cpm cache
-RUN npm cache clean --force
-
 # Install Node.js and npm with debugging output
 RUN	npm cache clean --force \
 	&& apt install -y nodejs \
