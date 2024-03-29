@@ -21,6 +21,7 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     if [ ${#files[@]} -gt 0 ]; then
         mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
         rm -f /home/container/RustDedicated_Data/Managed/Oxide.*.dll
+        rm -f /home/container/Oxide.Compiler/
     else
         echo "No Oxide files found to remove - continuing startup..."
     fi
@@ -28,7 +29,7 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
 fi
 
 # Replace Startup Variables
-# MODIFIED_STARTUP=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
+MODIFIED_STARTUP=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
 # echo ":/home/container$ ${MODIFIED_STARTUP}"
 
 if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
