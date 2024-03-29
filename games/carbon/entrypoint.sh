@@ -4,6 +4,29 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
+if [[ "${FRAMEWORK}" != "oxide" ]]; then
+    # Remove files in RustDedicated/Managed if not using Oxide
+    echo "Cleaning Oxide files..."
+    mkdir -p /home/container/carbon/extensions/
+    # shopt -s nullglob
+    files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
+    if [ ${#files[@]} -gt 0 ]; then
+        mv /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
+        rm -f /home/container/RustDedicated_Data/Managed/Oxide.*.dll
+        rm -f /home/container/Oxide.Compiler/
+    else
+        echo "No Oxide files found to remove - continuing startup..."
+    fi
+    # shopt -u nullglob
+fi
+
+# if auto_update is not set or to 1 update
+ if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
+	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
+else
+    echo -e "Not updating game server as auto update was set to 0. Starting Server"
+fi
+
 # Replace Startup Variables
 MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
@@ -23,7 +46,7 @@ elif [[ "${FRAMEWORK}" == "carbon" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
@@ -33,7 +56,7 @@ elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
@@ -43,7 +66,7 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
     
 elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
@@ -53,7 +76,7 @@ elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
@@ -63,7 +86,7 @@ elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
@@ -73,7 +96,7 @@ elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
@@ -83,7 +106,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
@@ -93,7 +116,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
@@ -103,7 +126,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
@@ -113,17 +136,10 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     echo "Done updating Carbon!"
 
     export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/carbon/managed/Carbon.Preloader.dll"
+    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDED_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
 # else Vanilla, do nothing
-fi
-
-# if auto_update is not set or to 1 update
- if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
-	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
-else
-    echo -e "Not updating game server as auto update was set to 0. Starting Server"
 fi
 
 # Fix for Rust not starting
