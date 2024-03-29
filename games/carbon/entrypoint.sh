@@ -4,10 +4,12 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
-# Define the ANSI escape code for red color
+# Define ANSI escape codes for colors
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
 RED='\033[0;31m'
-# Reset color back to normal
-NC='\033[0m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
 
 echo "Checking MODDING_ROOT folder compatibility with selected framework"
 # Check if carbon framework is being used, and if it is, make sure that the MODDING_ROOT contains the word carbon
@@ -22,26 +24,26 @@ if [[ "${FRAMEWORK}" =~ "oxide" ]] && [[ ! "${MODDING_ROOT}" =~ "oxide" ]]; then
     exit 1
 fi
 
-echo "Compatibility check passed..."
+printf "${GREEN}Compatibility check passed...${NC}"
 
 # Checking Carbon Root Directory Issues
 if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
     echo "Carbon framework detected!"
-    echo "Checking the carbon root directory"
+    echo "Checking the carbon root directory structure..."
     if [ -d ${MODDING_ROOT} ]; then
-        echo "${MODDING_ROOT} folder already exists... Skipping this part."
+        printf "${BLUE}${MODDING_ROOT} folder already exists... Skipping this part.${NC}"
     else
         if [ ! -d "carbon" ] && [ "${MODDING_ROOT}" != "carbon" ]; then
-            echo "Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server."
+            printf "${RED}Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server.${NC}"
             exit 1
         elif [ ! -d "carbon" ] && [ "${MODDING_ROOT}" == "carbon" ]; then
-            echo "${MODDING_ROOT} is set as the MODDING_ROOT folder, however it doesn't exist."
+            print "${YELLOW}${MODDING_ROOT} is set as the MODDING_ROOT folder, however it doesn't exist. It will be created after server validation.${NC}"
         else
             echo "${MODDING_ROOT} folder does not exist. Creating new folder..."
             mkdir -p /home/container/${MODDING_ROOT}
             echo "Copying files and folders from default carbon directory."
             cp -r /home/container/carbon/* ${MODDING_ROOT}
-            echo "Files copied"
+            printf "${GREEN}Files copied. Moving on...${NC}"
         fi
     fi
 fi
