@@ -12,8 +12,8 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
     if [ ${#files[@]} -gt 0 ]; then
         mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/carbon/extensions/
-        rm -rv /home/container/RustDedicated_Data/Managed/*
-        rm -fv /home/container/Oxide.Compiler
+        rm -rfv /home/container/RustDedicated_Data/Managed/*
+        rm -rfv /home/container/Oxide.Compiler
     else
         echo "No Oxide files found to remove - continuing startup..."
     fi
