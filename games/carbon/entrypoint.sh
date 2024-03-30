@@ -148,7 +148,9 @@ function Download_Extensions() {
     fi
 
     # Clean up temp folder
+    echo "Cleaning up Temp Directory"
     rm -rf /home/container/temp
+    printf "${GREEN}Cleanup complete!"
 }
 
 if [[ ${FRAMEWORK} != "vanilla" ]]; then
