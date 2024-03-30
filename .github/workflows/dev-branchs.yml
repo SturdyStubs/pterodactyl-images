@@ -10,7 +10,7 @@ on:
 
 jobs:
   push:
-    name: "games:${{ steps.extract_branch.outputs.branch_name }}"
+    name: "games:${{ github.event.ref_slug }}"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
