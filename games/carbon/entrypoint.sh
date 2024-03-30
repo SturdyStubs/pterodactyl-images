@@ -97,6 +97,48 @@ if [[ "${FRAMEWORK}" != "oxide" ]]; then
     shopt -u nullglob
 fi
 
+###############################
+# Extensions Download Section #
+###############################
+
+printf "${BLUE}Checking Extension Downloads...${NC}"
+
+# Make temp directory
+mkdir -p /home/container/temp
+
+# Download RustEdit Extension
+if [ "${RUSTEDIT_EXT}" == "1" ]; then
+    echo -e "Installing RustEdit Extension"
+    curl -SSL -o /home/container/temp/Oxide.Ext.RustEdit.dll https://github.com/k1lly0u/Oxide.Ext.RustEdit/raw/master/Oxide.Ext.RustEdit.dll
+    printf "${GREEN}RustEdit Extention Downloaded!${NC}"
+    
+fi
+
+# Download Discord Extension
+if [ "${DISCORD_EXT}" == "1" ]; then
+    echo -e "Installing Discord Extension"
+    curl -SSL -o /home/container/temp/Oxide.Ext.Discord.dll https://umod.org/extensions/discord/download
+    printf "${GREEN}Discord Extension Downloaded!${NC}"
+fi
+
+# Download Chaos Code Extension
+if [ "${CHAOS_EXT}" == "1" ]; then
+    echo -e "Installing Chaos Code Extension"
+    curl -SSL -o /home/container/temp/Oxide.Ext.Chaos.dll https://chaoscode.io/oxide/Oxide.Ext.Chaos.dll
+    printf "${GREEN}Chaos Code Extension Downloaded!${NC}"
+fi
+
+# Handle Move of files based on framework
+#echo -e "Moving RustEdit DLL to RustDedicated_Data"
+#mv Oxide.Ext.RustEdit.dll /mnt/server/RustDedicated_Data/Managed
+
+# echo -e "Moving Discord Extension to RustDedicated_Data"
+# mv Oxide.Ext.Discord.dll /mnt/server/RustDedicated_Data/Managed
+
+# echo -e "Moving Chaos Code Extension to RustDedicated_Data"
+# mv Oxide.Ext.Chaos.dll /mnt/server/RustDedicated_Data/Managed
+
+
 #echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
 #sleep 20
 
