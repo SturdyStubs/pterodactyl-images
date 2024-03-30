@@ -146,6 +146,9 @@ function Download_Extensions() {
     else
         printf "${GREEN}No Extensions to Move... Skipping the move...${NC}"
     fi
+
+    # Clean up temp folder
+    rm -rf /home/container/temp
 }
 
 if [[ ${FRAMEWORK} != "vanilla" ]]; then
