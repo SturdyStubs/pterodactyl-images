@@ -10,7 +10,7 @@ on:
 
 jobs:
   push:
-    name: "games:${{ github.event.ref_slug }}"
+    name: "games:${{ github.ref_name }}"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,9 +24,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/build-push-action@v5
         with:
-          context: ./games/${{ github.event.ref }}
-          file: ./games/${{ github.event.ref }}/Dockerfile
+          context: ./games/${{ github.ref_name }}
+          file: ./games/${{ github.ref_name }}/Dockerfile
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/sturdystubs/games:${{ steps.extract_branch.outputs.branch_name }}
+            ghcr.io/sturdystubs/games:${{ github.ref_name }}

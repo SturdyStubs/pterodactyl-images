@@ -126,7 +126,6 @@ function Download_Extensions() {
     fi
 
 
-
     # Download Chaos Code Extension
     if [ "${CHAOS_EXT}" == "1" ]; then
         echo -e "Downloading Chaos Code Extension"
