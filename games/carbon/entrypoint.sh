@@ -101,50 +101,56 @@ fi
 # Extensions Download Section #
 ###############################
 
-printf "${BLUE}Checking Extension Downloads...${NC}"
-
-# Make temp directory
-mkdir -p /home/container/temp
-
-# Download RustEdit Extension
-if [ "${RUSTEDIT_EXT}" == "1" ]; then
-    echo -e "Downloading RustEdit Extension"
-    curl -SSL -o /home/container/temp/Oxide.Ext.RustEdit.dll https://github.com/k1lly0u/Oxide.Ext.RustEdit/raw/master/Oxide.Ext.RustEdit.dll
-    printf "${GREEN}RustEdit Extention Downloaded!${NC}"
+if [[ ${FRAMEWORK} != "vanilla" ]]; then
+    Download_Extensions
 fi
 
-# Download Discord Extension
-if [ "${DISCORD_EXT}" == "1" ]; then
-    echo -e "Downloading Discord Extension"
-    curl -SSL -o /home/container/temp/Oxide.Ext.Discord.dll https://umod.org/extensions/discord/download
-    printf "${GREEN}Discord Extension Downloaded!${NC}"
-fi
+function Download_Extensions() {
+    printf "${BLUE}Checking Extension Downloads...${NC}"
 
-# Download Chaos Code Extension
-if [ "${CHAOS_EXT}" == "1" ]; then
-    echo -e "Downloading Chaos Code Extension"
-    curl -SSL -o /home/container/temp/Oxide.Ext.Chaos.dll https://chaoscode.io/oxide/Oxide.Ext.Chaos.dll
-    printf "${GREEN}Chaos Code Extension Downloaded!${NC}"
-fi
+    # Make temp directory
+    mkdir -p /home/container/temp
 
-printf "${GREEN}All downloads complete!${NC}"
-
-# Handle Move of files based on framework
-files=(/home/container/temp/Oxide.Ext.*.dll)
-if [ ${#files[@]} -gt 0 ]; then
-    printf "${BLUE}Moving Extensions to appropriate folders...${NC}"
-    if [[ ${FRAMEWORK} =~ "carbon" ]]; then
-        echo "Carbon framework detected!"
-        mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/carbon/extensions/
+    # Download RustEdit Extension
+    if [ "${RUSTEDIT_EXT}" == "1" ]; then
+        echo -e "Downloading RustEdit Extension"
+        curl -SSL -o /home/container/temp/Oxide.Ext.RustEdit.dll https://github.com/k1lly0u/Oxide.Ext.RustEdit/raw/master/Oxide.Ext.RustEdit.dll
+        printf "${GREEN}RustEdit Extention Downloaded!${NC}"
     fi
-    if [[ ${FRAMEWORK} =~ "oxide" ]]; then
-        echo "Oxide framework detected!"
-        mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/RustDedicated_Data/Managed/
+
+    # Download Discord Extension
+    if [ "${DISCORD_EXT}" == "1" ]; then
+        echo -e "Downloading Discord Extension"
+        curl -SSL -o /home/container/temp/Oxide.Ext.Discord.dll https://umod.org/extensions/discord/download
+        printf "${GREEN}Discord Extension Downloaded!${NC}"
     fi
-    printf "${GREEN}Move files has completed successfully!${NC}"
-else
-    printf "${GREEN}No Extensions to Move... Skipping the move...${NC}"
-fi
+
+    # Download Chaos Code Extension
+    if [ "${CHAOS_EXT}" == "1" ]; then
+        echo -e "Downloading Chaos Code Extension"
+        curl -SSL -o /home/container/temp/Oxide.Ext.Chaos.dll https://chaoscode.io/oxide/Oxide.Ext.Chaos.dll
+        printf "${GREEN}Chaos Code Extension Downloaded!${NC}"
+    fi
+
+    printf "${GREEN}All downloads complete!${NC}"
+
+    # Handle Move of files based on framework
+    files=(/home/container/temp/Oxide.Ext.*.dll)
+    if [ ${#files[@]} -gt 0 ]; then
+        printf "${BLUE}Moving Extensions to appropriate folders...${NC}"
+        if [[ ${FRAMEWORK} =~ "carbon" ]]; then
+            echo "Carbon framework detected!"
+            mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/carbon/extensions/
+        fi
+        if [[ ${FRAMEWORK} =~ "oxide" ]]; then
+            echo "Oxide framework detected!"
+            mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/RustDedicated_Data/Managed/
+        fi
+        printf "${GREEN}Move files has completed successfully!${NC}"
+    else
+        printf "${GREEN}No Extensions to Move... Skipping the move...${NC}"
+    fi
+}
 
 #echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
 #sleep 20
