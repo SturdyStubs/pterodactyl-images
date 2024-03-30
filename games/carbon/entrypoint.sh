@@ -108,36 +108,43 @@ mkdir -p /home/container/temp
 
 # Download RustEdit Extension
 if [ "${RUSTEDIT_EXT}" == "1" ]; then
-    echo -e "Installing RustEdit Extension"
+    echo -e "Downloading RustEdit Extension"
     curl -SSL -o /home/container/temp/Oxide.Ext.RustEdit.dll https://github.com/k1lly0u/Oxide.Ext.RustEdit/raw/master/Oxide.Ext.RustEdit.dll
     printf "${GREEN}RustEdit Extention Downloaded!${NC}"
-    
 fi
 
 # Download Discord Extension
 if [ "${DISCORD_EXT}" == "1" ]; then
-    echo -e "Installing Discord Extension"
+    echo -e "Downloading Discord Extension"
     curl -SSL -o /home/container/temp/Oxide.Ext.Discord.dll https://umod.org/extensions/discord/download
     printf "${GREEN}Discord Extension Downloaded!${NC}"
 fi
 
 # Download Chaos Code Extension
 if [ "${CHAOS_EXT}" == "1" ]; then
-    echo -e "Installing Chaos Code Extension"
+    echo -e "Downloading Chaos Code Extension"
     curl -SSL -o /home/container/temp/Oxide.Ext.Chaos.dll https://chaoscode.io/oxide/Oxide.Ext.Chaos.dll
     printf "${GREEN}Chaos Code Extension Downloaded!${NC}"
 fi
 
+printf "${GREEN}All downloads complete!${NC}"
+
 # Handle Move of files based on framework
-#echo -e "Moving RustEdit DLL to RustDedicated_Data"
-#mv Oxide.Ext.RustEdit.dll /mnt/server/RustDedicated_Data/Managed
-
-# echo -e "Moving Discord Extension to RustDedicated_Data"
-# mv Oxide.Ext.Discord.dll /mnt/server/RustDedicated_Data/Managed
-
-# echo -e "Moving Chaos Code Extension to RustDedicated_Data"
-# mv Oxide.Ext.Chaos.dll /mnt/server/RustDedicated_Data/Managed
-
+files=(/home/container/temp/Oxide.Ext.*.dll)
+if [ ${#files[@]} -gt 0 ]; then
+    printf "${BLUE}Moving Extensions to appropriate folders...${NC}"
+    if [[ ${FRAMEWORK} =~ "carbon" ]]; then
+        echo "Carbon framework detected!"
+        mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/carbon/extensions/
+    fi
+    if [[ ${FRAMEWORK} =~ "oxide" ]]; then
+        echo "Oxide framework detected!"
+        mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/RustDedicated_Data/Managed/
+    fi
+    printf "${GREEN}Move files has completed successfully!${NC}"
+else
+    printf "${GREEN}No Extensions to Move... Skipping the move...${NC}"
+fi
 
 #echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
 #sleep 20
