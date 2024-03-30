@@ -101,10 +101,14 @@ fi
 #sleep 20
 
 # if auto_update is not set or to 1 update
- if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
+ if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "0" ]; then
+	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
+elif
+    [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "1" ]; then
 	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
 else
-    echo -e "Not updating game server as auto update was set to 0. Starting Server"
+    echo -e "Auto update set to false. Not validating game files or updating game."
+    echo -e "${BLUE}Starting server..."
 fi
 
 # Replace Startup Variables
