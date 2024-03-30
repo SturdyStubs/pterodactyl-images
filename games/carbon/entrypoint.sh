@@ -174,12 +174,12 @@ fi
  if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "1" ]; then
     echo -e "Validating game files..."
 	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
-elif
+ elif
     [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "0" ]; then
     echo -e "Updating game server, not validating..."
     ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
-else
-    printf "{$YELLOW} Not updating game server, auto update set to false."
+ else
+    printf "{$YELLOW} Not updating game server, auto update set to false.${NC}"
 fi
 
 # Replace Startup Variables
