@@ -150,6 +150,8 @@ function Download_Extensions() {
 
 if [[ ${FRAMEWORK} != "vanilla" ]]; then
     Download_Extensions
+else
+    printf "${YELLOW}Skipping Extension Downloads, Vanilla Framework Detected!${NC}"
 fi
 
 echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
