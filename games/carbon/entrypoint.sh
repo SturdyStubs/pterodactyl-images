@@ -20,12 +20,6 @@ printf "│    For More Information See The Documentation    │\n"
 printf "│        https://tinyurl.com/aiorustegg            │\n"
 printf "╰──────────────────────────────────────────────────╯\n"
 
-
-
-
-
-
-
 printf "${BLUE}Starting Egg Now!${NC}"
 sleep 2
 echo "Modding Framework is set to: ${FRAMEWORK}"
