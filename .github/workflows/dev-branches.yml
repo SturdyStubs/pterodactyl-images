@@ -1,4 +1,4 @@
-name: Build Dev Branches
+name: develop
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     branches-ignore:
       - main
     paths:
-      - 'games/**'
+      - 'games/carbon'
 
 jobs:
   push:
