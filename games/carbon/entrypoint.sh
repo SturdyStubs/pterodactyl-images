@@ -167,9 +167,15 @@ fi
 # echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
 # sleep 20
 
-# if auto_update is not set or to 1 update
- if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ]; then
+########################
+# AUTO UPDATE/VALIDATE #
+########################
+
+ if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "1" ]; then
 	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
+elif
+    [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "0" ]; then
+    ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
 else
     echo -e "Not updating game server as auto update was set to 0. Starting Server"
 fi
