@@ -10,7 +10,7 @@ on:
 
 jobs:
   push:
-    name: "games:${{ github.event.ref_slug }}"
+    name: "games:${{ steps.extract_branch.outputs.branch_name }}"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,4 +29,4 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/sturdystubs/games:${{ github.event.ref }}
+            ghcr.io/sturdystubs/games:${{ steps.extract_branch.outputs.branch_name }}
