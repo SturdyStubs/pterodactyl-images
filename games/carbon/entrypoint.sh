@@ -101,10 +101,6 @@ fi
 # Extensions Download Section #
 ###############################
 
-if [[ ${FRAMEWORK} != "vanilla" ]]; then
-    Download_Extensions
-fi
-
 function Download_Extensions() {
     printf "${BLUE}Checking Extension Downloads...${NC}"
 
@@ -151,6 +147,10 @@ function Download_Extensions() {
         printf "${GREEN}No Extensions to Move... Skipping the move...${NC}"
     fi
 }
+
+if [[ ${FRAMEWORK} != "vanilla" ]]; then
+    Download_Extensions
+fi
 
 echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
 sleep 20
