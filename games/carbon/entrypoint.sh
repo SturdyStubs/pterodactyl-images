@@ -12,6 +12,9 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
+echo INTERNAL_IP
+pause 10
+
 printf "╭──────────────────────────────────────────────────╮\n"
 printf "│                 AIO RUST EGG                     │\n"
 printf "│            Created By: SturdyStubs               │\n"
@@ -150,7 +153,7 @@ function Download_Extensions() {
         # Clean up temp folder
         echo "Cleaning up Temp Directory"
         rm -rf /home/container/temp
-        printf "${GREEN}Cleanup complete!"
+        printf "${GREEN}Cleanup complete!${NC}"
         printf "${GREEN}All downloads complete!${NC}"
     else
         printf "${GREEN}No extensions are enabled. Skipping this part...${NC}"
