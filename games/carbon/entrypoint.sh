@@ -185,6 +185,18 @@ fi
     printf "${YELLOW} Not updating game server, auto update set to false.${NC}"
 fi
 
+########################
+#  APP PUBLIC IP FIX   #
+########################
+printf "${BLUE}Checking App Public IP${NC}"
+if [ -z ${APP_PUBLIC_IP} ] || [ ${APP_PUBLIC_IP} == "" ]; then
+    printf "${YELLOW}Your App Public IP address isn't set. Please set this variable in your Startup tab! Set it to 0.0.0.0 or your servers public IP address.${NC}"
+    APP_PUBLIC_IP="0.0.0.0"
+else
+    printf "${GREEN}App Public IP check successful!${NC}"
+fi
+
+
 # Replace Startup Variables
 MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
