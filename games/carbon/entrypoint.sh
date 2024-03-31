@@ -12,9 +12,9 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
-echo "${INTERNAL_IP}"
+echo "Internal IP: ${INTERNAL_IP}"
 PUBLIC_IP=$(curl -sS ifconfig.me)
-echo "${PUBLIC_IP}"
+echo "Public IP: ${PUBLIC_IP}"
 sleep 10
 
 printf "╭──────────────────────────────────────────────────╮\n"
