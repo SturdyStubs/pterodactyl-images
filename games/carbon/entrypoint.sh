@@ -106,25 +106,25 @@ function Download_Extensions() {
     printf "${BLUE}Checking Extension Downloads...${NC}"
 
     # Check if any of the extensions variables are set to true
-    if [ "${RUSTEDIT_EXT}" == "1" ] || [ "${DISCORD_EXT}" == "1" ] || [ "${CHAOS_EXT}" == "1" ] then
+    if [ "${RUSTEDIT_EXT}" == "1" ] || [ "${DISCORD_EXT}" == "1" ] || [ "${CHAOS_EXT}" == "1" ]; then
         # Make temp directory
         mkdir -p /home/container/temp
         # Download RustEdit Extension
-        if [ "${RUSTEDIT_EXT}" == "1" ] && [ ! -e "/home/container/carbon/extensions/Oxide.Ext.RustEdit.dll" ]; then
+        if [ "${RUSTEDIT_EXT}" == "1" ]; then
             echo -e "Downloading RustEdit Extension"
             curl -sSL -o /home/container/temp/Oxide.Ext.RustEdit.dll https://github.com/k1lly0u/Oxide.Ext.RustEdit/raw/master/Oxide.Ext.RustEdit.dll
             printf "${GREEN}RustEdit Extention Downloaded!${NC}"
         fi
 
         # Download Discord Extension
-        if [ "${DISCORD_EXT}" == "1" ] && [ ! -e "/home/container/carbon/extensions/Oxide.Ext.Discord.dll" ] || ; then
+        if [ "${DISCORD_EXT}" == "1" ]; then
             echo -e "Downloading Discord Extension"
             curl -sSL -o /home/container/temp/Oxide.Ext.Discord.dll https://umod.org/extensions/discord/download
             printf "${GREEN}Discord Extension Downloaded!${NC}"
         fi
 
         # Download Chaos Code Extension
-        if [ "${CHAOS_EXT}" == "1" ] && [ ! -e "/home/container/carbon/extensions/Oxide.Ext.Chaos.dll" ]; then
+        if [ "${CHAOS_EXT}" == "1" ]; then
             echo -e "Downloading Chaos Code Extension"
             curl -sSL -o /home/container/temp/Oxide.Ext.Chaos.dll https://chaoscode.io/oxide/Oxide.Ext.Chaos.dll
             printf "${GREEN}Chaos Code Extension Downloaded!${NC}"
