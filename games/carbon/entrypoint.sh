@@ -179,7 +179,7 @@ fi
     echo -e "Updating game server, not validating..."
     ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
  else
-    printf "{$YELLOW} Not updating game server, auto update set to false.${NC}"
+    printf "${YELLOW} Not updating game server, auto update set to false.${NC}"
 fi
 
 # Replace Startup Variables
