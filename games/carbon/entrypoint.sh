@@ -13,6 +13,8 @@ cd /home/container
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
 echo "${INTERNAL_IP}"
+PUBLIC_IP=$(curl -sS ifconfig.me)
+echo "${PUBLIC_IP}"
 sleep 10
 
 printf "╭──────────────────────────────────────────────────╮\n"
