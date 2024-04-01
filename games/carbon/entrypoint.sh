@@ -32,7 +32,12 @@ sleep 2
 printf "${BLUE}Setting App Public IP${NC}"
 echo "Internal IP: ${INTERNAL_IP}"
 echo "Public IP: ${PUBLIC_IP}"
-APP_PUBLIC_IP=${PUBLIC_IP}
+if [ -z ${APP_PUBLIC_IP} ]; then
+    echo "Setting APP_PUBLIC_IP address to the public IP address of the node."
+    APP_PUBLIC_IP=${PUBLIC_IP}
+else
+    printf "${YELLOW}You did not leave the APP_PUBLIC_IP variable blank. Lets hope you know what you're doing!"
+fi
 printf "${BLUE}App Public IP set to: ${APP_PUBLIC_IP}${NC}"
 printf "${GREEN}App Public IP check successful!${NC}"
 
@@ -317,6 +322,13 @@ fi
 
 # Fix for Rust not starting
 export LD_LIBRARY_PATH=$(pwd)/RustDedicated_Data/Plugins/x86_64:$(pwd)
+
+printf "╭──────────────────────────────────────────────────╮\n"
+printf "│     Thats it from us! Enjoy your rust server!    │\n"
+printf "├──────────────────────────────────────────────────┤\n"
+printf "│    For More Information See The Documentation    │\n"
+printf "│        https://tinyurl.com/aiorustegg            │\n"
+printf "╰──────────────────────────────────────────────────╯\n"
 
 # Run the Server
 node /wrapper.js "${MODIFIED_STARTUP}"
