@@ -36,7 +36,7 @@ if [ -z ${APP_PUBLIC_IP} ]; then
     echo "Setting APP_PUBLIC_IP address to the public IP address of the node."
     APP_PUBLIC_IP=${PUBLIC_IP}
 else
-    printf "${YELLOW}You did not leave the APP_PUBLIC_IP variable blank. Lets hope you know what you're doing!"
+    printf "${YELLOW}You did not leave the APP_PUBLIC_IP variable blank. Lets hope you know what you're doing!${NC}"
 fi
 printf "${BLUE}App Public IP set to: ${APP_PUBLIC_IP}${NC}"
 printf "${GREEN}App Public IP check successful!${NC}"
