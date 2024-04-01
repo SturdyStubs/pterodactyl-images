@@ -12,10 +12,8 @@ cd /home/container
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
-echo "Internal IP: ${INTERNAL_IP}"
+# Grab the public IP address of the node
 PUBLIC_IP=$(curl -sS ifconfig.me)
-echo "Public IP: ${PUBLIC_IP}"
-sleep 10
 
 printf "╭──────────────────────────────────────────────────╮\n"
 printf "│                 AIO RUST EGG                     │\n"
@@ -27,7 +25,22 @@ printf "╰───────────────────────
 
 printf "${BLUE}Starting Egg Now!${NC}"
 sleep 2
+
+########################
+#  APP PUBLIC IP FIX   #
+########################
+printf "${BLUE}Setting App Public IP${NC}"
+echo "Internal IP: ${INTERNAL_IP}"
+echo "Public IP: ${PUBLIC_IP}"
+APP_PUBLIC_IP=${PUBLIC_IP}
+printf "${BLUE}App Public IP set to: ${APP_PUBLIC_IP}${NC}"
+printf "${GREEN}App Public IP check successful!${NC}"
+
 echo "Modding Framework is set to: ${FRAMEWORK}"
+
+###########################################
+# MODDING ROOT FOLDER COMPATIBILITY CHECK #
+###########################################
 
 echo "Checking MODDING ROOT DIRECTORY folder compatibility with selected framework"
 # Check if carbon framework is being used, and if it is, make sure that the MODDING_ROOT contains the word carbon
@@ -186,18 +199,6 @@ fi
  else
     printf "${YELLOW} Not updating game server, auto update set to false.${NC}"
 fi
-
-########################
-#  APP PUBLIC IP FIX   #
-########################
-printf "${BLUE}Checking App Public IP${NC}"
-if [ -z ${APP_PUBLIC_IP} ] || [ ${APP_PUBLIC_IP} == "" ]; then
-    printf "${YELLOW}Your App Public IP address isn't set. Please set this variable in your Startup tab! Set it to 0.0.0.0 or your servers public IP address.${NC}"
-    APP_PUBLIC_IP="0.0.0.0"
-else
-    printf "${GREEN}App Public IP check successful!${NC}"
-fi
-
 
 # Replace Startup Variables
 MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
