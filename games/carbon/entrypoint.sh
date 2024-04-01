@@ -26,6 +26,7 @@ printf "╰───────────────────────
 printf "${BLUE}Starting Egg Now!${NC}"
 sleep 2
 
+
 ########################
 #  APP PUBLIC IP FIX   #
 ########################
