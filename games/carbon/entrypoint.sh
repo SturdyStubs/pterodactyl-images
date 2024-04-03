@@ -86,7 +86,7 @@ if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
 fi
 
 # Clean Up Files from Oxide to Vanilla/Carbon Switch
-if [[ "${FRAMEWORK}" != "oxide" ]]; then
+if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; then
     printf "${BLUE}Modding framework is not set to Oxide. Checking if there are left over Oxide files in the server.${NC}"
     shopt -s nullglob
     # Check if the Oxide.dll files exist
