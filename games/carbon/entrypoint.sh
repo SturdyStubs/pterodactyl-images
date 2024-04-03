@@ -195,6 +195,7 @@ fi
 # AUTO UPDATE/VALIDATE #
 ########################
 
+# Main Branch
  if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "1" ]; then
     echo -e "Validating game files..."
 	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
@@ -206,6 +207,42 @@ fi
     printf "${YELLOW} Not updating game server, auto update set to false.${NC}"
 fi
 
+# Staging
+ if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "1" ] && [ "${FRAMEWORK}" == "oxide-staging" ] || [ "${FRAMEWORK}" == "carbon-staging" ] || [ "${FRAMEWORK}" == "carbon-staging-minimal" ]; then
+    echo -e "Validating staging server game files..."
+	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging validate +quit
+ elif
+    [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "0" ] && [ "${FRAMEWORK}" == "oxide-staging" ] || [ "${FRAMEWORK}" == "carbon-staging" ] || [ "${FRAMEWORK}" == "carbon-staging-minimal" ]; then
+    echo -e "Updating staging server, not validating..."
+    ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging +quit
+ else
+    printf "${YELLOW} Not updating staging server, auto update set to false.${NC}"
+fi
+
+# Aux01
+ if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "1" ] && [ "${FRAMEWORK}" == "carbon-aux1" ] || [ "${FRAMEWORK}" == "carbon-aux1-minimal" ]; then
+    echo -e "Validating aux01 server game files..."
+	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux01 validate +quit
+ elif
+    [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "0" ] && [ "${FRAMEWORK}" == "carbon-aux1" ] || [ "${FRAMEWORK}" == "carbon-aux1-minimal" ]; then
+    echo -e "Updating aux01 server, not validating..."
+    ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux01 +quit
+ else
+    printf "${YELLOW} Not updating aux01 server, auto update set to false.${NC}"
+fi
+
+# Aux02
+ if [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "1" ] && [ "${FRAMEWORK}" == "carbon-aux2" ] || [ "${FRAMEWORK}" == "carbon-aux2-minimal" ]; then
+    echo -e "Validating aux02 server game files..."
+	./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 validate +quit
+ elif
+    [ -z ${AUTO_UPDATE} ] || [ "${AUTO_UPDATE}" == "1" ] && [ "${VALIDATE}" == "0" ] && [ "${FRAMEWORK}" == "carbon-aux2" ] || [ "${FRAMEWORK}" == "carbon-aux2-minimal" ]; then
+    echo -e "Updating aux02 server, not validating..."
+    ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 +quit
+ else
+    printf "${YELLOW} Not updating aux01 server, auto update set to false.${NC}"
+fi
+
 # Replace Startup Variables
 MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
@@ -214,6 +251,14 @@ if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
     # Oxide: https://github.com/OxideMod/Oxide.Rust
     echo "Updating uMod..."
     curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/latest/download/Oxide.Rust-linux.zip" > umod.zip
+    unzip -o -q umod.zip
+    rm umod.zip
+    echo "Done updating uMod!"
+
+elif [[ "${FRAMEWORK}" == "oxide-staging" ]]; then
+    # Oxide: https://github.com/OxideMod/Oxide.Rust
+    echo "Updating uMod Staging..."
+    curl -sSL "https://downloads.oxidemod.com/artifacts/Oxide.Rust/staging/Oxide.Rust-linux.zip" > umod.zip
     unzip -o -q umod.zip
     rm umod.zip
     echo "Done updating uMod!"
