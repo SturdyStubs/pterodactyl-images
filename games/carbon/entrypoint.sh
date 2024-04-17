@@ -74,7 +74,7 @@ if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
             printf "${RED}Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server.${NC}"
             exit 1
         elif [ ! -d "carbon" ] && [ "${MODDING_ROOT}" == "carbon" ]; then
-            print "${YELLOW}${MODDING_ROOT} is set as the MODDING ROOT DIRECTORY folder, however it doesn't exist. It will be created after server validation.${NC}"
+            printf "${YELLOW}${MODDING_ROOT} is set as the MODDING ROOT DIRECTORY folder, however it doesn't exist. It will be created after server validation.${NC}"
         else
             printf "${YELLOW}${MODDING_ROOT} folder does not exist. Creating new folder...${NC}"
             mkdir -p /home/container/${MODDING_ROOT}
