@@ -353,6 +353,8 @@ if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
     # else Vanilla, do nothing
     fi
 # Framework Update Skipped
+else
+    printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
 fi
 
 # Fix for Rust not starting
