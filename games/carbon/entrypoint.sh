@@ -226,20 +226,19 @@ MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
 # Make temp directory
+if [[ "${FRAMEWORK}" == *"carbon"* ]]; then
 mkdir -p /home/container/temp
 TEMP_DIR=/home/container/temp
+fi
 
 if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Oxide: https://github.com/OxideMod/Oxide.Rust
         echo "Updating uMod..."
-        curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/latest/download/Oxide.Rust-linux.zip" > "${TEMP_DIR}/umod.zip"
-        unzip -o -q "${TEMP_DIR}/umod.zip" -d "${TEMP_DIR}"
-        rm "${TEMP_DIR}/umod.zip"
-        echo "Done updating uMod!"
-        echo "----------------------------------------------------------------------"
-        echo "${TEMP_DIR}/RustDedicated_Data"
-        mv -v "${TEMP_DIR}/RustDedicated_Data/"* "/home/container/RustDedicated_Data/"
+        curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/latest/download/Oxide.Rust-linux.zip" > umod.zip
+        unzip -o -q umod.zip
+        rm umod.zip
+        echo "Done updating uMod!\nIf you intend to use a different folder name, you'll need to wait until the server boots and the oxide folder is created to rename it."
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
     fi
@@ -248,13 +247,10 @@ elif [[ "${FRAMEWORK}" == "oxide-staging" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Oxide: https://github.com/OxideMod/Oxide.Rust
         echo "Updating uMod Staging..."
-        curl -sSL "https://downloads.oxidemod.com/artifacts/Oxide.Rust/staging/Oxide.Rust-linux.zip" > "${TEMP_DIR}/umod.zip"
-        unzip -o -q "${TEMP_DIR}/umod.zip" -d "${TEMP_DIR}"
-        rm "${TEMP_DIR}/umod.zip"
-        echo "Done updating uMod Staging!"
-        echo "----------------------------------------------------------------------"
-        echo "${TEMP_DIR}/RustDedicated_Data"
-        mv -v "${TEMP_DIR}/RustDedicated_Data/"* "/home/container/RustDedicated_Data/"
+        curl -sSL "https://downloads.oxidemod.com/artifacts/Oxide.Rust/staging/Oxide.Rust-linux.zip" > umod.zip
+        unzip -o -q umod.zip
+        rm umod.zip
+        echo "Done updating uMod Staging!\nIf you intend to use a different folder name, you'll need to wait until the server boots and the oxide folder is created to rename it."
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
     fi
