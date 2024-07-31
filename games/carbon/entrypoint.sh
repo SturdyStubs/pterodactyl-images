@@ -7,6 +7,8 @@ RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m\n'
 
+echo "Test"
+
 cd /home/container
 
 # Make internal Docker IP address available to processes.
