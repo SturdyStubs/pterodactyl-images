@@ -418,8 +418,9 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
 # else Vanilla, do nothing
 fi
 
-echo "Removing Temp Directory..."
-rm -rf /home/container/temp
+# echo "Removing Temp Directory..."
+# rm -rf /home/container/temp
+echo "Removing temp directory would be here..."
 
 # Fix for Rust not starting
 export LD_LIBRARY_PATH=$(pwd)/RustDedicated_Data/Plugins/x86_64:$(pwd)
