@@ -48,7 +48,7 @@ echo "Modding Framework is set to: ${FRAMEWORK}"
 # MODDING ROOT FOLDER COMPATIBILITY CHECK #
 ###########################################
 
-echo "Checking MODDING ROOT DIRECTORY folder compatibility with selected framework"
+echo "Checking MODDING ROOT DIRECTORY folder (${MODDING_ROOT}) compatibility with selected framework (${FRAMEWORK})"
 
 if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
     DEFAULT_DIR="carbon"
@@ -62,8 +62,8 @@ if [[ "${FRAMEWORK}" =~ "carbon" || "${FRAMEWORK}" =~ "oxide" ]]; then
         echo "MODDING ROOT DIRECTORY set to '${MODDING_ROOT}' for framework '${FRAMEWORK}'."
 
         if [[ ! -d "$MODDING_ROOT" ]]; then
-            mkdir -p /home/container/${MODDING_ROOT}
             echo "Creating directory named ${MODDING_ROOT}..."
+            mkdir -p /home/container/${MODDING_ROOT}
             
             if [[ $? -ne 0 ]]; then
                 printf "${RED}ERROR: Failed to create the MODDING ROOT DIRECTORY '${MODDING_ROOT}'. Please check your permissions or the directory path.${NC}\n"
@@ -94,14 +94,8 @@ if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; t
         else
             printf "${YELLOW}If you see this and your framework isn't vanilla, then contact the developers.${NC}"
         fi
-        # Clean up the rust dedicated managed folder
-        # echo "Cleaning up RustDedicated_Data/Managed folder..."
-        # rm -rf RustDedicated_Data/Managed/*
-        # echo "Removing Oxide Compiler..."
-        # rm -rf Oxide.Compiler
-        printf "${GREEN}Oxide files have been cleaned up!${NC}"
     else
-        printf "${GREEN}No Oxide files found to remove - continuing startup...${NC}"
+        printf "${GREEN}No Oxide files found NOT SWITCHING FROM OXIDE - continuing startup...${NC}"
     fi
     shopt -u nullglob
 fi
@@ -225,8 +219,25 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge..."
         echo "Modding Root: ${MODDING_ROOT}"
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${MODDING_ROOT}"
-        #mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
+
+
+        if [[ ! -d "$MODDING_ROOT" ]]; then
+            echo "Creating directory named ${MODDING_ROOT}..."
+            mkdir -p /home/container/${MODDING_ROOT}
+            
+            if [[ $? -ne 0 ]]; then
+                printf "${RED}ERROR: Failed to create the MODDING ROOT DIRECTORY '${MODDING_ROOT}'. Please check your permissions or the directory path.${NC}\n"
+                exit 1
+            fi
+            
+            echo "Successfully created directory named ${MODDING_ROOT}."
+        else
+            echo "${MODDING_ROOT} already exists!"
+        fi
+
+
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
