@@ -44,40 +44,29 @@ printf "${GREEN}App Public IP check successful!${NC}"
 
 echo "Modding Framework is set to: ${FRAMEWORK}"
 
-###########################################
-# MODDING ROOT FOLDER COMPATIBILITY CHECK #
-###########################################
+####################################
+# MODDING ROOT FOLDER EXISTS CHECK #
+####################################
 
-echo "Checking MODDING ROOT DIRECTORY folder (${MODDING_ROOT}) compatibility with selected framework (${FRAMEWORK})"
-
-if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
-    DEFAULT_DIR="carbon"
-elif [[ "${FRAMEWORK}" =~ "oxide" ]]; then
-    DEFAULT_DIR="oxide"
-fi
-
-# Check if the MODDING_ROOT directory is DEFAULT_DIR, if not then create new directory with specified name of MODDING_ROOT
 if [[ "${FRAMEWORK}" =~ "carbon" || "${FRAMEWORK}" =~ "oxide" ]]; then
-    if [[ "${MODDING_ROOT}" != "${DEFAULT_DIR}" ]]; then
-        echo "MODDING ROOT DIRECTORY set to '${MODDING_ROOT}' for framework '${FRAMEWORK}'."
+    echo "MODDING ROOT DIRECTORY set to '${MODDING_ROOT}' for framework '${FRAMEWORK}'."
 
-        if [[ ! -d "$MODDING_ROOT" ]]; then
-            echo "Creating directory named ${MODDING_ROOT}..."
-            mkdir -p /home/container/${MODDING_ROOT}
-            
-            if [[ $? -ne 0 ]]; then
-                printf "${RED}ERROR: Failed to create the MODDING ROOT DIRECTORY '${MODDING_ROOT}'. Please check your permissions or the directory path.${NC}\n"
-                exit 1
-            fi
-            
-            echo "Successfully created directory named ${MODDING_ROOT}."
-        else
-            echo "${MODDING_ROOT} already exists!"
+    if [[ ! -d "$MODDING_ROOT" ]]; then
+        echo "Creating directory named ${MODDING_ROOT}..."
+        mkdir -p /home/container/${MODDING_ROOT}
+        
+        if [[ $? -ne 0 ]]; then
+            printf "${RED}ERROR: Failed to create the MODDING ROOT DIRECTORY '${MODDING_ROOT}'. Please check your permissions or the directory path.${NC}\n"
+            exit 1
         fi
+        
+        echo "Successfully created directory named ${MODDING_ROOT}."
+    else
+        echo "${MODDING_ROOT} already exists!"
     fi
 fi
 
-printf "${GREEN}Compatibility check passed...${NC}"
+printf "${GREEN}Modding Root Folder Exists Check Complete!${NC}"
 
 # Detect if there is a oxide to carbon switch occurring
 if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; then
@@ -153,11 +142,22 @@ fi
 MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
-# Make temp directory
-if [[ "${FRAMEWORK}" == *"carbon"* ]]; then
-    mkdir -p /home/container/temp
-    TEMP_DIR=/home/container/temp
-fi
+# Update Carbon Function
+function Update_Carbon() {
+    echo "Inside the Update_Carbon Function"
+
+    if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
+        DEFAULT_ROOT="carbon"
+    elif [[ "${FRAMEWORK}" =~ "oxide" ]]; then
+        DEFAULT_ROOT="oxide"
+    fi
+    echo "Default Dir: ${DEFAULT_ROOT}"
+
+    if [[ "${MODDING_ROOT}" != "${DEFAULT_ROOT}" ]]; then
+        echo "Modding root does not match default root"
+        mv -f "/home/container/carbon/"* "/home/container/${MODDING_ROOT}/"
+    fi
+}
 
 if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
@@ -219,25 +219,8 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge..."
         echo "Modding Root: ${MODDING_ROOT}"
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
-
-
-        if [[ ! -d "$MODDING_ROOT" ]]; then
-            echo "Creating directory named ${MODDING_ROOT}..."
-            mkdir -p /home/container/${MODDING_ROOT}
-            
-            if [[ $? -ne 0 ]]; then
-                printf "${RED}ERROR: Failed to create the MODDING ROOT DIRECTORY '${MODDING_ROOT}'. Please check your permissions or the directory path.${NC}\n"
-                exit 1
-            fi
-            
-            echo "Successfully created directory named ${MODDING_ROOT}."
-        else
-            echo "${MODDING_ROOT} already exists!"
-        fi
-
-
-        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx
+        Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -353,10 +336,6 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 # else Vanilla, do nothing
 fi
-
-# echo "Removing Temp Directory..."
-# rm -rf /home/container/temp
-echo "Removing temp directory would be here..."
 
 ###############################
 # Extensions Download Section #
