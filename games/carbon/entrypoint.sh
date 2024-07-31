@@ -44,6 +44,9 @@ printf "${GREEN}App Public IP check successful!${NC}"
 
 echo "Modding Framework is set to: ${FRAMEWORK}"
 
+echo "Sleeping for 10 seconds"
+sleep 10
+
 ####################################
 # MODDING ROOT FOLDER EXISTS CHECK #
 ####################################
@@ -68,6 +71,9 @@ fi
 
 printf "${GREEN}Modding Root Folder Exists Check Complete!${NC}"
 
+echo "Sleeping for 10 seconds"
+sleep 10
+
 # Detect if there is a oxide to carbon switch occurring
 if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; then
     CARBONSWITCH="FALSE"
@@ -90,7 +96,8 @@ if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; t
 fi
 
 # echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
-# sleep 20
+echo "Sleeping for 10 seconds"
+sleep 10
 
 ########################
 # AUTO UPDATE/VALIDATE #
@@ -138,12 +145,18 @@ else
     printf "${YELLOW} Not updating server, auto update set to false.${NC}"
 fi
 
+echo "Sleeping for 10 seconds"
+sleep 10
+
 # Replace Startup Variables
 MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
+echo "Sleeping for 10 seconds"
+sleep 10
+
 # Update Carbon Function
-function Update_Carbon() {
+function Update_Carbon_Modding_Root() {
     echo "Inside the Update_Carbon Function"
 
     if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
@@ -156,7 +169,12 @@ function Update_Carbon() {
     if [[ "${MODDING_ROOT}" != "${DEFAULT_ROOT}" ]]; then
         echo "Modding root does not match default root"
         mv -f "/home/container/carbon/"* "/home/container/${MODDING_ROOT}/"
+    else
+        echo "Modding root is the same as default root. Skipping..."
     fi
+
+    echo "Sleeping for 10 seconds"
+    sleep 10
 }
 
 if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
@@ -220,6 +238,8 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
         echo "Updating Carbon Edge..."
         echo "Modding Root: ${MODDING_ROOT}"
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx
+        echo "Sleeping for 15 seconds"
+        sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
