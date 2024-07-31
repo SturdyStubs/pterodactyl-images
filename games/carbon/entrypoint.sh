@@ -193,7 +193,11 @@ echo "==============="
 echo $CARBONSWITCH
 echo "==============="
 
-if [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
+if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
+    echo -e "Carbon Switch Detected! Validating Game Files!"
+    echo -e "Updating game server..."
+    ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
+elif [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
     if [ "${VALIDATE}" == "1" ]; then
         if [ "${FRAMEWORK}" == "oxide-staging" ] || [ "${FRAMEWORK}" == "carbon-staging" ] || [ "${FRAMEWORK}" == "carbon-staging-minimal" ]; then
             echo -e "Validating staging server game files..."
@@ -223,10 +227,6 @@ if [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
             ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
         fi
     fi
-elif [[ "${CARBONSWITCH}" == "TRUE" ]]; then
-    echo -e "Carbon Switch Detected! Validating Game Files!"
-    echo -e "Updating game server..."
-    ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
 else
     printf "${YELLOW} Not updating server, auto update set to false.${NC}"
 fi
