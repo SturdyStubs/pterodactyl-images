@@ -300,8 +300,8 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx
+        #mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
