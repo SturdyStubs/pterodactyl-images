@@ -86,21 +86,9 @@ if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; t
     files=(/home/container/RustDedicated_Data/Managed/Oxide.*.dll)
     if [ ${#files[@]} -gt 0 ]; then
         echo "Oxide Files Found!"
-        CARBONSWITCH="TRUE"
         if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
-            # Check to see if any Oxide extensions need to be moved
-            echo "Carbon framework detected! Moving Oxide Extentions if the exist."
-            files=(/home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll)
-            if [ ${#files[@]} -gt 0 ]; then
-                printf "${BLUE}Oxide extensions located. Moving files to Modding Directory Extensions Folder.${NC}"
-                # Create the extensions folder again if it doesn't exist
-                mkdir -p /home/container/${MODDING_ROOT}/extensions/
-                # Move the files
-                mv -v /home/container/RustDedicated_Data/Managed/Oxide.Ext.*.dll /home/container/${MODDING_ROOT}/extensions/
-                printf "${GREEN}Move files has completed successfully!${NC}"
-            else
-                printf "${GREEN}No Oxide Extensions to Move... Skipping the move...${NC}"
-            fi
+            echo "Carbon installation detected. Marking Carbon Switch as TRUE!"
+            CARBONSWITCH="TRUE"
         else
             printf "${YELLOW}${FRAMEWORK} does not support Oxide Extensions. If you see this and your framework isn't vanilla, then contact the developers.${NC}"
         fi
@@ -300,7 +288,7 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${MODDING_ROOT}"
         #mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
