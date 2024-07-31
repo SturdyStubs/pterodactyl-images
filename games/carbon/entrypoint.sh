@@ -245,7 +245,8 @@ if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
         curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/latest/download/Oxide.Rust-linux.zip" > umod.zip
         unzip -o -q umod.zip
         rm umod.zip
-        echo "Done updating uMod!\nIf you intend to use a different folder name, you'll need to wait until the server boots and the oxide folder is created to rename it."
+        echo "Done updating uMod!"
+        echo "If you intend to use a different folder name, you'll need to wait until the server boots and the oxide folder is created to rename it."
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
     fi
@@ -257,7 +258,8 @@ elif [[ "${FRAMEWORK}" == "oxide-staging" ]]; then
         curl -sSL "https://downloads.oxidemod.com/artifacts/Oxide.Rust/staging/Oxide.Rust-linux.zip" > umod.zip
         unzip -o -q umod.zip
         rm umod.zip
-        echo "Done updating uMod Staging!\nIf you intend to use a different folder name, you'll need to wait until the server boots and the oxide folder is created to rename it."
+        echo "Done updating uMod!"
+        echo "If you intend to use a different folder name, you'll need to wait until the server boots and the oxide folder is created to rename it."
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
     fi
