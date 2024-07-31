@@ -54,6 +54,7 @@ if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
     DEFAULT_DIR="carbon"
 elif [[ "${FRAMEWORK}" =~ "oxide" ]]; then
     DEFAULT_DIR="oxide"
+else
 fi
 
 # Check if the MODDING_ROOT directory is DEFAULT_DIR, if not then create new directory with specified name of MODDING_ROOT
