@@ -239,7 +239,7 @@ if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
         echo "Done updating uMod!"
         echo "----------------------------------------------------------------------"
         echo "${TEMP_DIR}/RustDedicated_Data"
-        mv -v "${TEMP_DIR}/RustDedicated_Data" /home/container/RustDedicated_Data
+        mv -v "${TEMP_DIR}/RustDedicated_Data/"* /home/container/RustDedicated_Data
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
     fi
@@ -408,6 +408,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
+echo "Removing Temp Directory..."
 rm -rf /home/container/temp
 # else Vanilla, do nothing
 fi
