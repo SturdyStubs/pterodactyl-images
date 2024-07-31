@@ -225,7 +225,9 @@ fi
 MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
-TEMP_DIR=$(mktemp -d)
+# Make temp directory
+mkdir -p /home/container/temp
+TEMP_DIR=/home/container/temp
 
 if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
@@ -404,7 +406,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
-rm -rf "${TEMP_DIR}"
+rm -rf /home/container/temp
 # else Vanilla, do nothing
 fi
 
