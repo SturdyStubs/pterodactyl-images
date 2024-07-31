@@ -189,6 +189,10 @@ fi
 # AUTO UPDATE/VALIDATE #
 ########################
 
+echo "==============="
+echo $CARBONSWITCH
+echo "==============="
+
 if [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
     if [ "${VALIDATE}" == "1" ]; then
         if [ "${FRAMEWORK}" == "oxide-staging" ] || [ "${FRAMEWORK}" == "carbon-staging" ] || [ "${FRAMEWORK}" == "carbon-staging-minimal" ]; then
@@ -201,7 +205,7 @@ if [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
             echo -e "Validating aux02 server game files..."
             ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 validate +quit
         else
-            echo -e "Updating game server..."
+            echo -e "Updating game server... Validation On!"
             ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
         fi
     else
@@ -215,7 +219,7 @@ if [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
             echo -e "Updating aux02 server, not validating..."
             ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 +quit
         else
-            echo -e "Updating game server..."
+            echo -e "Updating game server... Validation Off!"
             ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
         fi
     fi
