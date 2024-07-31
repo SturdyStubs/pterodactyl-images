@@ -29,19 +29,24 @@ LABEL       org.opencontainers.image.licenses=MIT
 
 ENV         DEBIAN_FRONTEND=noninteractive
 
-RUN 		apt-get update
-RUN 		apt-get install -y --no-install-recommends gnupg
+RUN 		apt-get update && \
+    		apt-get install -y --no-install-recommends gnupg curl
+
+# Create the keyrings directory
 RUN 		mkdir -p /etc/apt/keyrings
 
+# Fetch the GPG key and handle any errors
 RUN 		echo "Fetching NodeSource GPG key..." && \
     		curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key -o /tmp/nodesource.gpg.key && \
     		cat /tmp/nodesource.gpg.key && \
     		gpg --no-tty --dearmor -o /etc/apt/keyrings/nodesource.gpg /tmp/nodesource.gpg.key && \
     		rm /tmp/nodesource.gpg.key
 
+# Add the NodeSource repository
 RUN 		echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-RUN 		apt-get update
-RUN 		apt-get install -y --no-install-recommends nodejs
+
+# Update and install nodejs
+RUN apt-get update && apt-get install -y --no-install-recommends nodejs
 
 RUN			dpkg --add-architecture i386 \
 			&& apt update \
