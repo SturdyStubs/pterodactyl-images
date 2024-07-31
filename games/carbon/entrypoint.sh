@@ -49,41 +49,33 @@ echo "Modding Framework is set to: ${FRAMEWORK}"
 ###########################################
 
 echo "Checking MODDING ROOT DIRECTORY folder compatibility with selected framework"
-# Check if carbon framework is being used, and if it is, make sure that the MODDING_ROOT contains the word carbon
-if [[ "${FRAMEWORK}" =~ "carbon" ]] && [[ ! "${MODDING_ROOT}" =~ "carbon" ]]; then
-    printf "${RED}ERROR: Your framework is ${FRAMEWORK} but your MODDING ROOT DIRECTORY folder does not contain the word \"carbon\". Please change the MODDING ROOT DIRECTORY variable to contain the word \"carbon\" for compatibility reasons.${NC}"
-    exit 1
-fi
 
-# Do the same for oxide
-if [[ "${FRAMEWORK}" =~ "oxide" ]] && [[ ! "${MODDING_ROOT}" =~ "oxide" ]]; then
-    printf "${RED}ERROR: Your framework is ${FRAMEWORK} but your MODDING ROOT DIRECTORY folder does not contain the word \"oxide\". Please change the MODDING ROOT DIRECTORY variable to contain the word \"oxide\" for compatibility reasons.${NC}"
-    exit 1
-fi
-
-printf "${GREEN}Compatibility check passed...${NC}"
-
-# Checking Carbon Root Directory Issues
 if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
-    printf "${BLUE}Carbon framework detected!${NC}"
-    echo "Checking the carbon root directory structure..."
-    if [ -d ${MODDING_ROOT} ]; then
-        printf "${GREEN}${MODDING_ROOT} folder already exists... Skipping this part.${NC}"
-    else
-        if [ ! -d "carbon" ] && [ "${MODDING_ROOT}" != "carbon" ]; then
-            printf "${RED}Carbon default root directory folder does not exist. Please change your Modding Root Directory folder name to \"carbon\", and restart your server.${NC}"
-            exit 1
-        elif [ ! -d "carbon" ] && [ "${MODDING_ROOT}" == "carbon" ]; then
-            printf "${YELLOW}${MODDING_ROOT} is set as the MODDING ROOT DIRECTORY folder, however it doesn't exist. It will be created after server validation.${NC}"
-        else
-            printf "${YELLOW}${MODDING_ROOT} folder does not exist. Creating new folder...${NC}"
+    DEFAULT_DIR="carbon"
+elif [[ "${FRAMEWORK}" =~ "oxide" ]]; then
+    DEFAULT_DIR="oxide"
+fi
+
+# Check if the MODDING_ROOT directory is DEFAULT_DIR, if not then create new directory with specified name of MODDING_ROOT
+if [[ "${FRAMEWORK}" =~ "carbon" || "${FRAMEWORK}" =~ "oxide" ]]; then
+    if [[ "${MODDING_ROOT}" != "${DEFAULT_DIR}" ]]; then
+        echo "MODDING ROOT DIRECTORY set to '${MODDING_ROOT}' for framework '${FRAMEWORK}'."
+
+        if [[ ! -d "$MODDING_ROOT" ]]; then
             mkdir -p /home/container/${MODDING_ROOT}
-            echo "Copying files and folders from default carbon directory."
-            cp -r /home/container/carbon/* ${MODDING_ROOT}
-            printf "${GREEN}Files copied. Moving on...${NC}"
+            echo "Creating directory named ${MODDING_ROOT}..."
+            
+            if [[ $? -ne 0 ]]; then
+                printf "${RED}ERROR: Failed to create the MODDING ROOT DIRECTORY '${MODDING_ROOT}'. Please check your permissions or the directory path.${NC}\n"
+                exit 1
+            fi
+            
+            echo "Successfully created directory named ${MODDING_ROOT}."
         fi
     fi
 fi
+
+printf "${GREEN}Compatibility check passed...${NC}"
 
 # Clean Up Files from Oxide to Vanilla/Carbon Switch
 if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; then
@@ -233,15 +225,17 @@ fi
 MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
+TEMP_DIR=$(mktemp -d)
 
 if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Oxide: https://github.com/OxideMod/Oxide.Rust
         echo "Updating uMod..."
-        curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/latest/download/Oxide.Rust-linux.zip" > umod.zip
-        unzip -o -q umod.zip
-        rm umod.zip
+        curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/latest/download/Oxide.Rust-linux.zip" > "${TEMP_DIR}/umod.zip"
+        unzip -o -q "${TEMP_DIR}/umod.zip" -d "${TEMP_DIR}"
+        rm "${TEMP_DIR}/umod.zip"
         echo "Done updating uMod!"
+        mv "${TEMP_DIR}/oxide/"* "${MODDING_ROOT}/"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
     fi
@@ -250,10 +244,11 @@ elif [[ "${FRAMEWORK}" == "oxide-staging" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Oxide: https://github.com/OxideMod/Oxide.Rust
         echo "Updating uMod Staging..."
-        curl -sSL "https://downloads.oxidemod.com/artifacts/Oxide.Rust/staging/Oxide.Rust-linux.zip" > umod.zip
-        unzip -o -q umod.zip
-        rm umod.zip
-        echo "Done updating uMod!"
+        curl -sSL "https://downloads.oxidemod.com/artifacts/Oxide.Rust/staging/Oxide.Rust-linux.zip" > "${TEMP_DIR}/umod.zip"
+        unzip -o -q "${TEMP_DIR}/umod.zip" -d "${TEMP_DIR}"
+        rm "${TEMP_DIR}/umod.zip"
+        echo "Done updating uMod Staging!"
+        mv "${TEMP_DIR}/oxide/"* "${MODDING_ROOT}/"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
     fi
@@ -263,7 +258,8 @@ elif [[ "${FRAMEWORK}" == "carbon" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon.Core/releases/download/production_build/Carbon.Linux.Release.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon.Core/releases/download/production_build/Carbon.Linux.Release.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -277,7 +273,8 @@ elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Minimal..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/production_build/Carbon.Linux.Minimal.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/production_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -291,7 +288,8 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -305,7 +303,8 @@ elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge Minimal..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Minimal.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -319,7 +318,8 @@ elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Staging..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Debug.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -333,7 +333,8 @@ elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Staging Minimal..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Minimal.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -347,7 +348,8 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux1..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Debug.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -361,7 +363,8 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux1 Minimal..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Minimal.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -375,7 +378,8 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux2..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -389,7 +393,8 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux2 Minimal..."
-        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Minimal.tar.gz" | tar zx
+        curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
+        mv "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -399,6 +404,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
     export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
     MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
 
+rm -rf "${TEMP_DIR}"
 # else Vanilla, do nothing
 fi
 
