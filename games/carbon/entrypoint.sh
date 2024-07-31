@@ -57,6 +57,15 @@ echo "Modding Framework is set to: ${FRAMEWORK}"
 if [[ "${FRAMEWORK}" =~ "carbon" || "${FRAMEWORK}" =~ "oxide" ]]; then
     echo "MODDING ROOT DIRECTORY set to '${MODDING_ROOT}' for framework '${FRAMEWORK}'."
 
+    # Check if the modding root contains oxide when using carbon or carbon when using oxide
+    if [[ "${FRAMEWORK}" =~ "carbon" ]] && [[ "${MODDING_ROOT}" =~ "oxide" ]]; then
+        printf "${RED}ERROR: The modding root '${MODDING_ROOT}' contains the work oxide, but yet you're using the '${FRAMEWORK}'. Please change the name to something that doesn't contain the word oxide.${NC}\n"
+        exit 1
+    elif [[ "${FRAMEWORK}" =~ "oxide" ]] && [[ "${MODDING_ROOT}" =~ "carbon" ]]; then
+        printf "${RED}ERROR: The modding root '${MODDING_ROOT}' contains the work carbon, but yet you're using the '${FRAMEWORK}'. Please change the name to something that doesn't contain the word carbon.${NC}\n"
+        exit 1
+    fi
+
     # If the modding root doesn't exist
     if [[ ! -d "$MODDING_ROOT" ]]; then
         # Create it
