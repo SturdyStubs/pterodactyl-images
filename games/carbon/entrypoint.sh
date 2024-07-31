@@ -45,8 +45,8 @@ fi
 printf "${BLUE}App Public IP set to: ${APP_PUBLIC_IP}${NC}"
 printf "${GREEN}App Public IP check successful!${NC}"
 
-echo "Sleeping for 10 seconds"
-sleep 10
+# echo "Sleeping for 10 seconds"
+# sleep 10
 
 ####################################
 # MODDING ROOT FOLDER EXISTS CHECK #
@@ -78,8 +78,8 @@ fi
 
 printf "${GREEN}Modding Root Folder Exists Check Complete!${NC}"
 
-echo "Sleeping for 10 seconds"
-sleep 10
+# echo "Sleeping for 10 seconds"
+# sleep 10
 
 ################################
 # OXIDE -> CARBON SWITCH CHECK #
@@ -116,8 +116,8 @@ if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; t
 fi
 
 # echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
-echo "Sleeping for 10 seconds"
-sleep 10
+# echo "Sleeping for 10 seconds"
+# sleep 10
 
 ########################
 # AUTO UPDATE/VALIDATE #
@@ -181,8 +181,8 @@ else
     printf "${YELLOW} Not updating server, auto update set to false.${NC}"
 fi
 
-echo "Sleeping for 10 seconds"
-sleep 10
+# echo "Sleeping for 10 seconds"
+# sleep 10
 
 # Replace Startup Variables (Keep this here. Important. Forgot exactly what the command does. But here's GPT's interpretation of it)
 # https://capture.dropbox.com/amLrR7iuKdJ3kSY6
@@ -190,8 +190,8 @@ sleep 10
 MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
-echo "Sleeping for 10 seconds"
-sleep 10
+# echo "Sleeping for 10 seconds"
+# sleep 10
 
 # This function will move the updated managed, native, and tools folders from /carbon into the modding root folder
 # This way we don't have to create a temp directory and delete it we're just going to use the /carbon folder as the
@@ -220,8 +220,8 @@ function Update_Carbon_Modding_Root() {
         echo "Modding root is the same as default root. Skipping..."
     fi
 
-    echo "Sleeping for 15 seconds"
-    sleep 15
+    # echo "Sleeping for 15 seconds"
+    # sleep 15
 }
 
 # This is necessary for carbon to run. Put it in a function to reduce repeat code.
@@ -270,8 +270,8 @@ elif [[ "${FRAMEWORK}" == "carbon" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon.Core/releases/download/production_build/Carbon.Linux.Release.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
@@ -285,8 +285,8 @@ elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/production_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
@@ -301,8 +301,8 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
         echo "Updating Carbon Edge..."
         echo "Modding Root: ${MODDING_ROOT}"
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
@@ -316,8 +316,8 @@ elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
@@ -331,8 +331,8 @@ elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Staging..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Debug.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
@@ -346,8 +346,8 @@ elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Staging Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
@@ -361,8 +361,8 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux1..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Debug.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
@@ -376,8 +376,8 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux1 Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
@@ -391,8 +391,8 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux2..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
@@ -406,8 +406,8 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux2 Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-        echo "Sleeping for 15 seconds"
-        sleep 15
+        # echo "Sleeping for 15 seconds"
+        # sleep 15
         Update_Carbon_Modding_Root
         echo "Done updating Carbon!"
     else
