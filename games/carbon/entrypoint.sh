@@ -104,72 +104,6 @@ if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; t
     shopt -u nullglob
 fi
 
-###############################
-# Extensions Download Section #
-###############################
-
-function Download_Extensions() {
-    printf "${BLUE}Checking Extension Downloads...${NC}"
-
-    # Check if any of the extensions variables are set to true
-    if [ "${RUSTEDIT_EXT}" == "1" ] || [ "${DISCORD_EXT}" == "1" ] || [ "${CHAOS_EXT}" == "1" ]; then
-        # Make temp directory
-        mkdir -p /home/container/temp
-        # Download RustEdit Extension
-        if [ "${RUSTEDIT_EXT}" == "1" ]; then
-            echo -e "Downloading RustEdit Extension"
-            curl -sSL -o /home/container/temp/Oxide.Ext.RustEdit.dll https://github.com/k1lly0u/Oxide.Ext.RustEdit/raw/master/Oxide.Ext.RustEdit.dll
-            printf "${GREEN}RustEdit Extention Downloaded!${NC}"
-        fi
-
-        # Download Discord Extension
-        if [ "${DISCORD_EXT}" == "1" ]; then
-            echo -e "Downloading Discord Extension"
-            curl -sSL -o /home/container/temp/Oxide.Ext.Discord.dll https://umod.org/extensions/discord/download
-            printf "${GREEN}Discord Extension Downloaded!${NC}"
-        fi
-
-        # Download Chaos Code Extension
-        if [ "${CHAOS_EXT}" == "1" ]; then
-            echo -e "Downloading Chaos Code Extension"
-            curl -sSL -o /home/container/temp/Oxide.Ext.Chaos.dll https://chaoscode.io/oxide/Oxide.Ext.Chaos.dll
-            printf "${GREEN}Chaos Code Extension Downloaded!${NC}"
-        fi
-
-        # Handle Move of files based on framework
-        files=(/home/container/temp/Oxide.Ext.*.dll)
-        if [ ${#files[@]} -gt 0 ]; then
-            printf "${BLUE}Moving Extensions to appropriate folders...${NC}"
-            if [[ ${FRAMEWORK} =~ "carbon" ]]; then
-                echo "Carbon framework detected!"
-                mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/carbon/extensions/
-            fi
-            if [[ ${FRAMEWORK} =~ "oxide" ]]; then
-                echo "Oxide framework detected!"
-                mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/RustDedicated_Data/Managed/
-            fi
-            printf "${GREEN}Move files has completed successfully!${NC}"
-        else
-            printf "${GREEN}No Extensions to Move... Skipping the move...${NC}"
-        fi
-
-        # Clean up temp folder
-        echo "Cleaning up Temp Directory"
-        rm -rf /home/container/temp
-        printf "${GREEN}Cleanup complete!${NC}"
-        printf "${GREEN}All downloads complete!${NC}"
-    else
-        printf "${GREEN}No extensions are enabled. Skipping this part...${NC}"
-    fi
-    
-}
-
-if [[ ${FRAMEWORK} != "vanilla" ]]; then
-    Download_Extensions
-else
-    printf "${BLUE}Skipping Extension Downloads, Vanilla Framework Detected!${NC}"
-fi
-
 # echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
 # sleep 20
 
@@ -288,6 +222,7 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
     if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge..."
+        echo "Modding Root: ${MODDING_ROOT}"
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${MODDING_ROOT}"
         #mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
@@ -409,6 +344,72 @@ fi
 # echo "Removing Temp Directory..."
 # rm -rf /home/container/temp
 echo "Removing temp directory would be here..."
+
+###############################
+# Extensions Download Section #
+###############################
+
+function Download_Extensions() {
+    printf "${BLUE}Checking Extension Downloads...${NC}"
+
+    # Check if any of the extensions variables are set to true
+    if [ "${RUSTEDIT_EXT}" == "1" ] || [ "${DISCORD_EXT}" == "1" ] || [ "${CHAOS_EXT}" == "1" ]; then
+        # Make temp directory
+        mkdir -p /home/container/temp
+        # Download RustEdit Extension
+        if [ "${RUSTEDIT_EXT}" == "1" ]; then
+            echo -e "Downloading RustEdit Extension"
+            curl -sSL -o /home/container/temp/Oxide.Ext.RustEdit.dll https://github.com/k1lly0u/Oxide.Ext.RustEdit/raw/master/Oxide.Ext.RustEdit.dll
+            printf "${GREEN}RustEdit Extention Downloaded!${NC}"
+        fi
+
+        # Download Discord Extension
+        if [ "${DISCORD_EXT}" == "1" ]; then
+            echo -e "Downloading Discord Extension"
+            curl -sSL -o /home/container/temp/Oxide.Ext.Discord.dll https://umod.org/extensions/discord/download
+            printf "${GREEN}Discord Extension Downloaded!${NC}"
+        fi
+
+        # Download Chaos Code Extension
+        if [ "${CHAOS_EXT}" == "1" ]; then
+            echo -e "Downloading Chaos Code Extension"
+            curl -sSL -o /home/container/temp/Oxide.Ext.Chaos.dll https://chaoscode.io/oxide/Oxide.Ext.Chaos.dll
+            printf "${GREEN}Chaos Code Extension Downloaded!${NC}"
+        fi
+
+        # Handle Move of files based on framework
+        files=(/home/container/temp/Oxide.Ext.*.dll)
+        if [ ${#files[@]} -gt 0 ]; then
+            printf "${BLUE}Moving Extensions to appropriate folders...${NC}"
+            if [[ ${FRAMEWORK} =~ "carbon" ]]; then
+                echo "Carbon framework detected!"
+                mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/carbon/extensions/
+            fi
+            if [[ ${FRAMEWORK} =~ "oxide" ]]; then
+                echo "Oxide framework detected!"
+                mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/RustDedicated_Data/Managed/
+            fi
+            printf "${GREEN}Move files has completed successfully!${NC}"
+        else
+            printf "${GREEN}No Extensions to Move... Skipping the move...${NC}"
+        fi
+
+        # Clean up temp folder
+        echo "Cleaning up Temp Directory"
+        rm -rf /home/container/temp
+        printf "${GREEN}Cleanup complete!${NC}"
+        printf "${GREEN}All downloads complete!${NC}"
+    else
+        printf "${GREEN}No extensions are enabled. Skipping this part...${NC}"
+    fi
+    
+}
+
+if [[ ${FRAMEWORK} != "vanilla" ]]; then
+    Download_Extensions
+else
+    printf "${BLUE}Skipping Extension Downloads, Vanilla Framework Detected!${NC}"
+fi
 
 # Fix for Rust not starting
 export LD_LIBRARY_PATH=$(pwd)/RustDedicated_Data/Plugins/x86_64:$(pwd)
