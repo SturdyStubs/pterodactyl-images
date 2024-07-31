@@ -50,11 +50,10 @@ echo "Modding Framework is set to: ${FRAMEWORK}"
 
 echo "Checking MODDING ROOT DIRECTORY folder compatibility with selected framework"
 
-if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
+if [[ "${FRAMEWORK}" == *"carbon"* ]]; then
     DEFAULT_DIR="carbon"
-elif [[ "${FRAMEWORK}" =~ "oxide" ]]; then
+elif [[ "${FRAMEWORK}" == *"oxide"* ]]; then
     DEFAULT_DIR="oxide"
-else
 fi
 
 # Check if the MODDING_ROOT directory is DEFAULT_DIR, if not then create new directory with specified name of MODDING_ROOT
