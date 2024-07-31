@@ -33,9 +33,10 @@ RUN			dpkg --add-architecture i386
 RUN 		apt update
 RUN 		apt upgrade -y
 RUN 		apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata ca-certificates gnupg npm libgdiplus libsdl2-2.0-0:i386
+RUN			npm install -g npm@10.8.2
 RUN 		mkdir /node_modules
 RUN			npm -v
-RUN 		npm install ws -g
+RUN 		npm install ws
 RUN 		useradd -d /home/container -m container
 
 USER 		container
