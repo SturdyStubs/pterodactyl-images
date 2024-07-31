@@ -71,13 +71,15 @@ if [[ "${FRAMEWORK}" =~ "carbon" || "${FRAMEWORK}" =~ "oxide" ]]; then
             fi
             
             echo "Successfully created directory named ${MODDING_ROOT}."
+        else
+            echo "${MODDING_ROOT} already exists!"
         fi
     fi
 fi
 
 printf "${GREEN}Compatibility check passed...${NC}"
 
-# Clean Up Files from Oxide to Vanilla/Carbon Switch
+# Detect if there is a oxide to carbon switch occurring
 if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; then
     CARBONSWITCH="FALSE"
     printf "${BLUE}Modding framework is not set to Oxide. Checking if there are left over Oxide files in the server.${NC}"
@@ -90,13 +92,13 @@ if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; t
             echo "Carbon installation detected. Marking Carbon Switch as TRUE!"
             CARBONSWITCH="TRUE"
         else
-            printf "${YELLOW}${FRAMEWORK} does not support Oxide Extensions. If you see this and your framework isn't vanilla, then contact the developers.${NC}"
+            printf "${YELLOW}If you see this and your framework isn't vanilla, then contact the developers.${NC}"
         fi
         # Clean up the rust dedicated managed folder
-        echo "Cleaning up RustDedicated_Data/Managed folder..."
-        rm -rf RustDedicated_Data/Managed/*
-        echo "Removing Oxide Compiler..."
-        rm -rf Oxide.Compiler
+        # echo "Cleaning up RustDedicated_Data/Managed folder..."
+        # rm -rf RustDedicated_Data/Managed/*
+        # echo "Removing Oxide Compiler..."
+        # rm -rf Oxide.Compiler
         printf "${GREEN}Oxide files have been cleaned up!${NC}"
     else
         printf "${GREEN}No Oxide files found to remove - continuing startup...${NC}"
