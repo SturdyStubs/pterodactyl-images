@@ -32,7 +32,7 @@ ENV         DEBIAN_FRONTEND=noninteractive
 RUN			dpkg --add-architecture i386
 RUN 		apt update
 RUN 		apt upgrade -y
-RUN 		apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata ca-certificates gnupg libgdiplus libsdl2-2.0-0:i386
+RUN 		apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata ca-certificates gnupg npm libgdiplus libsdl2-2.0-0:i386
 RUN 		mkdir /node_modules
 RUN 		npm install --prefix / ws
 RUN 		useradd -d /home/container -m container
