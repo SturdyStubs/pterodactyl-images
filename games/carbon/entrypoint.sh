@@ -227,8 +227,8 @@ echo ":/home/container$ ${MODIFIED_STARTUP}"
 
 # Make temp directory
 if [[ "${FRAMEWORK}" == *"carbon"* ]]; then
-mkdir -p /home/container/temp
-TEMP_DIR=/home/container/temp
+    mkdir -p /home/container/temp
+    TEMP_DIR=/home/container/temp
 fi
 
 if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
