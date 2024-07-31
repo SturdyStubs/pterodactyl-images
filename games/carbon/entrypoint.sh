@@ -237,7 +237,8 @@ if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
         unzip -o -q "${TEMP_DIR}/umod.zip" -d "${TEMP_DIR}"
         rm "${TEMP_DIR}/umod.zip"
         echo "Done updating uMod!"
-        mv "${TEMP_DIR}/oxide/"* "${MODDING_ROOT}/"
+        echo "----------------------------------------------------------------------"
+        mv -v $TEMP_DIR/RustDedicated_Data /home/container/RustDedicated_Data
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
     fi
