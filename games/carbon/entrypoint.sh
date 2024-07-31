@@ -271,7 +271,7 @@ elif [[ "${FRAMEWORK}" == "carbon" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon.Core/releases/download/production_build/Carbon.Linux.Release.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -286,7 +286,7 @@ elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/production_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -301,7 +301,7 @@ elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -316,7 +316,7 @@ elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Edge Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -331,7 +331,7 @@ elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Staging..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -346,7 +346,7 @@ elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Staging Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -361,7 +361,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux1..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -376,7 +376,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux1 Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -391,7 +391,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux2..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
@@ -406,7 +406,7 @@ elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
         # Carbon: https://github.com/CarbonCommunity/Carbon.Core
         echo "Updating Carbon Aux2 Minimal..."
         curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Minimal.tar.gz" | tar zx -C "${TEMP_DIR}"
-        mv -f "${TEMP_DIR}/carbon/"* "${MODDING_ROOT}/"
+        mv -f "${TEMP_DIR}/carbon/"* "/home/container/${MODDING_ROOT}/"
         echo "Done updating Carbon!"
     else
         printf "${RED}Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!${NC}"
