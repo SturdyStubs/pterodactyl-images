@@ -32,7 +32,13 @@ ENV         DEBIAN_FRONTEND=noninteractive
 RUN 		apt-get update
 RUN 		apt-get install -y --no-install-recommends gnupg
 RUN 		mkdir -p /etc/apt/keyrings
-RUN 		curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+RUN 		echo "Fetching NodeSource GPG key..." && \
+    		curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key -o /tmp/nodesource.gpg.key && \
+    		cat /tmp/nodesource.gpg.key && \
+    		gpg --no-tty --dearmor -o /etc/apt/keyrings/nodesource.gpg /tmp/nodesource.gpg.key && \
+    		rm /tmp/nodesource.gpg.key
+
 RUN 		echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN 		apt-get update
 RUN 		apt-get install -y --no-install-recommends nodejs
