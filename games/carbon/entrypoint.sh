@@ -233,13 +233,17 @@ function Update_Carbon_Modding_Root() {
     fi
     echo "Default Dir: ${DEFAULT_ROOT}"
 
-    # If the modding root doesn't equal the default root, then we must be using a custom modding root. Move the updated files.
-    if [[ "${MODDING_ROOT}" != "${DEFAULT_ROOT}" ]]; then
-        echo "Modding root does not match default root"
+    # If the modding root doesn't equal the default root, then we must be using a custom modding root. Move the updated files. Handle this for carbon & Oxide
+    if [[ "${MODDING_ROOT}" != "${DEFAULT_ROOT}" ]] && [[ "${FRAMEWORK}" =~ "carbon" ]]; then
+        echo "Modding root does not match default root - Carbon"
         # Move shit
         mv -f "/home/container/carbon/managed/"* "/home/container/${MODDING_ROOT}/managed/"
         mv -f "/home/container/carbon/native/"* "/home/container/${MODDING_ROOT}/native/"
         mv -f "/home/container/carbon/tools/"* "/home/container/${MODDING_ROOT}/tools/"
+    elif [[ "${MODDING_ROOT}" != "${DEFAULT_ROOT}" ]] && [[ "${FRAMEWORK}" =~ "oxide" ]]; then
+        echo "Modding root does not match default root - Oxide"
+        # Move shit
+        mv -f "/home/container/oxide/"* "/home/container/${MODDING_ROOT}/"
     else
         # Modding folder is the default
         echo "Modding root is the same as default root. Skipping..."
