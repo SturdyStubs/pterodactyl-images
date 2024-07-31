@@ -124,7 +124,7 @@ sleep 10
 ########################
 
 echo "=============================="
-echo "CARBONSWITCH: ${$CARBONSWITCH}"
+echo "CARBONSWITCH: ${CARBONSWITCH}"
 echo "=============================="
 
 # Define the carbon steamCMD Validation function
