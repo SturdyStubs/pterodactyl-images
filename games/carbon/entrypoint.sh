@@ -77,18 +77,22 @@ sleep 10
 # Detect if there is a oxide to carbon switch occurring
 if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; then
     CARBONSWITCH="FALSE"
+    
     printf "${BLUE}Modding framework is not set to Oxide. Checking if there are left over Oxide files in the server.${NC}"
-    shopt -s nullglob
+    
     # Check if the Oxide.dll files exist
+    shopt -s nullglob
     files=(/home/container/RustDedicated_Data/Managed/Oxide.*.dll)
     if [ ${#files[@]} -gt 0 ]; then
         echo "Oxide Files Found!"
+
         if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
             echo "Carbon installation detected. Marking Carbon Switch as TRUE!"
             CARBONSWITCH="TRUE"
         else
             printf "${YELLOW}If you see this and your framework isn't vanilla, then contact the developers.${NC}"
         fi
+
     else
         printf "${GREEN}No Oxide files found NOT SWITCHING FROM OXIDE - continuing startup...${NC}"
     fi
@@ -108,8 +112,8 @@ echo $CARBONSWITCH
 echo "==============="
 
 if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
-    echo -e "Carbon Switch Detected! Validating Game Files!"
-    echo -e "Updating game server..."
+    echo -e "Carbon Switch Detected!"
+    echo -e "Forcing validation of game server..."
     ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
 elif [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
     if [ "${VALIDATE}" == "1" ]; then
@@ -157,7 +161,7 @@ sleep 10
 
 # Update Carbon Function
 function Update_Carbon_Modding_Root() {
-    echo "Inside the Update_Carbon Function"
+    echo "Inside the Update_Carbon_Modding_Root Function"
 
     if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
         DEFAULT_ROOT="carbon"
@@ -168,7 +172,9 @@ function Update_Carbon_Modding_Root() {
 
     if [[ "${MODDING_ROOT}" != "${DEFAULT_ROOT}" ]]; then
         echo "Modding root does not match default root"
-        mv -f "/home/container/carbon/"* "/home/container/${MODDING_ROOT}/"
+        mv -f "/home/container/carbon/managed/"* "/home/container/${MODDING_ROOT}/managed/"
+        mv -f "/home/container/carbon/native/"* "/home/container/${MODDING_ROOT}/native/"
+        mv -f "/home/container/carbon/tools/"* "/home/container/${MODDING_ROOT}/tools/"
     else
         echo "Modding root is the same as default root. Skipping..."
     fi
