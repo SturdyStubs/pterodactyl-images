@@ -72,7 +72,7 @@ if [[ "${FRAMEWORK}" =~ "carbon" || "${FRAMEWORK}" =~ "oxide" ]]; then
         echo "Creating directory named ${MODDING_ROOT}..."
         mkdir -p /home/container/${MODDING_ROOT}
         
-        # If the last command of mkdir fails, then error out and exit the script
+        # If the last command of mkdir fails, then error out and exit the script, shit will fail if it continues. Theres no point to continue if this is fucked.
         if [[ $? -ne 0 ]]; then
             printf "${RED}ERROR: Failed to create the MODDING ROOT DIRECTORY '${MODDING_ROOT}'. Please check your permissions or the directory path.${NC}\n"
             exit 1
