@@ -496,6 +496,9 @@ function Download_Extensions() {
             printf "${BLUE}Moving Extensions to appropriate folders...${NC}"
             if [[ ${FRAMEWORK} =~ "carbon" ]]; then
                 echo "Carbon framework detected!"
+                # Create Carbon Extensions folder in case they want extensions, but also are changing their modding root
+                # Prevents this error: mv: target '/home/container/carbon-poop/extensions/' is not a directory
+                mkdir -p "/home/container/${MODDING_ROOT}/extensions/"
                 mv -v /home/container/temp/Oxide.Ext.*.dll "/home/container/${MODDING_ROOT}/extensions/"
             fi
             if [[ ${FRAMEWORK} =~ "oxide" ]]; then
