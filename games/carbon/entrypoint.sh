@@ -236,6 +236,12 @@ function Update_Carbon_Modding_Root() {
     # If the modding root doesn't equal the default root, then we must be using a custom modding root. Move the updated files. Handle this for carbon & Oxide
     if [[ "${MODDING_ROOT}" != "${DEFAULT_ROOT}" ]] && [[ "${FRAMEWORK}" =~ "carbon" ]]; then
         echo "Modding root does not match default root - Carbon"
+        echo "Creating new directories inside ${MODDING_ROOT} - managed, native, tools"
+        # Create Directories
+        mkdir -p "/home/container/${MODDING_ROOT}/managed/"
+        mkdir -p "/home/container/${MODDING_ROOT}/native/"
+        mkdir -p "/home/container/${MODDING_ROOT}/tools/"
+        echo "Moving files..."
         # Move shit
         mv -f "/home/container/carbon/managed/"* "/home/container/${MODDING_ROOT}/managed/"
         mv -f "/home/container/carbon/native/"* "/home/container/${MODDING_ROOT}/native/"
@@ -248,6 +254,8 @@ function Update_Carbon_Modding_Root() {
         # Modding folder is the default
         echo "Modding root is the same as default root. Skipping..."
     fi
+
+    echo "Moves complete!"
 
     # echo "Sleeping for 15 seconds"
     # sleep 15
