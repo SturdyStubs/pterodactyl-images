@@ -1,10 +1,10 @@
 #!/bin/bash
 
+source /helpers/messages.sh
+
 #############################
 # REPLACE STARTUP VARIABLES #
 #############################
-
-source /helpers/messages.sh
 
 Debug "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 Debug "Inside /sections/replace_startup_variables.sh file!"
