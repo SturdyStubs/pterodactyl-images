@@ -173,15 +173,15 @@ if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
     echo -e "Forcing validation of game server..."
     # Go to this function
     SteamCMD_Validate_Download
+
 # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
 elif [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
     # If we're going to validate after updating
     if [ "${VALIDATE}" == "1" ]; then
-            # Go to this function
-            SteamCMD_Validate_Download
-        fi
-    # Else we're not validating
+        # Go to this function
+        SteamCMD_Validate_Download
     else
+        # If not validating, determine the appropriate update path
         if [[ "${FRAMEWORK}" == *"staging"* ]]; then
             Delete_SteamApps_Directory
             echo -e "Updating staging server, not validating..."
@@ -200,6 +200,7 @@ elif [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
             ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
         fi
     fi
+
 # We're not auto updating the server.
 else
     printf "${YELLOW} Not updating server, auto update set to false.${NC}"
