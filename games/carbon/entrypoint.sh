@@ -63,19 +63,19 @@ else
   Error "/sections/auto_update_validate.sh does not exist or cannot be found." "1"
 fi
 
+#############################
+# REPLACE STARTUP VARIABLES #
+#############################
+
+if [ -f /sections/replace_startup_variables.sh ]; then
+  Debug "/sections/replace_startup_variables.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/replace_startup_variables.sh
+else
+  Error "/sections/replace_startup_variables.sh does not exist or cannot be found." "1"
+fi
+
 exit 0
-
-# echo "Sleeping for 10 seconds"
-# sleep 10
-
-# Replace Startup Variables (Keep this here. Important. Forgot exactly what the command does. But here's GPT's interpretation of it)
-# https://capture.dropbox.com/amLrR7iuKdJ3kSY6
-# Takes the start up command and converts the {{}} into the appropriate bash syntax?
-MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
-echo ":/home/container$ ${MODIFIED_STARTUP}"
-
-# echo "Sleeping for 10 seconds"
-# sleep 10
 
 # This function will move the updated managed, native, and tools folders from /carbon into the modding root folder
 # This way we don't have to create a temp directory and delete it we're just going to use the /carbon folder as the
