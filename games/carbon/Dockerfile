@@ -53,9 +53,12 @@ COPY 		--chmod=0755 ./sections/modding_root_check.sh /sections/modding_root_chec
 COPY 		--chmod=0755 ./sections/oxide_carbon_switch.sh /sections/oxide_carbon_switch.sh
 COPY 		--chmod=0755 ./sections/auto_update_validate.sh /sections/auto_update_validate.sh
 COPY 		--chmod=0755 ./sections/replace_startup_variables.sh /sections/replace_startup_variables.sh
+COPY 		--chmod=0755 ./sections/update_oxide.sh /sections/update_oxide.sh
+COPY 		--chmod=0755 ./sections/update_carbon.sh /sections/update_carbon.sh
 
 COPY 		--chmod=0755 ./helpers/colors.sh /helpers/colors.sh
 COPY 		--chmod=0755 ./helpers/messages.sh /helpers/messages.sh
 COPY 		--chmod=0755 ./helpers/steamcmd.sh /helpers/steamcmd.sh
+COPY 		--chmod=0755 ./helpers/modding_root_update.sh /helpers/modding_root_update.sh
 
 CMD			[ "/bin/bash", "/entrypoint.sh" ]
