@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - beta
-    paths:
-      - aioegg/**
-
+      
 jobs:
   build-and-push:
     name: "Build And Push Beta Branch"
