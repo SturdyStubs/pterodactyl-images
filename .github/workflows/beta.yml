@@ -21,10 +21,6 @@ jobs:
         with:
           buildkitd-flags: --debug
 
-      # Set environment variable for lowercase repository owner
-      - name: Set lowercased repository owner
-        run: echo "REPO_OWNER=${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]' >> $GITHUB_ENV
-
       # Log in to GitHub Container Registry
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -41,4 +37,4 @@ jobs:
           file: ./aioegg/beta/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ghcr.io/${{ env.REPO_OWNER }}/aioegg:beta
+          tags: ghcr.io/sturdystubs/aioegg:beta
