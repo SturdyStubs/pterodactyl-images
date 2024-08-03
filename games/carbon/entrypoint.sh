@@ -24,16 +24,19 @@ sleep 2
 #  APP PUBLIC IP FIX   #
 ########################
 
+echo "Current directory: $(pwd)"
+echo "Contents of directory:"
+ls -l
+
 if [ -f /app_public_ip.sh ]; then
   echo "app_public_ip.sh exists and is found."
+  # Directly run the script without chmod
+  /bin/bash /app_public_ip.sh
 else
   echo "app_public_ip.sh does not exist or cannot be found."
 fi
 
-# Ensure the script is executable
-chmod +x /app_public_ip.sh
-
-./app_public_ip.sh
+#./app_public_ip.sh
 
 # echo "Sleeping for 10 seconds"
 # sleep 10

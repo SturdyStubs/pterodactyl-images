@@ -48,4 +48,8 @@ COPY 		./entrypoint.sh /entrypoint.sh
 COPY 		./app_public_ip.sh /app_public_ip.sh
 COPY 		./wrapper.js /wrapper.js
 
+# Ensure entrypoint script has execute permissions locally before copying
+# No need to change permissions inside the container
+RUN chmod +x /entrypoint.sh
+
 CMD			[ "/bin/bash", "/entrypoint.sh" ]
