@@ -13,9 +13,9 @@ function Clean_RustDedicated() {
 
 	Debug "Inside function: Clean_RustDedicated()"
 
-	RUSTEDIT="/home/container/RustDedicated_Data/Managed/Oxide.RustEdit.dll"
-	CHAOS="/home/container/RustDedicated_Data/Managed/Oxide.Chaos.dll"
-	DISCORD="/home/container/RustDedicated_Data/Managed/Oxide.Discord.dll"
+	RUSTEDIT="/home/container/RustDedicated_Data/Managed/Oxide.Ext.RustEdit.dll"
+	CHAOS="/home/container/RustDedicated_Data/Managed/Oxide.Ext.Chaos.dll"
+	DISCORD="/home/container/RustDedicated_Data/Managed/Oxide.Ext.Discord.dll"
 	DEST_DIR="/home/container/${MODDING_ROOT}/extensions/"
 
 	if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
