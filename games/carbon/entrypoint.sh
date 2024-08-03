@@ -5,6 +5,7 @@
 
 # Source some files
 source /helpers/colors.sh
+source /helpers/messages.sh
 
 # Change Directory
 cd /home/container
@@ -14,17 +15,13 @@ cd /home/container
 ########################
 
 if [ -f /app_public_ip.sh ]; then
-  echo "app_public_ip.sh exists and is found."
+  Error("app_public_ip.sh exists and is found.")
   # Directly run the script without chmod
   /bin/bash /app_public_ip.sh
 else
   echo "app_public_ip.sh does not exist or cannot be found."
   exit 0
 fi
-
-#./app_public_ip.sh
-
-exit 0
 
 # echo "Sleeping for 10 seconds"
 # sleep 10
