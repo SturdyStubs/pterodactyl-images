@@ -28,13 +28,24 @@ function Clean_RustDedicated() {
 		  mkdir -p "$DEST_DIR"
 		fi
 
+		Debug "RUSTEDIT: ${RUSTEDIT}"
+		Debug "CHAOS: ${CHAOS}"
+		Debug "DISCORD: ${DISCORD}"
+		Debug "DEST_DIR: ${DEST_DIR}"
+
+		Debug "Testing"
+
 		# Check if Rust Edit Extension is installed
 		if [[ -f "$RUSTEDIT" ]]; then
 			Info "Found Rust Edit Extension! Moving it now..."
 			# Move it
 			mv -v "$RUSTEDIT" "$DEST_DIR"
 			Success "Rust Edit Extension Moved!"
+		else
+			Debug "Can not find RUSTEDIT: ${RUSTEDIT}"
 		fi
+
+		Debug "Testing2"
 
 		# Check if Chaos Code Extension is installed
 		if [[ -f "$CHAOS" ]]; then
@@ -42,7 +53,11 @@ function Clean_RustDedicated() {
 			# Move it
 			mv -v "$CHAOS" "$DEST_DIR"
 			Success "Chaos Code Extension Moved!"
+		else
+			Debug "Can not find CHAOS: ${CHAOS}"
 		fi
+
+		Debug "Testing3"
 
 		# Check if Discord Extension is installed
 		if [[ -f "$DISCORD" ]]; then
@@ -50,7 +65,12 @@ function Clean_RustDedicated() {
 			# Move it
 			mv -v "$DISCORD" "$DEST_DIR"
 			Success "Discord Extension Moved!"
+		else
+			Debug "Can not find DISCORD: ${DISCORD}"
 		fi
+
+		Debug "Testing4"
+
 	elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
 		Debug "Vanilla framework detected!"
 		Info "Moving Oxide Extensions to the trash..."
