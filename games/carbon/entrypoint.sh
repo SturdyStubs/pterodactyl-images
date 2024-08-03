@@ -5,11 +5,13 @@
 # Display the splash screen
 /bin/bash /splash_screen.sh
 
-echo "Debug Mode: ${EGG_DEBUG}"
-
 # Source some files
 source /helpers/colors.sh
 source /helpers/messages.sh
+
+if [[ "${EGG_DEBUG}" == "1" ]]; then
+    echo "Egg Debug Mode Enabled!"
+fi
 
 # Change Directory
 cd /home/container
