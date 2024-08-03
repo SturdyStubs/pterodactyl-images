@@ -18,9 +18,9 @@ cd /home/container
 #  APP PUBLIC IP FIX   #
 ########################
 
-ls -la
-cd sections
-ls -la
+ls -la /
+echo "-----------------------------------------------"
+ls -la /sections
 
 exit 1
 
