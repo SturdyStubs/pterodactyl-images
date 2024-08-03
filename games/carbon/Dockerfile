@@ -62,5 +62,6 @@ COPY 		--chmod=0755 ./helpers/colors.sh /helpers/colors.sh
 COPY 		--chmod=0755 ./helpers/messages.sh /helpers/messages.sh
 COPY 		--chmod=0755 ./helpers/steamcmd.sh /helpers/steamcmd.sh
 COPY 		--chmod=0755 ./helpers/modding_root_update.sh /helpers/modding_root_update.sh
+COPY 		--chmod=0755 ./helpers/clean_rustdedicated.sh /helpers/clean_rustdedicated.sh
 
 CMD			[ "/bin/bash", "/entrypoint.sh" ]

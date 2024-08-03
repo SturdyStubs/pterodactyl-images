@@ -13,6 +13,18 @@ else
   Error "/helpers/steamcmd.sh does not exist or cannot be found." "1"
 fi
 
+#######################################################
+# CLEAN RUSTDEDICATED_DATA FOLDER OF OXIDE EXTENSIONS #
+#######################################################
+
+if [ -f /helpers/clean_rustdedicated.sh ]; then
+  Debug "/helpers/clean_rustdedicated.sh exists and is found!"
+  # Directly run the script without chmod
+  source /helpers/clean_rustdedicated.sh
+else
+  Error "/helpers/clean_rustdedicated.sh does not exist or cannot be found." "1"
+fi
+
 ###################################
 # HANDLE AUTO UPDATE / VALIDATION #
 ###################################
@@ -31,10 +43,12 @@ if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
     Info "Forcing validation of game server..."
     # Go to this function
     SteamCMD_Validate
+    Clean_RustDedicated
 elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
     Info "Vanilla framework detected!"
     Info "Forcing validation of game server..."
     SteamCMD_Validate
+    Clean_RustDedicated
 elif [[ "${AUTO_UPDATE}" == "1" ]]; then # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
     
     # Check if we're going to validate after updating
