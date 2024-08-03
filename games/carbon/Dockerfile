@@ -45,6 +45,7 @@ ENV  		USER=container HOME=/home/container
 WORKDIR 	/home/container
 
 COPY 		./entrypoint.sh /entrypoint.sh
+COPY 		./app_public_ip.sh /app_public_ip.sh
 COPY 		./wrapper.js /wrapper.js
 
 CMD			[ "/bin/bash", "/entrypoint.sh" ]
