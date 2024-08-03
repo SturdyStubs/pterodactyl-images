@@ -136,7 +136,7 @@ echo "=============================="
 echo "CARBONSWITCH: ${CARBONSWITCH}"
 echo "=============================="
 
-# Define the carbon steamCMD Validation function
+# Define the steamCMD Validation function
 function SteamCMD_Validate_Download() {
     echo "Inside of SteamCMD_Validate_Download()"
     if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
@@ -155,7 +155,26 @@ function SteamCMD_Validate_Download() {
         Delete_SteamApps_Directory
         echo -e "Updating game server... Validation On!"
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
-    fi
+}
+
+# Define the no validation function
+function no_Validate() {
+    if [[ "${FRAMEWORK}" == *"staging"* ]]; then
+        Delete_SteamApps_Directory
+        echo -e "Updating staging server, not validating..."
+        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging +quit
+    elif [[ "${FRAMEWORK}" == *"aux1"* ]]; then
+        Delete_SteamApps_Directory
+        echo -e "Updating aux01 server, not validating..."
+        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux01 +quit
+    elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
+        Delete_SteamApps_Directory
+        echo -e "Updating aux02 server, not validating..."
+        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 +quit
+    else
+        Delete_SteamApps_Directory
+        echo -e "Updating game server... Validation Off!"
+        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
 }
 
 # We need to delete the steamapps directory in order to prevent the following error:
@@ -178,31 +197,14 @@ if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
 elif [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
     # If we're going to validate after updating
     if [ "${VALIDATE}" == "1" ]; then
-        # Go to this function
+        # If VALIDATE set to true, validate game server via this function
         SteamCMD_Validate_Download
     else
-        # If not validating, determine the appropriate update path
-        if [[ "${FRAMEWORK}" == *"staging"* ]]; then
-            Delete_SteamApps_Directory
-            echo -e "Updating staging server, not validating..."
-            ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging +quit
-        elif [[ "${FRAMEWORK}" == *"aux1"* ]]; then
-            Delete_SteamApps_Directory
-            echo -e "Updating aux01 server, not validating..."
-            ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux01 +quit
-        elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
-            Delete_SteamApps_Directory
-            echo -e "Updating aux02 server, not validating..."
-            ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 +quit
-        else
-            Delete_SteamApps_Directory
-            echo -e "Updating game server... Validation Off!"
-            ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
-        fi
+        # Else don't validate via this function
+        no_Validate
     fi
-
-# We're not auto updating the server.
 else
+    # Else don't update or validate server
     printf "${YELLOW} Not updating server, auto update set to false.${NC}"
 fi
 
