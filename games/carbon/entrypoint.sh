@@ -128,12 +128,7 @@ fi
 # Fix for Rust not starting
 export LD_LIBRARY_PATH=$(pwd)/RustDedicated_Data/Plugins/x86_64:$(pwd)
 
-printf "╭──────────────────────────────────────────────────╮\n"
-printf "│     Thats it from us! Enjoy your rust server!    │\n"
-printf "├──────────────────────────────────────────────────┤\n"
-printf "│    For More Information See The Documentation    │\n"
-printf "│        https://tinyurl.com/aiorustegg            │\n"
-printf "╰──────────────────────────────────────────────────╯\n"
+/bin/bash end_screen.sh
 
 # Run the Server
 node /wrapper.js "${MODIFIED_STARTUP}"
