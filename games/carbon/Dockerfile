@@ -51,8 +51,10 @@ COPY 		--chmod=0755 ./splash_screen.sh /splash_screen.sh
 COPY 		--chmod=0755 ./sections/app_public_ip.sh /sections/app_public_ip.sh
 COPY 		--chmod=0755 ./sections/modding_root_check.sh /sections/modding_root_check.sh
 COPY 		--chmod=0755 ./sections/oxide_carbon_switch.sh /sections/oxide_carbon_switch.sh
+COPY 		--chmod=0755 ./sections/auto_update_validate.sh /sections/auto_update_validate.sh
 
 COPY 		--chmod=0755 ./helpers/colors.sh /helpers/colors.sh
 COPY 		--chmod=0755 ./helpers/messages.sh /helpers/messages.sh
+COPY 		--chmod=0755 ./helpers/steamcmd.sh /helpers/steamcmd.sh
 
 CMD			[ "/bin/bash", "/entrypoint.sh" ]

@@ -51,89 +51,19 @@ else
   Error "/sections/oxide_carbon_switch.sh does not exist or cannot be found." "1"
 fi
 
-exit 0
+###################################
+# HANDLE AUTO UPDATE / VALIDATION #
+###################################
 
-# echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
-# echo "Sleeping for 10 seconds"
-# sleep 10
-
-########################
-# AUTO UPDATE/VALIDATE #
-########################
-
-# Define the steamCMD Validation function
-function SteamCMD_Validate_Download() {
-    echo "Inside of SteamCMD_Validate_Download()"
-    if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
-        Delete_SteamApps_Directory
-        echo -e "Validating aux01 server game files..."
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux01 validate +quit
-    elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
-        Delete_SteamApps_Directory
-        echo -e "Validating aux02 server game files..."
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 validate +quit
-    elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
-        Delete_SteamApps_Directory
-        echo -e "Validating staging server game files..."
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging validate +quit
-    else
-        Delete_SteamApps_Directory
-        echo -e "Updating game server... Validation On!"
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
-    fi
-}
-
-# Define the no validation function
-function no_Validate() {
-    if [[ "${FRAMEWORK}" == *"staging"* ]]; then
-        Delete_SteamApps_Directory
-        echo -e "Updating staging server, not validating..."
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging +quit
-    elif [[ "${FRAMEWORK}" == *"aux1"* ]]; then
-        Delete_SteamApps_Directory
-        echo -e "Updating aux01 server, not validating..."
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux01 +quit
-    elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
-        Delete_SteamApps_Directory
-        echo -e "Updating aux02 server, not validating..."
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 +quit
-    else
-        Delete_SteamApps_Directory
-        echo -e "Updating game server... Validation Off!"
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
-    fi
-}
-
-# We need to delete the steamapps directory in order to prevent the following error:
-# Error! App '258550' state is 0x486 after update job.
-# Ref: https://www.reddit.com/r/playark/comments/3smnog/error_app_376030_state_is_0x486_after_update_job/
-function Delete_SteamApps_Directory() {
-    echo -e "Deleting SteamApps Folder as a precaution"
-    rm -rf /home/container/steamapps
-}
-
-# If the switch is occurring from oxide to rust, we want to validate all the steam files first before
-# downloading carbon every time. Force validation. This will remove all references to oxide in the files.
-if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
-    echo -e "Carbon Switch Detected!"
-    echo -e "Forcing validation of game server..."
-    # Go to this function
-    SteamCMD_Validate_Download
-
-# Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
-elif [[ "${AUTO_UPDATE}" == "1" ]]; then
-    # If we're going to validate after updating
-    if [ "${VALIDATE}" == "1" ]; then
-        # If VALIDATE set to true, validate game server via this function
-        SteamCMD_Validate_Download
-    else
-        # Else don't validate via this function
-        no_Validate
-    fi
+if [ -f /sections/auto_update_validate.sh ]; then
+  Debug "/sections/auto_update_validate.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/auto_update_validate.sh
 else
-    # Else don't update or validate server
-    printf "${YELLOW} Not updating server, auto update set to false.${NC}"
+  Error "/sections/auto_update_validate.sh does not exist or cannot be found." "1"
 fi
+
+exit 0
 
 # echo "Sleeping for 10 seconds"
 # sleep 10
