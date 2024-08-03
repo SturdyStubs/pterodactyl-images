@@ -47,19 +47,15 @@ function SteamCMD_No_Validation() {
 	Debug "Inside Function: SteamCMD_No_Validation()"
 
     if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
-        Delete_SteamApps_Directory
         Info "Downloading Aux1 Files - Validation Off!"
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux01 +quit
     elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
-        Delete_SteamApps_Directory
         Info "Downloading Aux2 Files - Validation Off!"
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 +quit
     elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
-        Delete_SteamApps_Directory
         Info "Downloading Staging Files - Validation Off!"
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging +quit
     else
-        # Delete_SteamApps_Directory
         Info "Downloading Default Files - Validation Off!"
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
     fi
