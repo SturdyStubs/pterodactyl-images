@@ -136,4 +136,4 @@ printf "│        https://tinyurl.com/aiorustegg            │\n"
 printf "╰──────────────────────────────────────────────────╯\n"
 
 # Run the Server
-# node /wrapper.js "${MODIFIED_STARTUP}"
+node /wrapper.js "${MODIFIED_STARTUP}"
