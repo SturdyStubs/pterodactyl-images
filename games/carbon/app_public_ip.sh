@@ -1,6 +1,8 @@
 ########################
 #  APP PUBLIC IP FIX   #
 ########################
+source /colors.sh
+
 echo "Inside app_puiblic_ip.sh file!"
 
 # Make internal Docker IP address available to processes.
