@@ -30,12 +30,12 @@ if [ -f /app_public_ip.sh ]; then
   ./app_public_ip.sh
 else
   echo "app_public_ip.sh does not exist or cannot be found."
-  exit()
+  exit 0
 fi
 
 #./app_public_ip.sh
 
-exit()
+exit 0
 
 # echo "Sleeping for 10 seconds"
 # sleep 10
