@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Is debug mode enabled? Do you want to see more messages?
-
 # Display the splash screen
 /bin/bash /splash_screen.sh
 
@@ -9,6 +7,7 @@
 source /helpers/colors.sh
 source /helpers/messages.sh
 
+# Is debug mode enabled? Do you want to see more messages?
 if [[ "${EGG_DEBUG}" == "1" ]]; then
     echo "Egg Debug Mode Enabled!"
 fi
@@ -20,13 +19,12 @@ cd /home/container
 #  APP PUBLIC IP FIX   #
 ########################
 
-if [ -f /sections/app_public_ip.sh ]; then
+if [ -f /sections/app_public_ips.sh ]; then
   Debug "/sections/app_public_ip.sh exists and is found!"
   # Directly run the script without chmod
   /bin/bash /sections/app_public_ip.sh
 else
-  Error "/sections/app_public_ip.sh does not exist or cannot be found."
-  exit 1
+  Error "/sections/app_public_ip.sh does not exist or cannot be found." "1"
 fi
 
 ####################################
@@ -38,8 +36,7 @@ if [ -f /sections/modding_root_check.sh ]; then
   # Directly run the script without chmod
   /bin/bash /sections/modding_root_check.sh
 else
-  Error "/sections/modding_root_check.sh does not exist or cannot be found."
-  exit 1
+  Error "/sections/modding_root_check.sh does not exist or cannot be found." "1"
 fi
 
 exit 0
