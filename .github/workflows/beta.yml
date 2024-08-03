@@ -5,7 +5,7 @@ on:
     branches:
       - beta
     paths:
-      - 'aioegg/**'
+      - 'games/**'
 
 jobs:
   push:
@@ -35,7 +35,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          file: ./aioegg/beta/Dockerfile
+          context: ./games/carbon
+          file: ./games/carbon/Dockerfile
           platforms: linux/amd64
           push: true
           tags: sturdystubs/aioegg:beta
