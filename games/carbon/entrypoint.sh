@@ -155,6 +155,7 @@ function SteamCMD_Validate_Download() {
         Delete_SteamApps_Directory
         echo -e "Updating game server... Validation On!"
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
+    fi
 }
 
 # Define the no validation function
@@ -175,6 +176,7 @@ function no_Validate() {
         Delete_SteamApps_Directory
         echo -e "Updating game server... Validation Off!"
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
+    fi
 }
 
 # We need to delete the steamapps directory in order to prevent the following error:
@@ -194,7 +196,7 @@ if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
     SteamCMD_Validate_Download
 
 # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
-elif [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
+elif [[ "${AUTO_UPDATE}" == "1" ]]; then
     # If we're going to validate after updating
     if [ "${VALIDATE}" == "1" ]; then
         # If VALIDATE set to true, validate game server via this function
@@ -202,7 +204,6 @@ elif [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
     else
         # Else don't validate via this function
         no_Validate
-    fi
 else
     # Else don't update or validate server
     printf "${YELLOW} Not updating server, auto update set to false.${NC}"
