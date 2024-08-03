@@ -47,6 +47,7 @@ WORKDIR 	/home/container
 COPY 		./wrapper.js /wrapper.js
 COPY 		./entrypoint.sh /entrypoint.sh
 COPY 		--chmod=0755 ./splash_screen.sh /splash_screen.sh
+COPY 		--chmod=0755 ./end_screen.sh /end_screen.sh
 
 COPY 		--chmod=0755 ./sections/app_public_ip.sh /sections/app_public_ip.sh
 COPY 		--chmod=0755 ./sections/modding_root_check.sh /sections/modding_root_check.sh
