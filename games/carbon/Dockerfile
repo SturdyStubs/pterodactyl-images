@@ -20,33 +20,32 @@
 # SOFTWARE.
 #
 
-FROM --platform=$TARGETOS/$TARGETARCH debian:bullseye-slim
+FROM 		--platform=$TARGETOS/$TARGETARCH debian:bullseye-slim
 
-LABEL author="SturdyStubs" maintainer="BippyMiester"
-LABEL org.opencontainers.image.source="https://github.com/SturdyStubs/pterodactyl-images"
-LABEL org.opencontainers.image.licenses=MIT
+LABEL       author="SturdyStubs" maintainer="BippyMiester"
 
-ENV DEBIAN_FRONTEND=noninteractive
+LABEL       org.opencontainers.image.source="https://github.com/SturdyStubs/pterodactyl-images"
+LABEL       org.opencontainers.image.licenses=MIT
 
-RUN dpkg --add-architecture i386 \
-    && apt update \
-    && apt upgrade -y \
-    && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
-    && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt install -y nodejs \
-    && useradd -d /home/container -m container
+ENV         DEBIAN_FRONTEND=noninteractive
 
-USER container
-ENV USER=container HOME=/home/container
+RUN			dpkg --add-architecture i386 \
+			&& apt update \
+			&& apt upgrade -y \
+			&& apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
+			&& curl -sL https://deb.nodesource.com/setup_20.x | bash - \
+			&& apt install -y nodejs \
+			&& mkdir /node_modules \
+			&& npm install --prefix / ws \
+			&& npm install --save-optional bufferutil \
+			&& useradd -d /home/container -m container
 
-WORKDIR /home/container
+USER 		container
+ENV  		USER=container HOME=/home/container
 
-# Copy package.json and install dependencies
-COPY package*.json ./
-RUN npm install
+WORKDIR 	/home/container
 
-# Copy the rest of your application files
-COPY ./entrypoint.sh /entrypoint.sh
-COPY ./wrapper.js /wrapper.js
+COPY 		./entrypoint.sh /entrypoint.sh
+COPY 		./wrapper.js /wrapper.js
 
-CMD [ "/bin/bash", "/entrypoint.sh" ]
+CMD			[ "/bin/bash", "/entrypoint.sh" ]
