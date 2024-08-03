@@ -38,6 +38,9 @@ fi
 
 #./app_public_ip.sh
 
+# Exit out for now during testing
+exit(1)
+
 # echo "Sleeping for 10 seconds"
 # sleep 10
 
