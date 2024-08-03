@@ -126,6 +126,7 @@ else # The framework is vanilla
 fi
 
 # Fix for Rust not starting
+Debug "Defining the Library Path..."
 export LD_LIBRARY_PATH=$(pwd)/RustDedicated_Data/Plugins/x86_64:$(pwd)
 
 # Display Ending Splash Screen
