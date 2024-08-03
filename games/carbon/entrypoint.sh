@@ -39,44 +39,19 @@ else
   Error "/sections/modding_root_check.sh does not exist or cannot be found." "1"
 fi
 
-exit 0
-
-# echo "Sleeping for 10 seconds"
-# sleep 10
-
 ################################
 # OXIDE -> CARBON SWITCH CHECK #
 ################################
 
-echo "Detecting if there is a oxide to carbon switch occurring...."
-# If the framework isn't oxide or oxide staging
-if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; then
-    printf "${BLUE}Modding framework is not set to Oxide. Checking if there are left over Oxide files in the server.${NC}"
-
-    # Define a bool for later use
-    CARBONSWITCH="FALSE"
-    
-    # Check if the Oxide.*.dll files exist
-    shopt -s nullglob # No idea what this does. Just leave it.
-    files=(/home/container/RustDedicated_Data/Managed/Oxide.*.dll)
-    if [ ${#files[@]} -gt 0 ]; then
-        # FOUND EM!
-        echo "Oxide Files Found!"
-
-        if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
-            # Framework is carbon now, but oxide files were detected in RustDedicated_Data/Managed folder, which means that there is a switch occurring.
-            echo "Carbon installation detected. Marking Carbon Switch as TRUE!"
-            CARBONSWITCH="TRUE"
-        else
-            # Since its not oxide, or carbon, must be vanilla
-            printf "${YELLOW}If you see this and your framework isn't vanilla, then contact the developers.${NC}"
-        fi
-    else
-        # Must already be on carbon...
-        printf "${GREEN}No Oxide files found NOT SWITCHING FROM OXIDE - continuing startup...${NC}"
-    fi
-    shopt -u nullglob
+if [ -f /sections/oxide_carbon_switch.sh ]; then
+  Debug "/sections/oxide_carbon_switch.sh exists and is found!"
+  # Directly run the script without chmod
+  /bin/bash /sections/oxide_carbon_switch.sh
+else
+  Error "/sections/oxide_carbon_switch.sh does not exist or cannot be found." "1"
 fi
+
+exit 0
 
 # echo -e "IF YOU ARE SEEING THIS, CONTACT THE DEVELOPER TO REMOVE"
 # echo "Sleeping for 10 seconds"
@@ -85,10 +60,6 @@ fi
 ########################
 # AUTO UPDATE/VALIDATE #
 ########################
-
-echo "=============================="
-echo "CARBONSWITCH: ${CARBONSWITCH}"
-echo "=============================="
 
 # Define the steamCMD Validation function
 function SteamCMD_Validate_Download() {
