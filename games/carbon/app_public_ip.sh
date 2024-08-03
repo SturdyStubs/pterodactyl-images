@@ -1,6 +1,7 @@
 ########################
 #  APP PUBLIC IP FIX   #
 ########################
+echo "Inside app_puiblic_ip.sh file!"
 
 # Make internal Docker IP address available to processes.
 export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`

@@ -24,6 +24,12 @@ sleep 2
 #  APP PUBLIC IP FIX   #
 ########################
 
+if [ -f /app_public_ip.sh ]; then
+  echo "app_public_ip.sh exists and is found."
+else
+  echo "app_public_ip.sh does not exist or cannot be found."
+fi
+
 ./app_public_ip.sh
 
 # echo "Sleeping for 10 seconds"

@@ -48,4 +48,7 @@ COPY 		./entrypoint.sh /entrypoint.sh
 COPY 		./app_public_ip.sh /app_public_ip.sh
 COPY 		./wrapper.js /wrapper.js
 
+# Ensure scripts are executable
+RUN chmod +x /entrypoint.sh /app_public_ip.sh
+
 CMD			[ "/bin/bash", "/entrypoint.sh" ]
