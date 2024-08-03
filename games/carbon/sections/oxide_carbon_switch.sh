@@ -27,10 +27,13 @@ if [[ "${FRAMEWORK}" != "oxide" ]] || [[ "${FRAMEWORK}" != "oxide-staging" ]]; t
         # FOUND EM!
         Info "Oxide Files Found!"
 
+        Debug "Framework is: ${FRAMEWORK}"
         if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
             # Framework is carbon now, but oxide files were detected in RustDedicated_Data/Managed folder, which means that there is a switch occurring.
             Success "Carbon installation detected. Marking Carbon Switch as TRUE!"
             CARBONSWITCH="TRUE"
+        elif [[ "${FRAMEWORK}" =~ "oxide" ]]; then
+            Info "Framework is set to a branch of Oxide. This means you're not switching to Carbon!"
         else
             # Since its not oxide, or carbon, must be vanilla
             Error "If you see this and your framework isn't vanilla, then contact the developers."
