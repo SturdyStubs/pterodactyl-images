@@ -9,63 +9,71 @@ source /helpers/messages.sh
 Debug "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 Debug "Inside of /sections/extension_download.sh file!"
 
-function Download_Extensions() {
-    printf "${BLUE}Checking Extension Downloads...${NC}"
+Info "Checking Extension Downloads..."
 
-    # Check if any of the extensions variables are set to true
-    if [ "${RUSTEDIT_EXT}" == "1" ] || [ "${DISCORD_EXT}" == "1" ] || [ "${CHAOS_EXT}" == "1" ]; then
+# Check if any of the extensions variables are set to true
+if [ "${RUSTEDIT_EXT}" == "1" ] || [ "${DISCORD_EXT}" == "1" ] || [ "${CHAOS_EXT}" == "1" ]; then
+    if [[ "${FRAMEWORK}" != "vanilla" ]]; then
         # Make temp directory
+        Debug "Making temp directory..."
         mkdir -p /home/container/temp
+
         # Download RustEdit Extension
         if [ "${RUSTEDIT_EXT}" == "1" ]; then
-            echo -e "Downloading RustEdit Extension"
+            Debug "Downloading RustEdit Extension"
             curl -sSL -o /home/container/temp/Oxide.Ext.RustEdit.dll https://github.com/k1lly0u/Oxide.Ext.RustEdit/raw/master/Oxide.Ext.RustEdit.dll
-            printf "${GREEN}RustEdit Extention Downloaded!${NC}"
+            Success "RustEdit Extention Downloaded!"
         fi
 
         # Download Discord Extension
         if [ "${DISCORD_EXT}" == "1" ]; then
-            echo -e "Downloading Discord Extension"
+            Debug "Downloading Discord Extension"
             curl -sSL -o /home/container/temp/Oxide.Ext.Discord.dll https://umod.org/extensions/discord/download
-            printf "${GREEN}Discord Extension Downloaded!${NC}"
+            Success "Discord Extension Downloaded!"
         fi
 
         # Download Chaos Code Extension
         if [ "${CHAOS_EXT}" == "1" ]; then
-            echo -e "Downloading Chaos Code Extension"
+            Debug "Downloading Chaos Code Extension"
             curl -sSL -o /home/container/temp/Oxide.Ext.Chaos.dll https://chaoscode.io/oxide/Oxide.Ext.Chaos.dll
-            printf "${GREEN}Chaos Code Extension Downloaded!${NC}"
+            Success "Chaos Code Extension Downloaded!"
         fi
 
         # Handle Move of files based on framework
         files=(/home/container/temp/Oxide.Ext.*.dll)
         if [ ${#files[@]} -gt 0 ]; then
-            printf "${BLUE}Moving Extensions to appropriate folders...${NC}"
+            Info "Moving Extensions to appropriate folders..."
+            
+            # If the framework is carbon, move it into the modding root folder
             if [[ ${FRAMEWORK} =~ "carbon" ]]; then
-                echo "Carbon framework detected!"
+                Debug "Carbon framework detected!"
                 # Create Carbon Extensions folder in case they want extensions, but also are changing their modding root
                 # Prevents this error: mv: target '/home/container/carbon-poop/extensions/' is not a directory
-                echo "Making directory /home/container/${MODDING_ROOT}/extensions/"
+                Debug "Making directory /home/container/${MODDING_ROOT}/extensions/"
                 mkdir -p "/home/container/${MODDING_ROOT}/extensions/"
-                echo "Moving files..."
+                Info "Moving files..."
                 mv -v /home/container/temp/Oxide.Ext.*.dll "/home/container/${MODDING_ROOT}/extensions/"
             fi
+            
+            # If framework is oxide
             if [[ ${FRAMEWORK} =~ "oxide" ]]; then
-                echo "Oxide framework detected!"
+                Debug "Oxide framework detected!"
                 mv -v /home/container/temp/Oxide.Ext.*.dll /home/container/RustDedicated_Data/Managed/
             fi
-            printf "${GREEN}Move files has completed successfully!${NC}"
+
+            Success "Move files has completed successfully!"
         else
-            printf "${GREEN}No Extensions to Move... Skipping the move...${NC}"
+            Success "No Extensions to Move... Skipping the move..."
         fi
 
         # Clean up temp folder
-        echo "Cleaning up Temp Directory"
+        Debug "Cleaning up Temp Directory"
         rm -rf /home/container/temp
-        printf "${GREEN}Cleanup complete!${NC}"
-        printf "${GREEN}All downloads complete!${NC}"
+        Debug "Cleanup complete!"
+        Success "All downloads complete!"
     else
-        printf "${GREEN}No extensions are enabled. Skipping this part...${NC}"
+        Error "Framework is vanilla, but you have extension downloads enabled, are you sure that this is what you want?"
     fi
-    
-}
+else
+    Success "No extensions are enabled. Skipping this part..."
+fi
