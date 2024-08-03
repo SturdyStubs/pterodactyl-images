@@ -15,7 +15,7 @@ cd /home/container
 ########################
 
 if [ -f /app_public_ip.sh ]; then
-  Error("app_public_ip.sh exists and is found.")
+  Error "app_public_ip.sh exists and is found."
   # Directly run the script without chmod
   /bin/bash /app_public_ip.sh
 else

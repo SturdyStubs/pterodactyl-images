@@ -1,5 +1,5 @@
 source /helpers/colors.sh
 
-function Error(MESSAGE) {
-	printf "${RED}ERROR: ${MESSAGE}${NC}"
+function Error() {
+	printf "${RED}ERROR: $1 ${NC}"
 }
