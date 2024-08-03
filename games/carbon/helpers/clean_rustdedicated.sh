@@ -33,8 +33,6 @@ function Clean_RustDedicated() {
 		Debug "DISCORD: ${DISCORD}"
 		Debug "DEST_DIR: ${DEST_DIR}"
 
-		Debug "Testing"
-
 		# Check if Rust Edit Extension is installed
 		if [[ -f "$RUSTEDIT" ]]; then
 			Info "Found Rust Edit Extension! Moving it now..."
@@ -44,8 +42,6 @@ function Clean_RustDedicated() {
 		else
 			Debug "Can not find RUSTEDIT: ${RUSTEDIT}"
 		fi
-
-		Debug "Testing2"
 
 		# Check if Chaos Code Extension is installed
 		if [[ -f "$CHAOS" ]]; then
@@ -57,8 +53,6 @@ function Clean_RustDedicated() {
 			Debug "Can not find CHAOS: ${CHAOS}"
 		fi
 
-		Debug "Testing3"
-
 		# Check if Discord Extension is installed
 		if [[ -f "$DISCORD" ]]; then
 			Info "Found Discord Extension! Moving it now..."
@@ -69,15 +63,13 @@ function Clean_RustDedicated() {
 			Debug "Can not find DISCORD: ${DISCORD}"
 		fi
 
-		Debug "Testing4"
-
 	elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
 		Debug "Vanilla framework detected!"
 		Info "Moving Oxide Extensions to the trash..."
 
 		# Check if Rust Edit Extension is installed
 		if [[ -f "$RUSTEDIT" ]]; then
-			Info "Found Rust Edit Extension! Moving it now..."
+			Info "Found Rust Edit Extension! Moving it to the trash now..."
 			# Move it
 			rm -rf "$RUSTEDIT" "$DEST_DIR"
 			Success "Rust Edit Extension Moved!"
@@ -85,7 +77,7 @@ function Clean_RustDedicated() {
 
 		# Check if Chaos Code Extension is installed
 		if [[ -f "$CHAOS" ]]; then
-			Info "Found Chaos Code Extension! Moving it now..."
+			Info "Found Chaos Code Extension! Moving it to the trash now..."
 			# Move it
 			rm -rf "$CHAOS" "$DEST_DIR"
 			Success "Chaos Code Extension Moved!"
@@ -93,7 +85,7 @@ function Clean_RustDedicated() {
 
 		# Check if Discord Extension is installed
 		if [[ -f "$DISCORD" ]]; then
-			Info "Found Discord Extension! Moving it now..."
+			Info "Found Discord Extension! Moving it to the trash now..."
 			# Move it
 			rm -rf "$DISCORD" "$DEST_DIR"
 			Success "Discord Extension Moved!"
