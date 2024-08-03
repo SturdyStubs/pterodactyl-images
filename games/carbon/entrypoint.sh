@@ -30,6 +30,9 @@ else
   echo "app_public_ip.sh does not exist or cannot be found."
 fi
 
+# Ensure the script is executable
+chmod +x /app_public_ip.sh
+
 ./app_public_ip.sh
 
 # echo "Sleeping for 10 seconds"
