@@ -21,7 +21,7 @@ cd /home/container
 if [ -f /sections/app_public_ip.sh ]; then
   Debug "/sections/app_public_ip.sh exists and is found!"
   # Directly run the script without chmod
-  /bin/bash /app_public_ip.sh
+  /bin/bash /sections/app_public_ip.sh
 else
   Error "/sections/app_public_ip.sh does not exist or cannot be found."
   exit 1
@@ -34,7 +34,7 @@ fi
 if [ -f /sections/modding_root_check.sh ]; then
   Debug "/sections/modding_root_check.sh exists and is found!"
   # Directly run the script without chmod
-  /bin/bash /modding_root_check.sh
+  /bin/bash /sections/modding_root_check.sh
 else
   Error "/sections/modding_root_check.sh does not exist or cannot be found."
   exit 1
