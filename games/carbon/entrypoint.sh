@@ -19,7 +19,7 @@ cd /home/container
 #  APP PUBLIC IP FIX   #
 ########################
 
-if [ -f /sections/app_public_ips.sh ]; then
+if [ -f /sections/app_public_ip.sh ]; then
   Debug "/sections/app_public_ip.sh exists and is found!"
   # Directly run the script without chmod
   /bin/bash /sections/app_public_ip.sh
