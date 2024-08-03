@@ -139,14 +139,18 @@ echo "=============================="
 # Define the carbon steamCMD Validation function
 function Carbon_SteamCMD_Validate_Download() {
     echo "Inside of Carbon_SteamCMD_Validate_Download()"
-    if [ "${FRAMEWORK}" == "carbon-aux1" ] || [ "${FRAMEWORK}" == "carbon-aux1-minimal" ]; then
+    if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
         Delete_SteamApps_Directory
         echo -e "Validating aux01 server game files..."
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux01 validate +quit
-    elif [ "${FRAMEWORK}" == "carbon-aux2" ] || [ "${FRAMEWORK}" == "carbon-aux2-minimal" ]; then
+    elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
         Delete_SteamApps_Directory
         echo -e "Validating aux02 server game files..."
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 validate +quit
+    elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
+        Delete_SteamApps_Directory
+        echo -e "Validating staging server game files..."
+        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging validate +quit
     else
         Delete_SteamApps_Directory
         echo -e "Updating game server... Validation On!"
@@ -173,25 +177,20 @@ if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
 elif [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
     # If we're going to validate after updating
     if [ "${VALIDATE}" == "1" ]; then
-        if [ "${FRAMEWORK}" == "oxide-staging" ] || [ "${FRAMEWORK}" == "carbon-staging" ] || [ "${FRAMEWORK}" == "carbon-staging-minimal" ]; then
-            Delete_SteamApps_Directory
-            echo -e "Validating staging server game files..."
-            ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging validate +quit
-        else
             # Go to this function
             Carbon_SteamCMD_Validate_Download
         fi
     # Else we're not validating
     else
-        if [ "${FRAMEWORK}" == "oxide-staging" ] || [ "${FRAMEWORK}" == "carbon-staging" ] || [ "${FRAMEWORK}" == "carbon-staging-minimal" ]; then
+        if [[ "${FRAMEWORK}" == *"staging"* ]]; then
             Delete_SteamApps_Directory
             echo -e "Updating staging server, not validating..."
             ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging +quit
-        elif [ "${FRAMEWORK}" == "carbon-aux1" ] || [ "${FRAMEWORK}" == "carbon-aux1-minimal" ]; then
+        elif [[ "${FRAMEWORK}" == *"aux1"* ]]; then
             Delete_SteamApps_Directory
             echo -e "Updating aux01 server, not validating..."
             ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux01 +quit
-        elif [ "${FRAMEWORK}" == "carbon-aux2" ] || [ "${FRAMEWORK}" == "carbon-aux2-minimal" ]; then
+        elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
             Delete_SteamApps_Directory
             echo -e "Updating aux02 server, not validating..."
             ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta aux02 +quit
