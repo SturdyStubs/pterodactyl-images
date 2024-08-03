@@ -1,14 +1,14 @@
-source /helpers/colors.sh
+source /helpers/messages.sh
 
-printf "${RED}╭──────────────────────────────────────────────────╮${NC}"
-printf "${RED}│                 AIO RUST EGG                     │${NC}"
-printf "${RED}│            Created By: SturdyStubs               │${NC}"
-printf "${RED}├──────────────────────────────────────────────────┤${NC}"
-printf "${RED}│    For More Information See The Documentation    │${NC}"
-printf "${RED}│        https://tinyurl.com/aiorustegg            │${NC}"
-printf "${RED}│         https://discord.gg/CUH3vADmMp            │${NC}"
-printf "${RED}│                 Version 2.0.0                    │${NC}"
-printf "${RED}╰──────────────────────────────────────────────────╯${NC}"
+Error "╭──────────────────────────────────────────────────╮"
+Error "│                 AIO RUST EGG                     │"
+Error "│            Created By: SturdyStubs               │"
+Error "├──────────────────────────────────────────────────┤"
+Error "│    For More Information See The Documentation    │"
+Error "│        https://tinyurl.com/aiorustegg            │"
+Error "│         https://discord.gg/CUH3vADmMp            │"
+Error "│                 Version 2.0.0                    │"
+Error "╰──────────────────────────────────────────────────╯"
 
-printf "${BLUE}Starting Egg Now!${NC}"
+Info "Starting Egg Now!"
 sleep 2

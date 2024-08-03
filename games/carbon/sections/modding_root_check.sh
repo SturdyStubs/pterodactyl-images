@@ -22,7 +22,7 @@ if [[ "${FRAMEWORK}" =~ "carbon" || "${FRAMEWORK}" =~ "oxide" ]]; then
         Error "ERROR: The modding root '${MODDING_ROOT}' contains the word oxide, but yet you're using the '${FRAMEWORK}'. Please change the name to something that doesn't contain the word oxide.\n"
         exit 1
     elif [[ "${FRAMEWORK}" =~ "oxide" ]] && [[ "${MODDING_ROOT}" =~ "carbon" ]]; then
-        Error "${RED}ERROR: The modding root '${MODDING_ROOT}' contains the word carbon, but yet you're using the '${FRAMEWORK}'. Please change the name to something that doesn't contain the word carbon.\n"
+        Error "ERROR: The modding root '${MODDING_ROOT}' contains the word carbon, but yet you're using the '${FRAMEWORK}'. Please change the name to something that doesn't contain the word carbon.\n"
         exit 1
     fi
 

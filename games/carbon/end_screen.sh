@@ -1,12 +1,12 @@
-source /helpers/colors.sh
+source /helpers/messages.sh
 
-printf "╭──────────────────────────────────────────────────╮\n"
-printf "│     Thats it from us! Enjoy your rust server!    │\n"
-printf "├──────────────────────────────────────────────────┤\n"
-printf "│    For More Information See The Documentation    │\n"
-printf "│        https://tinyurl.com/aiorustegg            │\n"
-printf "│         https://discord.gg/CUH3vADmMp            │\n"
-printf "╰──────────────────────────────────────────────────╯\n"
+Error "╭──────────────────────────────────────────────────╮"
+Error "│     Thats it from us! Enjoy your rust server!    │"
+Error "├──────────────────────────────────────────────────┤"
+Error "│    For More Information See The Documentation    │"
+Error "│        https://tinyurl.com/aiorustegg            │"
+Error "│         https://discord.gg/CUH3vADmMp            │"
+Error "╰──────────────────────────────────────────────────╯"
 
-printf "${BLUE}Starting your Rust server now!${NC}"
+Info "Starting your Rust server now!"
 sleep 2
