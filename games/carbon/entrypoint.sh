@@ -22,7 +22,7 @@ cd /home/container
 if [ -f /sections/app_public_ip.sh ]; then
   Debug "/sections/app_public_ip.sh exists and is found!"
   # Directly run the script without chmod
-  /bin/bash /sections/app_public_ip.sh
+  source /sections/app_public_ip.sh
 else
   Error "/sections/app_public_ip.sh does not exist or cannot be found." "1"
 fi
@@ -34,7 +34,7 @@ fi
 if [ -f /sections/modding_root_check.sh ]; then
   Debug "/sections/modding_root_check.sh exists and is found!"
   # Directly run the script without chmod
-  /bin/bash /sections/modding_root_check.sh
+  source /sections/modding_root_check.sh
 else
   Error "/sections/modding_root_check.sh does not exist or cannot be found." "1"
 fi
@@ -46,7 +46,7 @@ fi
 if [ -f /sections/oxide_carbon_switch.sh ]; then
   Debug "/sections/oxide_carbon_switch.sh exists and is found!"
   # Directly run the script without chmod
-  /bin/bash /sections/oxide_carbon_switch.sh
+  source /sections/oxide_carbon_switch.sh
 else
   Error "/sections/oxide_carbon_switch.sh does not exist or cannot be found." "1"
 fi
