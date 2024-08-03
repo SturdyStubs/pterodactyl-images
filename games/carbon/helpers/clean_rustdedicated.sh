@@ -18,6 +18,12 @@ function Clean_RustDedicated() {
 	DISCORD="/home/container/RustDedicated_Data/Managed/Oxide.Ext.Discord.dll"
 	OXIDEREF="/home/container/RustDedicated_Data/Managed/Oxide.References.dll.config"
 	DEST_DIR="/home/container/${MODDING_ROOT}/extensions/"
+
+	Debug "RUSTEDIT: ${RUSTEDIT}"
+	Debug "CHAOS: ${CHAOS}"
+	Debug "DISCORD: ${DISCORD}"
+	Debug "OXIDEREF: ${OXIDEREF}"
+	Debug "DEST_DIR: ${DEST_DIR}"
 	
 	# Check if Oxide Reference Config is installed
 	if [[ -f "$OXIDEREF" ]]; then
@@ -38,11 +44,6 @@ function Clean_RustDedicated() {
 		  Warn "Destination directory does not exist. Creating: $DEST_DIR"
 		  mkdir -p "$DEST_DIR"
 		fi
-
-		Debug "RUSTEDIT: ${RUSTEDIT}"
-		Debug "CHAOS: ${CHAOS}"
-		Debug "DISCORD: ${DISCORD}"
-		Debug "DEST_DIR: ${DEST_DIR}"
 
 		# Check if Rust Edit Extension is installed
 		if [[ -f "$RUSTEDIT" ]]; then
