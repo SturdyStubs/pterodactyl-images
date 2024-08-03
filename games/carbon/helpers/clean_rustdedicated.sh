@@ -16,7 +16,18 @@ function Clean_RustDedicated() {
 	RUSTEDIT="/home/container/RustDedicated_Data/Managed/Oxide.Ext.RustEdit.dll"
 	CHAOS="/home/container/RustDedicated_Data/Managed/Oxide.Ext.Chaos.dll"
 	DISCORD="/home/container/RustDedicated_Data/Managed/Oxide.Ext.Discord.dll"
+	OXIDEREF="/home/container/RustDedicated_Data/Managed/Oxide.References.dll.config"
 	DEST_DIR="/home/container/${MODDING_ROOT}/extensions/"
+	
+	# Check if Oxide Reference Config is installed
+	if [[ -f "$OXIDEREF" ]]; then
+		Info "Found Oxide Reference Config! Moving it now..."
+		# Move it
+		rm -rf "$OXIDEREF"
+		Success "Oxide Reference Config Moved!"
+	else
+		Debug "Can not find OXIDEREF: ${OXIDEREF}"
+	fi
 
 	if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
 		Debug "Carbon Framework Detected!"
@@ -71,7 +82,7 @@ function Clean_RustDedicated() {
 		if [[ -f "$RUSTEDIT" ]]; then
 			Info "Found Rust Edit Extension! Moving it to the trash now..."
 			# Move it
-			rm -rf "$RUSTEDIT" "$DEST_DIR"
+			rm -rf "$RUSTEDIT"
 			Success "Rust Edit Extension Moved!"
 		fi
 
@@ -79,7 +90,7 @@ function Clean_RustDedicated() {
 		if [[ -f "$CHAOS" ]]; then
 			Info "Found Chaos Code Extension! Moving it to the trash now..."
 			# Move it
-			rm -rf "$CHAOS" "$DEST_DIR"
+			rm -rf "$CHAOS"
 			Success "Chaos Code Extension Moved!"
 		fi
 
@@ -87,7 +98,7 @@ function Clean_RustDedicated() {
 		if [[ -f "$DISCORD" ]]; then
 			Info "Found Discord Extension! Moving it to the trash now..."
 			# Move it
-			rm -rf "$DISCORD" "$DEST_DIR"
+			rm -rf "$DISCORD"
 			Success "Discord Extension Moved!"
 		fi
 	fi
