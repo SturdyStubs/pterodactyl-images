@@ -1,3 +1,5 @@
+source /helpers/colors.sh
+
 printf "${RED}"
 printf "╭──────────────────────────────────────────────────╮\n"
 printf "│                 AIO RUST EGG                     │\n"
