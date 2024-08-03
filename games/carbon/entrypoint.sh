@@ -27,7 +27,7 @@ sleep 2
 if [ -f /app_public_ip.sh ]; then
   echo "app_public_ip.sh exists and is found."
   # Directly run the script without chmod
-  ./app_public_ip.sh
+  /bin/bash /app_public_ip.sh
 else
   echo "app_public_ip.sh does not exist or cannot be found."
   exit 0
