@@ -45,14 +45,7 @@ ENV  		USER=container HOME=/home/container
 WORKDIR 	/home/container
 
 COPY 		./entrypoint.sh /entrypoint.sh
-COPY 		./app_public_ip.sh /app_public_ip.sh
+COPY 		--chmod=0755 ./app_public_ip.sh /app_public_ip.sh
 COPY 		./wrapper.js /wrapper.js
-
-# Ensure entrypoint script has execute permissions locally before copying
-# No need to change permissions inside the container
-
-ENV  		USER=root HOME=/home/container
-RUN 		chmod +x /entrypoint.sh
-ENV  		USER=container HOME=/home/container
 
 CMD			[ "/bin/bash", "/entrypoint.sh" ]
