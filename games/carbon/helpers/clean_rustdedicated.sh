@@ -93,10 +93,10 @@ function Clean_RustDedicated() {
 
 	# Check if Oxide Reference Config is installed
 	if [[ -f "$OXIDEREF" ]]; then
-		Info "Found Oxide Reference Config! Moving it now..."
+		Info "Found Oxide Reference Config! Moving it to the trash now..."
 		# Move it
 		rm -rf "$OXIDEREF"
-		Success "Oxide Reference Config Moved!"
+		Success "Oxide Reference Config Trashed!"
 	else
 		Debug "Can not find OXIDEREF: ${OXIDEREF}"
 	fi
