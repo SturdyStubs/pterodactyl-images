@@ -52,7 +52,7 @@ COPY 		./wrapper.js /wrapper.js
 # No need to change permissions inside the container
 
 ENV  		USER=root HOME=/home/container
-RUN chmod +x /entrypoint.sh
+RUN 		chmod +x /entrypoint.sh
 ENV  		USER=container HOME=/home/container
 
 CMD			[ "/bin/bash", "/entrypoint.sh" ]
