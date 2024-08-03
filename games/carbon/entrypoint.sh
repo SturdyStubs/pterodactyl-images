@@ -1,19 +1,13 @@
 #!/bin/bash
 
-source /colors.sh
+# Display the splash screen
+/bin/bash /splash_screen.sh
 
+# Source some files
+source /helpers/colors.sh
+
+# Change Directory
 cd /home/container
-
-printf "╭──────────────────────────────────────────────────╮\n"
-printf "│                 AIO RUST EGG                     │\n"
-printf "│            Created By: SturdyStubs               │\n"
-printf "├──────────────────────────────────────────────────┤\n"
-printf "│    For More Information See The Documentation    │\n"
-printf "│        https://tinyurl.com/aiorustegg            │\n"
-printf "╰──────────────────────────────────────────────────╯\n"
-
-printf "${BLUE}Starting Egg Now!${NC}"
-sleep 2
 
 ########################
 #  APP PUBLIC IP FIX   #

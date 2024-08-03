@@ -46,7 +46,8 @@ WORKDIR 	/home/container
 
 COPY 		./entrypoint.sh /entrypoint.sh
 COPY 		--chmod=0755 ./app_public_ip.sh /app_public_ip.sh
-COPY 		--chmod=0755 ./colors.sh /colors.sh
+COPY 		--chmod=0755 ./splash_screen.sh /splash_screen.sh
+COPY 		--chmod=0755 ./helpers/colors.sh /helpers/colors.sh
 COPY 		./wrapper.js /wrapper.js
 
 CMD			[ "/bin/bash", "/entrypoint.sh" ]

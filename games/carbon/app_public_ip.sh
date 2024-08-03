@@ -1,7 +1,7 @@
 ########################
 #  APP PUBLIC IP FIX   #
 ########################
-source /colors.sh
+source /helpers/colors.sh
 
 echo "Inside app_puiblic_ip.sh file!"
 
