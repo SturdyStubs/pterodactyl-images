@@ -3,7 +3,7 @@ name: Build Beta Branch
 on:
   push:
     branches:
-      - main
+      - beta
     paths:
       - games/**
 jobs:
