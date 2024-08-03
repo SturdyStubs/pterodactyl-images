@@ -111,9 +111,9 @@ fi
 # EXTENSION DOWNLOADER #
 ########################
 
-
 # If the framework isn't vanilla
 if [[ ${FRAMEWORK} != "vanilla" ]]; then
+    # Handle the extension downloads
     if [ -f /sections/extension_download.sh ]; then
       Debug "/sections/extension_download.sh exists and is found!"
       # Directly run the script without chmod
@@ -121,7 +121,7 @@ if [[ ${FRAMEWORK} != "vanilla" ]]; then
     else
       Error "/sections/extension_download.sh does not exist or cannot be found." "1"
     fi
-else
+else # The framework is vanilla
     Info "Skipping Extension Downloads, Vanilla Framework Detected!"
 fi
 
