@@ -65,16 +65,6 @@ function Clean_RustDedicated() {
 			Debug "Can not find DISCORD: ${DISCORD}"
 		fi
 
-		# Check if Oxide Reference Config is installed
-		if [[ -f "$OXIDEREF" ]]; then
-			Info "Found Oxide Reference Config! Moving it now..."
-			# Move it
-			rm -rf "$OXIDEREF"
-			Success "Oxide Reference Config Moved!"
-		else
-			Debug "Can not find OXIDEREF: ${OXIDEREF}"
-		fi
-
 	elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
 		Debug "Vanilla framework detected!"
 
@@ -99,5 +89,15 @@ function Clean_RustDedicated() {
 	        Success "No Oxide Files Found!"
 	    fi
 	    shopt -u nullglob # Restore Default Globbing Behavior
+	fi
+
+	# Check if Oxide Reference Config is installed
+	if [[ -f "$OXIDEREF" ]]; then
+		Info "Found Oxide Reference Config! Moving it now..."
+		# Move it
+		rm -rf "$OXIDEREF"
+		Success "Oxide Reference Config Moved!"
+	else
+		Debug "Can not find OXIDEREF: ${OXIDEREF}"
 	fi
 }
