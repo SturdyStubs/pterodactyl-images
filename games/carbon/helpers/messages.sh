@@ -31,7 +31,7 @@ function Success() {
 }
 
 function Debug() {
-	if [[ "${DEBUG}" == "TRUE" ]]; then
+	if [[ "${EGG_DEBUG}" == "TRUE" ]]; then
 		echo $1
 	fi
 }

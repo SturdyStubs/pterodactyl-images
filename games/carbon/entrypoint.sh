@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Is debug mode enabled? Do you want to see more messages?
-DEBUG="TRUE"
-echo "Debug Mode: ${DEBUG}"
 
 # Display the splash screen
 /bin/bash /splash_screen.sh
+
+echo "Debug Mode: ${EGG_DEBUG}"
 
 # Source some files
 source /helpers/colors.sh
