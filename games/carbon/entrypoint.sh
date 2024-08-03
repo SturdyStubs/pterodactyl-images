@@ -204,6 +204,7 @@ elif [[ "${AUTO_UPDATE}" == "1" ]]; then
     else
         # Else don't validate via this function
         no_Validate
+    fi
 else
     # Else don't update or validate server
     printf "${YELLOW} Not updating server, auto update set to false.${NC}"
