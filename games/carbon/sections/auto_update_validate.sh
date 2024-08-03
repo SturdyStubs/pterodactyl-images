@@ -31,6 +31,10 @@ if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
     Info "Forcing validation of game server..."
     # Go to this function
     SteamCMD_Validate
+elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
+    Info "Vanilla framework detected!"
+    Info "Forcing validation of game server..."
+    SteamCMD_Validate
 elif [[ "${AUTO_UPDATE}" == "1" ]]; then # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
     
     # Check if we're going to validate after updating
