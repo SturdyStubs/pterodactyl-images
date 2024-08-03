@@ -24,16 +24,6 @@ function Clean_RustDedicated() {
 	Debug "DISCORD: ${DISCORD}"
 	Debug "OXIDEREF: ${OXIDEREF}"
 	Debug "DEST_DIR: ${DEST_DIR}"
-	
-	# Check if Oxide Reference Config is installed
-	if [[ -f "$OXIDEREF" ]]; then
-		Info "Found Oxide Reference Config! Moving it now..."
-		# Move it
-		rm -rf "$OXIDEREF"
-		Success "Oxide Reference Config Moved!"
-	else
-		Debug "Can not find OXIDEREF: ${OXIDEREF}"
-	fi
 
 	if [[ "${FRAMEWORK}" =~ "carbon" ]]; then
 		Debug "Carbon Framework Detected!"
@@ -75,32 +65,39 @@ function Clean_RustDedicated() {
 			Debug "Can not find DISCORD: ${DISCORD}"
 		fi
 
+		# Check if Oxide Reference Config is installed
+		if [[ -f "$OXIDEREF" ]]; then
+			Info "Found Oxide Reference Config! Moving it now..."
+			# Move it
+			rm -rf "$OXIDEREF"
+			Success "Oxide Reference Config Moved!"
+		else
+			Debug "Can not find OXIDEREF: ${OXIDEREF}"
+		fi
+
 	elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
 		Debug "Vanilla framework detected!"
-		Info "Moving Oxide Extensions to the trash..."
 
-		# Check if Rust Edit Extension is installed
-		if [[ -f "$RUSTEDIT" ]]; then
-			Info "Found Rust Edit Extension! Moving it to the trash now..."
-			# Move it
-			rm -rf "$RUSTEDIT"
-			Success "Rust Edit Extension Moved!"
-		fi
+		shopt -s nullglob # This ensures that if no files match the pattern, the result is an empty list rather than the pattern itself.
+    
+	    # Get all the Oxide.*.dll files - Can return empty is no files exist.
+	    files=(/home/container/RustDedicated_Data/Managed/Oxide.*.dll)
 
-		# Check if Chaos Code Extension is installed
-		if [[ -f "$CHAOS" ]]; then
-			Info "Found Chaos Code Extension! Moving it to the trash now..."
-			# Move it
-			rm -rf "$CHAOS"
-			Success "Chaos Code Extension Moved!"
-		fi
+	    # Check if the Oxide.*.dll files exist
+	    Info "Checking for Oxide Files in RustDedicated_Data/Managed..."
+	    if [ ${#files[@]} -gt 0 ]; then
+	        # FOUND EM!
+	        Info "Oxide Files Found!"
 
-		# Check if Discord Extension is installed
-		if [[ -f "$DISCORD" ]]; then
-			Info "Found Discord Extension! Moving it to the trash now..."
-			# Move it
-			rm -rf "$DISCORD"
-			Success "Discord Extension Moved!"
-		fi
+	        Info "Moving Oxide Files to the trash..."
+	        # Remove all files that match the Oxide.*.dll pattern
+    		rm -v /home/container/RustDedicated_Data/Managed/Oxide.*.dll
+
+	        Success "Removed all Oxide files from RustDedicated_Data/Managed"
+	    else
+	        # No Files Found
+	        Success "No Oxide Files Found!"
+	    fi
+	    shopt -u nullglob # Restore Default Globbing Behavior
 	fi
 }
