@@ -135,10 +135,3 @@ export LD_LIBRARY_PATH=$(pwd)/RustDedicated_Data/Plugins/x86_64:$(pwd)
 # Run the Server
 node /wrapper.js "${MODIFIED_STARTUP}"
 
-
-
-
-
-
-
-
