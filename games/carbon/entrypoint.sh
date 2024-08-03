@@ -137,8 +137,8 @@ echo "CARBONSWITCH: ${CARBONSWITCH}"
 echo "=============================="
 
 # Define the carbon steamCMD Validation function
-function Carbon_SteamCMD_Validate_Download() {
-    echo "Inside of Carbon_SteamCMD_Validate_Download()"
+function SteamCMD_Validate_Download() {
+    echo "Inside of SteamCMD_Validate_Download()"
     if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
         Delete_SteamApps_Directory
         echo -e "Validating aux01 server game files..."
@@ -172,13 +172,13 @@ if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
     echo -e "Carbon Switch Detected!"
     echo -e "Forcing validation of game server..."
     # Go to this function
-    Carbon_SteamCMD_Validate_Download
+    SteamCMD_Validate_Download
 # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
 elif [ -z "${AUTO_UPDATE}" ] || [ "${AUTO_UPDATE}" == "1" ]; then
     # If we're going to validate after updating
     if [ "${VALIDATE}" == "1" ]; then
             # Go to this function
-            Carbon_SteamCMD_Validate_Download
+            SteamCMD_Validate_Download
         fi
     # Else we're not validating
     else
