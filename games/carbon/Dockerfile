@@ -28,6 +28,7 @@ LABEL       org.opencontainers.image.source="https://github.com/SturdyStubs/pter
 LABEL       org.opencontainers.image.licenses=MIT
 
 ENV         DEBIAN_FRONTEND=noninteractive
+ENV 		NODE_OPTIONS="--no-deprecation"
 
 RUN			dpkg --add-architecture i386 \
 			&& apt update \
