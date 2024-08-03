@@ -15,16 +15,13 @@ cd /home/container
 ########################
 
 if [ -f /app_public_ip.sh ]; then
-  Error "app_public_ip.sh exists and is found."
+  Success "app_public_ip.sh exists and is found!"
   # Directly run the script without chmod
   /bin/bash /app_public_ip.sh
 else
-  echo "app_public_ip.sh does not exist or cannot be found."
+  Error "app_public_ip.sh does not exist or cannot be found."
   exit 0
 fi
-
-# echo "Sleeping for 10 seconds"
-# sleep 10
 
 ####################################
 # MODDING ROOT FOLDER EXISTS CHECK #
