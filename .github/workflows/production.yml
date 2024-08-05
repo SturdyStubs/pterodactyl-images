@@ -3,7 +3,7 @@ name: Build Production Branch
 on:
   push:
     branches:
-      - main
+      - production
     paths:
       - games/**
 jobs:
