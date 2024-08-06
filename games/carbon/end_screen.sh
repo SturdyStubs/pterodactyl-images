@@ -1,12 +1,12 @@
 source /helpers/messages.sh
 
-Error "╭──────────────────────────────────────────────────╮"
-Error "│     Thats it from us! Enjoy your rust server!    │"
-Error "├──────────────────────────────────────────────────┤"
-Error "│    For More Information See The Documentation    │"
-Error "│        https://tinyurl.com/aiorustegg            │"
-Error "│         https://discord.gg/CUH3vADmMp            │"
-Error "╰──────────────────────────────────────────────────╯"
+Red "╭──────────────────────────────────────────────────╮"
+Red "│     Thats it from us! Enjoy your rust server!    │"
+Red "├──────────────────────────────────────────────────┤"
+Red "│    For More Information See The Documentation    │"
+Red "│        https://tinyurl.com/aiorustegg            │"
+Red "│         https://discord.gg/CUH3vADmMp            │"
+Red "╰──────────────────────────────────────────────────╯"
 
 Info "Starting your Rust server now!"
 sleep 2
