@@ -35,3 +35,11 @@ function Debug() {
 		echo $1
 	fi
 }
+
+##########
+# Colors #
+##########
+
+function Red() {
+	printf "${RED}$1 ${NC}"
+}

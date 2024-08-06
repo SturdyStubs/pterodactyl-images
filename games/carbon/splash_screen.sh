@@ -1,14 +1,14 @@
 source /helpers/messages.sh
 
-Error "╭──────────────────────────────────────────────────╮"
-Error "│                 AIO RUST EGG                     │"
-Error "│            Created By: SturdyStubs               │"
-Error "├──────────────────────────────────────────────────┤"
-Error "│    For More Information See The Documentation    │"
-Error "│        https://tinyurl.com/aiorustegg            │"
-Error "│         https://discord.gg/CUH3vADmMp            │"
-Error "│                 Version 2.0.0                    │"
-Error "╰──────────────────────────────────────────────────╯"
+Red "╭──────────────────────────────────────────────────╮"
+Red "│                 AIO RUST EGG                     │"
+Red "│            Created By: SturdyStubs               │"
+Red "├──────────────────────────────────────────────────┤"
+Red "│    For More Information See The Documentation    │"
+Red "│        https://tinyurl.com/aiorustegg            │"
+Red "│         https://discord.gg/CUH3vADmMp            │"
+Red "│                 Version 2.0.0                    │"
+Red "╰──────────────────────────────────────────────────╯"
 
 Info "Starting Egg Now!"
 sleep 2
