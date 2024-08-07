@@ -49,7 +49,6 @@ COPY 		./entrypoint.sh /entrypoint.sh
 COPY 		--chmod=0755 ./splash_screen.sh /splash_screen.sh
 COPY 		--chmod=0755 ./end_screen.sh /end_screen.sh
 
-# Try to include the whole folder instead of each file for helpers and sections
 COPY 		--chmod=0755 ./sections /sections
 COPY 		--chmod=0755 ./helpers /helpers
 
