@@ -34,7 +34,7 @@ RUN			dpkg --add-architecture i386 \
 			&& apt upgrade -y \
 			&& apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
 			&& curl -sL https://deb.nodesource.com/setup_14.x | grep -v '^[a-z]*_deprecation_warning$' | bash - \
-			&& apt install -y nodejs \
+			&& apt install -y nodejs npm \
 			&& mkdir /node_modules \
 			&& npm install --prefix / ws \
 			&& useradd -d /home/container -m container
