@@ -20,7 +20,7 @@
 # SOFTWARE.
 #
 
-FROM        --platform=$TARGETOS/$TARGETARCH debian:12.6-slim
+FROM        --platform=$TARGETOS/$TARGETARCH node:22-bookworm-slim
 
 LABEL       author="SturdyStubs" maintainer="BippyMiester"
 
@@ -34,19 +34,7 @@ RUN         dpkg --add-architecture i386 \
             && apt update \
             && apt upgrade -y \
             && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386
-
-# Install NodeJS
-ENV 		NODE_VERSION=16.13.0
-RUN 		curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-ENV 		NVM_DIR=/root/.nvm
-RUN 		. "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-RUN 		. "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-RUN 		. "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV 		PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-
-# Handle NPM Installs
-WORKDIR		/root/.nvm/versions/node/v${NODE_VERSION}/bin/
-RUN			mkdir /node_modules \
+			&& mkdir /node_modules \
             && npm install --prefix / ws \
             && useradd -d /home/container -m container
 
