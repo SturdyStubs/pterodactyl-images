@@ -29,13 +29,23 @@ LABEL       org.opencontainers.image.licenses=MIT
 
 ENV         DEBIAN_FRONTEND=noninteractive
 
+# Install Dependancies
 RUN         dpkg --add-architecture i386 \
             && apt update \
             && apt upgrade -y \
-            && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
-            && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
-            && /root/.nvm/nvm install 22 \
-            && mkdir /node_modules \
+            && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386
+
+# Install NodeJS
+ENV 		NODE_VERSION=16.13.0
+RUN 		curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+ENV 		NVM_DIR=/root/.nvm
+RUN 		. "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN 		. "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN 		. "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV 		PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+
+# Handle NPM Installs
+RUN			mkdir /node_modules \
             && npm install --prefix / ws \
             && useradd -d /home/container -m container
 
