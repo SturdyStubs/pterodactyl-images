@@ -40,7 +40,8 @@ RUN         dpkg --add-architecture i386 \
 		    && node --version \ 
 		    && npm --version \
 			&& mkdir /node_modules \
-            && npm install --prefix / ws \
+			&& echo $(pwd) \
+            && npm install ws \
             && useradd -d /home/container -m container
 
 USER        container
