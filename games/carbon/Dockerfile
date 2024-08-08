@@ -38,6 +38,7 @@ RUN			dpkg --add-architecture i386 \
 			&& mkdir /node_modules \
 			&& npm install --prefix / ws \
 			&& ls -la /node_modules \
+			&& ls -la /node_modules/ws \
 			&& useradd -d /home/container -m container
 
 USER 		container
