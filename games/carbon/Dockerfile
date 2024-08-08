@@ -34,10 +34,11 @@ RUN         dpkg --add-architecture i386 \
             && apt update \
             && apt upgrade -y \
             && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
-            && curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && \
+            && curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh \
+            && bash nodesource_setup.sh \
 		    && apt-get install -y nodejs \
-		    && build-essential && \
-		    && node --version && \ 
+		    && build-essential \
+		    && node --version \ 
 		    && npm --version \
 			&& mkdir /node_modules \
             && npm install --prefix / ws \
