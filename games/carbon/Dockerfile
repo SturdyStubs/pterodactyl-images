@@ -29,8 +29,6 @@ LABEL       org.opencontainers.image.licenses=MIT
 
 ENV         DEBIAN_FRONTEND=noninteractive
 
-WORKDIR		/
-
 # Install Dependancies
 RUN         dpkg --add-architecture i386 \
             && apt update \
@@ -47,6 +45,7 @@ RUN 		. "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
 ENV 		PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
 # Handle NPM Installs
+WORKDIR		/root/.nvm/versions/node/v${NODE_VERSION}/bin/
 RUN			mkdir /node_modules \
             && npm install --prefix / ws \
             && useradd -d /home/container -m container
