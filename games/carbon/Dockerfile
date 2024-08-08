@@ -20,7 +20,7 @@
 # SOFTWARE.
 #
 
-FROM        --platform=$TARGETOS/$TARGETARCH debian:slim
+FROM        --platform=$TARGETOS/$TARGETARCH debian:12.6-slim
 
 LABEL       author="SturdyStubs" maintainer="BippyMiester"
 
