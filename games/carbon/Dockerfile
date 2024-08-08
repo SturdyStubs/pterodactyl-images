@@ -45,7 +45,7 @@ RUN			curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh \
 # Install Websocket NPM Package
 WORKDIR		/
 RUN			mkdir /node_modules \
-			&& echo $(pwd)
+			&& echo $(pwd) \
 			&& npm update idealtree \
 			&& echo "Done" \
             && npm install --prefix / ws \
