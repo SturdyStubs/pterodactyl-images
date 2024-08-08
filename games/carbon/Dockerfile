@@ -43,13 +43,16 @@ RUN			curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh \
 		    && npm --version
 
 # Install Websocket NPM Package
-RUN			mkdir /node_modules \
+RUN			mkdir -p /node_modules/ws /tmp/ws \
 			&& echo $(pwd) \
 			&& whereis npm \
 			&& curl -L $(curl -s https://api.github.com/repos/websockets/ws/releases/latest | jq -r '.zipball_url') -o ws-latest.zip \
 			&& ls -la \
-			&& unzip ws-latest.zip -d /node_modules \
+			&& unzip ws-latest.zip -d /tmp/ws \
+			&& mv /tmp/ws/*/* /node_modules/ws \
 			&& ls -la /node_modules \
+			&& ls -la /node_modules/ws \
+			&& rm -rf /tmp/ws \
 			&& echo "Done" \
             && useradd -d /home/container -m container
 
