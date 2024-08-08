@@ -20,7 +20,7 @@
 # SOFTWARE.
 #
 
-FROM 		--platform=$TARGETOS/$TARGETARCH debian:bullseye-slim
+FROM        --platform=$TARGETOS/$TARGETARCH debian:bookworm-slim
 
 LABEL       author="SturdyStubs" maintainer="BippyMiester"
 
@@ -29,29 +29,41 @@ LABEL       org.opencontainers.image.licenses=MIT
 
 ENV         DEBIAN_FRONTEND=noninteractive
 
-RUN			dpkg --add-architecture i386 \
-			&& apt update \
-			&& apt upgrade -y \
-			&& apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
-			&& curl -sL https://deb.nodesource.com/setup_14.x | grep -v '^[a-z]*_deprecation_warning$' | bash - \
-			&& apt install -y nodejs \
-			&& mkdir /node_modules \
-			&& npm install --prefix / ws \
-			&& ls -la /node_modules \
-			&& ls -la /node_modules/ws \
-			&& useradd -d /home/container -m container
+# Install Dependancies
+RUN         dpkg --add-architecture i386 \
+            && apt update \
+            && apt upgrade -y \
+            && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 jq
 
-USER 		container
-ENV  		USER=container HOME=/home/container
+# Install NodeJS
+RUN			curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh \
+            && bash nodesource_setup.sh \
+		    && apt-get install -y nodejs \
+		    && node --version \ 
+		    && npm --version
 
-WORKDIR 	/home/container
+# Install Websocket NPM Package
+RUN			mkdir -p /node_modules/ws /tmp/ws \
+			&& curl -L $(curl -s https://api.github.com/repos/websockets/ws/releases/latest | jq -r '.zipball_url') -o ws-latest.zip \
+			&& unzip ws-latest.zip -d /tmp/ws \
+			&& mv /tmp/ws/*/* /node_modules/ws \
+			&& rm -rf /tmp/ws
 
-COPY 		./wrapper.js /wrapper.js
-COPY 		./entrypoint.sh /entrypoint.sh
-COPY 		--chmod=0755 ./splash_screen.sh /splash_screen.sh
-COPY 		--chmod=0755 ./end_screen.sh /end_screen.sh
+# Define user environment
+RUN 		useradd -d /home/container -m container
+USER        container
+ENV         USER=container HOME=/home/container
 
-COPY 		--chmod=0755 ./sections /sections
-COPY 		--chmod=0755 ./helpers /helpers
+# Switch to the container of the server
+WORKDIR     /home/container
 
-CMD			[ "/bin/bash", "/entrypoint.sh" ]
+# Copy some files over to the container
+COPY        ./wrapper.js /wrapper.js
+COPY        ./entrypoint.sh /entrypoint.sh
+COPY        --chmod=0755 ./splash_screen.sh /splash_screen.sh
+COPY        --chmod=0755 ./end_screen.sh /end_screen.sh
+
+COPY        --chmod=0755 ./sections /sections
+COPY        --chmod=0755 ./helpers /helpers
+
+CMD         [ "/bin/bash", "/entrypoint.sh" ]
