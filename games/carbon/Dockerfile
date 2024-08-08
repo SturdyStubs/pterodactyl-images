@@ -20,7 +20,7 @@
 # SOFTWARE.
 #
 
-FROM 		--platform=$TARGETOS/$TARGETARCH debian:bookworm-slim
+FROM        --platform=$TARGETOS/$TARGETARCH debian:latest-slim
 
 LABEL       author="SturdyStubs" maintainer="BippyMiester"
 
@@ -29,28 +29,27 @@ LABEL       org.opencontainers.image.licenses=MIT
 
 ENV         DEBIAN_FRONTEND=noninteractive
 
-RUN			dpkg --add-architecture i386 \
-			&& apt update \
-			&& apt upgrade -y \
-			&& apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
-			&& curl -sL https://deb.nodesource.com/setup_14.x | grep -v '^[a-z]*_deprecation_warning$' | bash - \
-			&& apt install -y nodejs npm \
-			&& npm install -g yarn \
-			&& mkdir /node_modules \
-			&& npm install --prefix / ws \
-			&& useradd -d /home/container -m container
+RUN         dpkg --add-architecture i386 \
+            && apt update \
+            && apt upgrade -y \
+            && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
+            && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
+            && nvm install 22 \
+            && mkdir /node_modules \
+            && npm install --prefix / ws \
+            && useradd -d /home/container -m container
 
-USER 		container
-ENV  		USER=container HOME=/home/container
+USER        container
+ENV         USER=container HOME=/home/container
 
-WORKDIR 	/home/container
+WORKDIR     /home/container
 
-COPY 		./wrapper.js /wrapper.js
-COPY 		./entrypoint.sh /entrypoint.sh
-COPY 		--chmod=0755 ./splash_screen.sh /splash_screen.sh
-COPY 		--chmod=0755 ./end_screen.sh /end_screen.sh
+COPY        ./wrapper.js /wrapper.js
+COPY        ./entrypoint.sh /entrypoint.sh
+COPY        --chmod=0755 ./splash_screen.sh /splash_screen.sh
+COPY        --chmod=0755 ./end_screen.sh /end_screen.sh
 
-COPY 		--chmod=0755 ./sections /sections
-COPY 		--chmod=0755 ./helpers /helpers
+COPY        --chmod=0755 ./sections /sections
+COPY        --chmod=0755 ./helpers /helpers
 
-CMD			[ "/bin/bash", "/entrypoint.sh" ]
+CMD         [ "/bin/bash", "/entrypoint.sh" ]
