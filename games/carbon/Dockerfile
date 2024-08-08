@@ -43,10 +43,10 @@ RUN			curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh \
 		    && npm --version
 
 # Install Websocket NPM Package
-WORKDIR		/usr
-RUN			ls -la
 RUN			mkdir /node_modules \
 			&& echo $(pwd) \
+			&& whereis npm \
+			&& npm install ws \
 			&& echo "Done" \
             && useradd -d /home/container -m container
 
