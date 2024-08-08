@@ -37,6 +37,7 @@ RUN			dpkg --add-architecture i386 \
 			&& apt install -y nodejs \
 			&& mkdir /node_modules \
 			&& npm install --prefix / ws \
+			&& ls -la /node_modules \
 			&& useradd -d /home/container -m container
 
 USER 		container
