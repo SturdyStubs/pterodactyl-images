@@ -34,7 +34,7 @@ RUN         dpkg --add-architecture i386 \
             && apt upgrade -y \
             && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
             && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
-            && nvm install 22 \
+            && /root/.nvm/nvm install 22 \
             && mkdir /node_modules \
             && npm install --prefix / ws \
             && useradd -d /home/container -m container
