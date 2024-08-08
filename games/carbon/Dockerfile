@@ -37,7 +37,6 @@ RUN         dpkg --add-architecture i386 \
             && curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh \
             && bash nodesource_setup.sh \
 		    && apt-get install -y nodejs \
-		    && build-essential \
 		    && node --version \ 
 		    && npm --version \
 			&& mkdir /node_modules \
