@@ -46,7 +46,9 @@ RUN			curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh \
 RUN			mkdir /node_modules \
 			&& echo $(pwd) \
 			&& whereis npm \
-			&& npm install ws \
+			&& curl -L $(curl -s https://api.github.com/repos/websockets/ws/releases/latest | jq -r '.zipball_url') -o ws-latest.zip \
+			&& unzip ws-latest.zip -d /node_modules \
+			&& ls -la /node_modules \
 			&& echo "Done" \
             && useradd -d /home/container -m container
 
