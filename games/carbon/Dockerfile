@@ -20,7 +20,7 @@
 # SOFTWARE.
 #
 
-FROM 		--platform=$TARGETOS/$TARGETARCH debian:bullseye-slim
+FROM 		--platform=$TARGETOS/$TARGETARCH debian:bookworm-slim
 
 LABEL       author="SturdyStubs" maintainer="BippyMiester"
 
@@ -34,7 +34,8 @@ RUN			dpkg --add-architecture i386 \
 			&& apt upgrade -y \
 			&& apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
 			&& curl -sL https://deb.nodesource.com/setup_14.x | grep -v '^[a-z]*_deprecation_warning$' | bash - \
-			&& apt install -y nodejs \
+			&& apt install -y nodejs npm \
+			&& npm install -g yarn \
 			&& mkdir /node_modules \
 			&& npm install --prefix / ws \
 			&& useradd -d /home/container -m container
@@ -49,19 +50,7 @@ COPY 		./entrypoint.sh /entrypoint.sh
 COPY 		--chmod=0755 ./splash_screen.sh /splash_screen.sh
 COPY 		--chmod=0755 ./end_screen.sh /end_screen.sh
 
-COPY 		--chmod=0755 ./sections/app_public_ip.sh /sections/app_public_ip.sh
-COPY 		--chmod=0755 ./sections/modding_root_check.sh /sections/modding_root_check.sh
-COPY 		--chmod=0755 ./sections/oxide_carbon_switch.sh /sections/oxide_carbon_switch.sh
-COPY 		--chmod=0755 ./sections/auto_update_validate.sh /sections/auto_update_validate.sh
-COPY 		--chmod=0755 ./sections/replace_startup_variables.sh /sections/replace_startup_variables.sh
-COPY 		--chmod=0755 ./sections/extension_download.sh /sections/extension_download.sh
-COPY 		--chmod=0755 ./sections/update_oxide.sh /sections/update_oxide.sh
-COPY 		--chmod=0755 ./sections/update_carbon.sh /sections/update_carbon.sh
-
-COPY 		--chmod=0755 ./helpers/colors.sh /helpers/colors.sh
-COPY 		--chmod=0755 ./helpers/messages.sh /helpers/messages.sh
-COPY 		--chmod=0755 ./helpers/steamcmd.sh /helpers/steamcmd.sh
-COPY 		--chmod=0755 ./helpers/modding_root_update.sh /helpers/modding_root_update.sh
-COPY 		--chmod=0755 ./helpers/clean_rustdedicated.sh /helpers/clean_rustdedicated.sh
+COPY 		--chmod=0755 ./sections /sections
+COPY 		--chmod=0755 ./helpers /helpers
 
 CMD			[ "/bin/bash", "/entrypoint.sh" ]
