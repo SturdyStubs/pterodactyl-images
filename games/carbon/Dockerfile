@@ -29,21 +29,27 @@ LABEL       org.opencontainers.image.licenses=MIT
 
 ENV         DEBIAN_FRONTEND=noninteractive
 
-WORKDIR		/
-
 # Install Dependancies
 RUN         dpkg --add-architecture i386 \
             && apt update \
             && apt upgrade -y \
-            && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 \
-            && curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh \
+            && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386
+
+# Install NodeJS
+RUN			curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh \
             && bash nodesource_setup.sh \
 		    && apt-get install -y nodejs \
 		    && node --version \ 
-		    && npm --version \
-			&& mkdir /node_modules \
-			&& echo $(pwd) \
+		    && npm --version
+
+# Install Websocket NPM Package
+WORKDIR		/
+RUN			mkdir /node_modules \
+			&& echo $(pwd)
+			&& npm update idealtree \
+			&& echo "Done" \
             && npm install --prefix / ws \
+            && echo "Done 2" \
             && useradd -d /home/container -m container
 
 USER        container
