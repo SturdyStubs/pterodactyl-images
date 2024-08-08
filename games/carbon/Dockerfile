@@ -47,10 +47,7 @@ WORKDIR		/usr
 RUN			ls -la
 RUN			mkdir /node_modules \
 			&& echo $(pwd) \
-			&& npm update idealtree \
 			&& echo "Done" \
-            && npm install --prefix / ws \
-            && echo "Done 2" \
             && useradd -d /home/container -m container
 
 USER        container
