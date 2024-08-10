@@ -1,7 +1,59 @@
 #!/usr/bin/env node
 
-var startupCmd = "";
 const fs = require("fs");
+const path = require("path");
+var startupCmd = "";
+
+// Function to find the most recent log file matching the desired format
+function findMostRecentLog(directory) {
+	const logPattern = /^\d{4}-\d{2}-\d{2}_T\d{4}\.log$/;
+	const files = fs.readdirSync(directory);
+	let latestFile;
+	let latestTime = 0;
+
+	files.forEach(file => {
+		if (logPattern.test(file)) {
+			const filePath = path.join(directory, file);
+			const stat = fs.statSync(filePath);
+			if (stat.isFile() && stat.mtimeMs > latestTime) {
+				latestTime = stat.mtimeMs;
+				latestFile = filePath;
+			}
+		}
+	});
+
+	return latestFile;
+}
+
+// Async function to monitor file changes and log the updates
+function monitorLogFile(logFilePath) {
+	let fileSize = fs.statSync(logFilePath).size;
+
+	fs.watchFile(logFilePath, { interval: 100 }, (curr, prev) => {
+		if (curr.mtimeMs > prev.mtimeMs) {
+			fs.open(logFilePath, 'r', (err, fd) => {
+				if (err) throw err;
+				fs.read(fd, Buffer.alloc(curr.size - fileSize), fileSize, curr.size - fileSize, fileSize, (err, bytesRead, buffer) => {
+					if (err) throw err;
+					console.log(buffer.toString().trim());
+					fileSize = curr.size;
+				});
+			});
+		}
+	});
+}
+
+if (process.env.LOG_FILE === "true") {
+	const logDirectory = path.join(__dirname, 'logs'); // Adjusting to use /logs/ directory
+	const latestLogFile = findMostRecentLog(logDirectory);
+	if (latestLogFile) {
+		console.log(`Monitoring log file: ${latestLogFile}`);
+		monitorLogFile(latestLogFile);
+	} else {
+		console.log("No log files found to monitor.");
+	}
+}
+
 fs.writeFile("latest.log", "", (err) => {
 	if (err) console.log("Callback error in appendFile:" + err);
 });
@@ -111,7 +163,6 @@ var poll = function () {
 			if (json !== undefined) {
 				if (json.Message !== undefined && json.Message.length > 0) {
 					console.log(json.Message);
-					const fs = require("fs");
 					fs.appendFile("latest.log", "\n" + json.Message, (err) => {
 						if (err) console.log("Callback error in appendFile:" + err);
 					});
