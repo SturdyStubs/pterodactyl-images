@@ -82,6 +82,7 @@ function Clean_RustDedicated() {
 	        Info "Moving Oxide Files to the trash..."
 	        # Remove all files that match the Oxide.*.dll pattern
     		rm -v /home/container/RustDedicated_Data/Managed/Oxide.*.dll
+			rm -v /home/container/Oxide.Compiler
 
 	        Success "Removed all Oxide files from RustDedicated_Data/Managed"
 	    else

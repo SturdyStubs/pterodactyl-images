@@ -24,9 +24,9 @@ else
     echo "DOWNLOAD_METHOD is set to '${DOWNLOAD_METHOD}'."
 fi
 
-#######################################
-# CHECK AND INSTALL DEPOTDOWNLOADER IF NEEDED #
-#######################################
+########################################
+# DOWNLOAD AND CLEANUP DOWNLOAD METHOD #
+########################################
 
 if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
     # Check if ./DepotDownloader already exists
@@ -45,8 +45,35 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
         chmod +x /home/container/DepotDownloader
         echo "DepotDownloader installation completed successfully."
     fi
-else
-    echo "Depot Downloader method not selected. Skipping installation."
+    if [ -d /home/container/steamcmd ]; then
+        echo "Removing SteamCMD files..."
+        rm -d /home/container/steamcmd
+    fi
+fi
+
+if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
+    # Check if ./DepotDownloader already exists
+    if [ -d /home/container/steamcmd ]; then
+        echo "SteamCMD found. Skipping installation."
+    else
+        cd /tmp
+        mkdir -p /mnt/server/steamcmd
+        curl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+        tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+        mkdir -p /mnt/server/steamapps # Fix steamcmd disk write error when this folder is missing
+        cd /mnt/server/steamcmd
+        # SteamCMD fails otherwise for some reason, even running as root.
+        # This is changed at the end of the install process anyways.
+        chown -R root:root /mnt
+        export HOME=/mnt/server
+        echo "SteamCMD installation completed successfully."
+    fi
+    if [ -f /home/container/DepotDownloader ]; then
+        echo "Removing DepotDownloader files..."
+        rm -v /home/container/DepotDownloader
+        rm -v /home/container/DepotDownloader.xml
+        rm -d /home/container/.DepotDownloader
+    fi
 fi
 
 #######################################################
