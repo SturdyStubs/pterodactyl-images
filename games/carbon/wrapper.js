@@ -25,6 +25,7 @@ if (startupCmd.length < 1) {
 }
 
 const seenPercentage = {};
+let rconConnected = false;
 
 function filter(data) {
     const str = data.toString();
@@ -96,6 +97,7 @@ var poll = function () {
 
 	ws.on("open", function open() {
 		console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
+		rconConnected = true;
 		waiting = false;
 
 		// Hack to fix broken console output
@@ -146,20 +148,24 @@ var poll = function () {
 }
 poll();
 
-// Watch the log file and output new data to the console
-let lastSize = 0;
-
-fs.watchFile(logFile, (curr, prev) => {
-	fs.open(logFile, 'r', (err, fd) => {
-		if (err) return console.error('Error opening log file:', err);
-		const bufferSize = curr.size - lastSize;
-		const buffer = Buffer.alloc(bufferSize);
-		fs.read(fd, buffer, 0, bufferSize, lastSize, (err, bytesRead, buffer) => {
-			if (err) return console.error('Error reading log file:', err);
-			if (bytesRead > 0) {
-				console.log(buffer.toString('utf8'));
-				lastSize = curr.size;
-			}
-		});
+// Stream the log file and output new data to the console until RCON is connected
+if (!rconConnected) {
+	const logStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
+	logStream.on('data', (chunk) => {
+		if (!rconConnected) {
+			console.log(chunk);
+		}
 	});
-});
+	logStream.on('end', () => {
+		if (!rconConnected) {
+			fs.watch(logFile, (event, filename) => {
+				if (filename && event === 'change' && !rconConnected) {
+					const newLogStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
+					newLogStream.on('data', (chunk) => {
+						console.log(chunk);
+					});
+				}
+			});
+		}
+	});
+}
