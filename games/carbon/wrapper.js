@@ -2,6 +2,7 @@
 
 var startupCmd = "";
 const fs = require("fs");
+const seenMessages = new Set(); // Track seen messages to prevent duplicates
 
 // Get the log file from the environment variable, default to 'latest.log' if not set
 const logFile = process.env.LOG_FILE || "";
@@ -29,13 +30,18 @@ let rconConnected = false;
 let lastSize = 0;
 let watcher;
 
-function filter(data) {
-	const str = data.toString();
-	if (str.startsWith("Fallback handler could not load library")) return; // Remove fallback
-	if (str.includes("Filename:")) return; //Remove bindings.h
-	if (str.includes("ERROR: Shader ")) return; //Remove shader errors
-	if (str.includes("WARNING: Shader ")) return; //Remove shader errors
-	if (str.startsWith("Loading Prefab Bundle ")) { // Rust seems to spam the same percentage, so filter out any duplicates.
+function filterAndOutput(data) {
+	const str = data.toString().trim();
+
+	if (seenMessages.has(str)) return; // Prevent duplicate messages
+	seenMessages.add(str); // Add message to seen set
+
+	// Filtering logic
+	if (str.startsWith("Fallback handler could not load library")) return;
+	if (str.includes("Filename:")) return;
+	if (str.includes("ERROR: Shader ")) return;
+	if (str.includes("WARNING: Shader ")) return;
+	if (str.startsWith("Loading Prefab Bundle ")) {
 		const percentage = str.substr("Loading Prefab Bundle ".length);
 		if (seenPercentage[percentage]) return;
 
@@ -50,8 +56,8 @@ console.log("Starting Rust...");
 
 var exited = false;
 const gameProcess = exec(startupCmd);
-gameProcess.stdout.on('data', filter);
-gameProcess.stderr.on('data', filter);
+gameProcess.stdout.on('data', filterAndOutput);
+gameProcess.stderr.on('data', filterAndOutput);
 gameProcess.on('exit', function (code, signal) {
 	exited = true;
 
@@ -111,8 +117,8 @@ var poll = function () {
 		ws.send(createPacket('status'));
 
 		process.stdin.removeListener('data', initialListener);
-		gameProcess.stdout.removeListener('data', filter);
-		gameProcess.stderr.removeListener('data', filter);
+		gameProcess.stdout.removeListener('data', filterAndOutput);
+		gameProcess.stderr.removeListener('data', filterAndOutput);
 		process.stdin.on('data', function (text) {
 			ws.send(createPacket(text));
 		});
@@ -123,10 +129,10 @@ var poll = function () {
 			var json = JSON.parse(data);
 			if (json !== undefined) {
 				if (json.Message !== undefined && json.Message.length > 0) {
-					console.log(json.Message);
 					fs.appendFile(logFile, "\n" + json.Message, (err) => {
 						if (err) console.log("Callback error in appendFile:" + err);
 					});
+					filterAndOutput(json.Message); // Apply filtering to WebSocket messages
 				}
 			} else {
 				console.log("Error: Invalid JSON received");
@@ -158,7 +164,7 @@ poll();
 // Function to handle new log data
 function handleNewLogData(chunk) {
 	if (!rconConnected) {
-		filter(chunk); // Apply the same filtering logic to log data from the file
+		filterAndOutput(chunk); // Apply filtering to log data from the file
 		lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize to reflect the latest read position
 	}
 }
