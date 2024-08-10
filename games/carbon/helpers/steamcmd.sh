@@ -68,19 +68,19 @@ function DepotDownloader_Validate() {
     if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Aux1 Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux01 -validate -username anonymous -password anonymous
+        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux01 -validate -username "anonymous" -password ""
     elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Aux2 Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux02 -validate -username anonymous -password anonymous
+        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux02 -validate -username "anonymous" -password ""
     elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Staging Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta staging -validate -username anonymous -password anonymous
+        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta staging -validate -username "anonymous" -password ""
     else
         Delete_SteamApps_Directory
         Info "Downloading Default Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -validate -username anonymous -password anonymous
+        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -validate -username "anonymous" -password ""
     fi
 }
 
@@ -91,18 +91,18 @@ function DepotDownloader_No_Validation() {
     if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Aux1 Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux01 -username anonymous -password anonymous
+        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux01 -username "anonymous" -password ""
     elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Aux2 Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux02 -username anonymous -password anonymous
+        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux02 -username "anonymous" -password ""
     elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Staging Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta staging -username anonymous -password anonymous
+        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta staging -username "anonymous" -password ""
     else
         Delete_SteamApps_Directory
         Info "Downloading Default Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -username anonymous -password anonymous
+        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -username "anonymous" -password ""
     fi
 }
