@@ -4,18 +4,12 @@ var startupCmd = "";
 const fs = require("fs");
 const path = require("path");
 
-// Set up the log file path based on the current date and time
-const logFile = path.join(process.cwd(), "logs", `${new Date().toISOString().replace(/:/g, "-").replace("T", "_").slice(0, 16)}.log`);
+// Get the current timestamp for log file naming
+const logFileName = `${new Date().toISOString().replace(/:/g, "").replace(/T/g, "_").slice(0, 15)}.log`;
+const logFile = path.join(process.cwd(), "logs", logFileName);
 
 // Check if the log file exists
-let logFileExists = false;
-if (fs.existsSync(logFile)) {
-    logFileExists = true;
-    // Initialize the log file (if needed)
-    fs.writeFileSync(logFile, ""); 
-} else {
-    console.log("Log file does not exist. Skipping log file handling.");
-}
+let logFileExists = fs.existsSync(logFile);
 
 var args = process.argv.splice(process.execArgv.length + 2);
 for (var i = 0; i < args.length; i++) {
@@ -33,12 +27,11 @@ if (startupCmd.length < 1) {
 
 let rconConnected = false;
 let lastSize = 0;
-let watcher;
 
 function filterAndOutput(data) {
     const str = data.toString().trim();
 
-    // Filtering logic
+    // Simple filtering logic
     if (str.startsWith("Fallback handler could not load library")) return;
     if (str.includes("Filename:")) return;
     if (str.includes("ERROR: Shader ")) return;
@@ -49,7 +42,7 @@ function filterAndOutput(data) {
         return;
     }
 
-    console.log(str);
+    console.log(str); // Post to console
 }
 
 var exec = require("child_process").exec;
@@ -64,7 +57,6 @@ gameProcess.on('exit', function (code, signal) {
 
     if (code) {
         console.log("Main game process exited with code " + code);
-        // process.exit(code);
     }
 });
 
@@ -87,7 +79,6 @@ process.on('exit', function (code) {
     gameProcess.kill('SIGTERM');
 });
 
-var waiting = true;
 var poll = function () {
     function createPacket(command) {
         var packet = {
@@ -107,12 +98,6 @@ var poll = function () {
     ws.on("open", function open() {
         console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
         rconConnected = true;
-        waiting = false;
-
-        // Stop file watching when RCON is connected
-        if (watcher) {
-            watcher.close();
-        }
 
         // Hack to fix broken console output
         ws.send(createPacket('status'));
@@ -128,38 +113,26 @@ var poll = function () {
     ws.on("message", function (data, flags) {
         try {
             var json = JSON.parse(data);
-            if (json !== undefined) {
-                if (json.Message !== undefined && json.Message.length > 0) {
-                    if (logFileExists) {
-                        fs.appendFile(logFile, "\n" + json.Message, (err) => {
-                            if (err) console.log("Callback error in appendFile: " + err);
-                        });
-                    }
-                    filterAndOutput(json.Message); // Apply filtering to WebSocket messages
-                }
+            if (json !== undefined && json.Message !== undefined && json.Message.length > 0) {
+                filterAndOutput(json.Message); // Apply filtering to WebSocket messages
             } else {
                 console.log("Error: Invalid JSON received");
             }
         } catch (e) {
-            if (e) {
-                console.log(e);
-            }
+            console.log(e);
         }
     });
 
     ws.on("error", function (err) {
-        waiting = true;
         console.log("Waiting for RCON to come up...");
         setTimeout(poll, 5000);
     });
 
     ws.on("close", function () {
-        if (!waiting) {
-            console.log("Connection to server closed.");
+        console.log("Connection to server closed.");
 
-            exited = true;
-            process.exit();
-        }
+        exited = true;
+        process.exit();
     });
 }
 poll();
@@ -172,7 +145,7 @@ function handleNewLogData(chunk) {
     }
 }
 
-// Set up the initial file watcher
+// Set up the initial file watcher if the log file exists
 if (logFileExists && !rconConnected) {
     // First read any existing data in the file
     fs.stat(logFile, (err, stats) => {
@@ -183,7 +156,7 @@ if (logFileExists && !rconConnected) {
             logStream.on('data', handleNewLogData);
             logStream.on('end', () => {
                 // Set up file watcher after reading initial data
-                watcher = fs.watch(logFile, (event, filename) => {
+                fs.watch(logFile, (event, filename) => {
                     if (filename && event === 'change' && !rconConnected) {
                         fs.stat(logFile, (err, stats) => {
                             if (err) return console.error(err);
