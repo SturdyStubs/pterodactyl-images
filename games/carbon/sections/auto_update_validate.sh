@@ -13,6 +13,43 @@ else
   Error "/helpers/steamcmd.sh does not exist or cannot be found." "1"
 fi
 
+##############################################
+# SET DEFAULT DOWNLOAD METHOD IF NOT DEFINED #
+##############################################
+
+if [ -z "${DOWNLOAD_METHOD}" ]; then
+    Warn "DOWNLOAD_METHOD variable not found. Update your egg at https://github.com/SturdyStubs/AIO.Egg. Defaulting to SteamCMD..."
+    DOWNLOAD_METHOD="SteamCMD"
+else
+    Info "DOWNLOAD_METHOD is set to '${DOWNLOAD_METHOD}'."
+fi
+
+#######################################
+# CHECK AND INSTALL DEPOTDOWNLOADER IF NEEDED #
+#######################################
+
+if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
+    Info "Depot Downloader method selected."
+
+    # Check if DepotDownloader.dll already exists
+    if [ -f /home/container/DepotDownloader.dll ]; then
+        Info "DepotDownloader.dll found. Skipping installation."
+    else
+        Info "DepotDownloader.dll not found. Installing DepotDownloader..."
+        # Create a temporary directory for download
+        cd /tmp
+        # Download DepotDownloader from the provided URL
+        curl -sSL -o DepotDownloader.zip https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.6.0/DepotDownloader-linux-x64.zip
+        # Unzip the DepotDownloader package to /home/container
+        unzip DepotDownloader.zip -d /home/container
+        # Navigate to the DepotDownloader directory
+        rm -rf /tmp/*
+        Info "DepotDownloader installation completed successfully."
+    fi
+else
+    Info "Depot Downloader method not selected. Skipping installation."
+fi
+
 #######################################################
 # CLEAN RUSTDEDICATED_DATA FOLDER OF OXIDE EXTENSIONS #
 #######################################################
