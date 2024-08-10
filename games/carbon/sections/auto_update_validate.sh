@@ -44,6 +44,7 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
         unzip DepotDownloader.zip -d /home/container
         # Navigate to the DepotDownloader directory
         rm -rf /tmp/*
+        chmod +x /home/container/DepotDownloader
         Info "DepotDownloader installation completed successfully."
     fi
 else
