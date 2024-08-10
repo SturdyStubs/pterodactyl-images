@@ -26,6 +26,7 @@ if (startupCmd.length < 1) {
 
 const seenPercentage = {};
 let rconConnected = false;
+let lastSize = 0;
 
 function filter(data) {
     const str = data.toString();
@@ -154,6 +155,7 @@ if (!rconConnected) {
 	logStream.on('data', (chunk) => {
 		if (!rconConnected) {
 			console.log(chunk);
+			lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize to reflect the latest read position
 		}
 	});
 	logStream.on('end', () => {
@@ -163,6 +165,7 @@ if (!rconConnected) {
 					const newLogStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
 					newLogStream.on('data', (chunk) => {
 						console.log(chunk);
+						lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize as new data is read
 					});
 				}
 			});
