@@ -43,8 +43,8 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
         # Navigate to the DepotDownloader directory
         rm -rf /tmp/*
         chmod +x /home/container/DepotDownloader
-        wait
         echo "DepotDownloader installation completed successfully."
+        sleep 3
     fi
     if [ -d /home/container/steamcmd ]; then
         echo "Removing SteamCMD files..."
