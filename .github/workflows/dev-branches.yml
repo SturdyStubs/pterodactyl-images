@@ -1,22 +1,8 @@
-<<<<<<< HEAD
-name: develop
-=======
 name: Build Dev Branches
->>>>>>> 33fb0a38dcde3494f5d004fae40484c072f9be98
 
 on:
   workflow_dispatch:
   push:
-<<<<<<< HEAD
-    branches:
-      - develop
-    paths:
-      - 'games/carbon'
-
-jobs:
-  push:
-    name: "games:${{ github.ref_name }}"
-=======
     branches-ignore:
       - main
       - beta
@@ -28,7 +14,6 @@ jobs:
 jobs:
   push:
     name: "aioegg:${{ github.ref_name }}"
->>>>>>> 33fb0a38dcde3494f5d004fae40484c072f9be98
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,8 +32,4 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-<<<<<<< HEAD
-            ghcr.io/sturdystubs/games:${{ github.ref_name }}
-=======
             ghcr.io/sturdystubs/aioegg:${{ github.ref_name }}
->>>>>>> 33fb0a38dcde3494f5d004fae40484c072f9be98
