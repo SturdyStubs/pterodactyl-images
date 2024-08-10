@@ -47,7 +47,7 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
     fi
     if [ -d /home/container/steamcmd ]; then
         echo "Removing SteamCMD files..."
-        rm -d /home/container/steamcmd
+        rm -rf /home/container/steamcmd
     fi
 fi
 
@@ -70,9 +70,9 @@ if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
     fi
     if [ -f /home/container/DepotDownloader ]; then
         echo "Removing DepotDownloader files..."
-        rm -v /home/container/DepotDownloader
-        rm -v /home/container/DepotDownloader.xml
-        rm -d /home/container/.DepotDownloader
+        rm -rf /home/container/DepotDownloader
+        rm -rf /home/container/DepotDownloader.xml
+        rm -rf /home/container/.DepotDownloader
     fi
 fi
 
