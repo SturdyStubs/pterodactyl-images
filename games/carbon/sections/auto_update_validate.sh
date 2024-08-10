@@ -108,7 +108,7 @@ if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
         # Go to this function
         SteamCMD_Validate
         Clean_RustDedicated
-    elif [[ "${FRAMEWORK}" == "*vanilla*"]]; then
+    elif [[ "${FRAMEWORK}" == "*vanilla*" ]]; then
         Info "Vanilla or Vanilla-Staging framework detected!"
         Info "Forcing validation of game server..."
         SteamCMD_Validate
@@ -136,7 +136,7 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
         # Go to this function
         DepotDownloader_Validate
         Clean_RustDedicated
-    elif [[ "${FRAMEWORK}" = "*vanilla*"]]; then
+    elif [[ "${FRAMEWORK}" == "*vanilla*" ]]; then
         Info "Vanilla or Vanilla-Staging framework detected!"
         Info "Forcing validation of game server..."
         DepotDownloader_Validate
