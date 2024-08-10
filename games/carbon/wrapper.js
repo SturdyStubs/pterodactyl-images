@@ -30,19 +30,19 @@ let lastSize = 0;
 let watcher;
 
 function filter(data) {
-    const str = data.toString();
-    if(str.startsWith("Fallback handler could not load library")) return; // Remove fallback
-    if(str.includes("Filename:")) return; //Remove bindings.h
-	if(str.includes("ERROR: Shader ")) return; //Remove shader errors
-	if(str.includes("WARNING: Shader ")) return; //Remove shader errors
-    if (str.startsWith("Loading Prefab Bundle ")) { // Rust seems to spam the same percentage, so filter out any duplicates.
-        const percentage = str.substr("Loading Prefab Bundle ".length);
-        if (seenPercentage[percentage]) return;
+	const str = data.toString();
+	if (str.startsWith("Fallback handler could not load library")) return; // Remove fallback
+	if (str.includes("Filename:")) return; //Remove bindings.h
+	if (str.includes("ERROR: Shader ")) return; //Remove shader errors
+	if (str.includes("WARNING: Shader ")) return; //Remove shader errors
+	if (str.startsWith("Loading Prefab Bundle ")) { // Rust seems to spam the same percentage, so filter out any duplicates.
+		const percentage = str.substr("Loading Prefab Bundle ".length);
+		if (seenPercentage[percentage]) return;
 
-        seenPercentage[percentage] = true;
-    }
+		seenPercentage[percentage] = true;
+	}
 
-    console.log(str);
+	console.log(str);
 }
 
 var exec = require("child_process").exec;
@@ -158,7 +158,7 @@ poll();
 // Function to handle new log data
 function handleNewLogData(chunk) {
 	if (!rconConnected) {
-		console.log(chunk);
+		filter(chunk); // Apply the same filtering logic to log data from the file
 		lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize to reflect the latest read position
 	}
 }
