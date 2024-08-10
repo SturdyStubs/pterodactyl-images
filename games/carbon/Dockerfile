@@ -29,9 +29,6 @@ LABEL       org.opencontainers.image.licenses=MIT
 
 ENV         DEBIAN_FRONTEND=noninteractive
 
-# Disable IPv6 - fix for npm install "ideaTree"
-RUN 		sed -i 's/^::1/#::1/' /etc/hosts
-
 # Install Dependancies
 RUN         	dpkg --add-architecture i386 \
             	&& apt update \
@@ -51,7 +48,7 @@ RUN		mkdir -p /node_modules/ws /tmp/ws \
 		&& unzip ws-latest.zip -d /tmp/ws \
 		&& mv /tmp/ws/*/* /node_modules/ws \
 		&& rm -rf /tmp/ws \
-   		&& npm install bufferutil
+   		&& npm install -g bufferutil
 
 # Define user environment
 RUN 		useradd -d /home/container -m container
