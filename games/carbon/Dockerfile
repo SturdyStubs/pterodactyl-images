@@ -49,6 +49,7 @@ RUN				mkdir -p /node_modules/ws /tmp/ws \
 				&& mv /tmp/ws/*/* /node_modules/ws \
 				&& rm -rf /tmp/ws \
 		   		&& npm install -g bufferutil
+		   		
 
 # Define user environment
 RUN 			useradd -d /home/container -m container
