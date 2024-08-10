@@ -27,6 +27,8 @@ if (startupCmd.length < 1) {
 const seenPercentage = {};
 let rconConnected = false;
 let lastSize = 0;
+let logStream;
+let watcher;
 
 function filter(data) {
     const str = data.toString();
@@ -101,6 +103,14 @@ var poll = function () {
 		rconConnected = true;
 		waiting = false;
 
+		// Stop log streaming and file watching when RCON is connected
+		if (logStream) {
+			logStream.close();
+		}
+		if (watcher) {
+			watcher.close();
+		}
+
 		// Hack to fix broken console output
 		ws.send(createPacket('status'));
 
@@ -151,7 +161,7 @@ poll();
 
 // Stream the log file and output new data to the console until RCON is connected
 if (!rconConnected) {
-	const logStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
+	logStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
 	logStream.on('data', (chunk) => {
 		if (!rconConnected) {
 			console.log(chunk);
@@ -160,7 +170,7 @@ if (!rconConnected) {
 	});
 	logStream.on('end', () => {
 		if (!rconConnected) {
-			fs.watch(logFile, (event, filename) => {
+			watcher = fs.watch(logFile, (event, filename) => {
 				if (filename && event === 'change' && !rconConnected) {
 					const newLogStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
 					newLogStream.on('data', (chunk) => {
