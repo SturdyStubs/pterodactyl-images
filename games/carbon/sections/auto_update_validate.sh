@@ -21,7 +21,7 @@ if [ -z "${DOWNLOAD_METHOD}" ]; then
     Warn "DOWNLOAD_METHOD variable not found. Update your egg at https://github.com/SturdyStubs/AIO.Egg. Defaulting to SteamCMD..."
     DOWNLOAD_METHOD="SteamCMD"
 else
-    Info "DOWNLOAD_METHOD is set to '${DOWNLOAD_METHOD}'."
+    echo "DOWNLOAD_METHOD is set to '${DOWNLOAD_METHOD}'."
 fi
 
 #######################################
@@ -29,13 +29,11 @@ fi
 #######################################
 
 if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
-    Info "Depot Downloader method selected."
-
-    # Check if DepotDownloader.dll already exists
+    # Check if ./DepotDownloader already exists
     if [ -f /home/container/DepotDownloader ]; then
-        Info "DepotDownloader found. Skipping installation."
+        echo "DepotDownloader found. Skipping installation."
     else
-        Info "DepotDownloader not found. Installing DepotDownloader..."
+        echo "DepotDownloader not found. Installing DepotDownloader..."
         # Create a temporary directory for download
         cd /tmp
         # Download DepotDownloader from the provided URL
@@ -45,10 +43,10 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
         # Navigate to the DepotDownloader directory
         rm -rf /tmp/*
         chmod +x /home/container/DepotDownloader
-        Info "DepotDownloader installation completed successfully."
+        echo "DepotDownloader installation completed successfully."
     fi
 else
-    Info "Depot Downloader method not selected. Skipping installation."
+    echo "Depot Downloader method not selected. Skipping installation."
 fi
 
 #######################################################
