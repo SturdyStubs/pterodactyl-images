@@ -47,7 +47,8 @@ RUN			mkdir -p /node_modules/ws /tmp/ws \
 			&& curl -L $(curl -s https://api.github.com/repos/websockets/ws/releases/latest | jq -r '.zipball_url') -o ws-latest.zip \
 			&& unzip ws-latest.zip -d /tmp/ws \
 			&& mv /tmp/ws/*/* /node_modules/ws \
-			&& rm -rf /tmp/ws
+			&& rm -rf /tmp/ws \
+   			&& npm install bufferutil
 
 # Define user environment
 RUN 		useradd -d /home/container -m container
