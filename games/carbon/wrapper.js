@@ -2,7 +2,6 @@
 
 var startupCmd = "";
 const fs = require("fs");
-const seenMessages = new Set(); // Track seen messages to prevent duplicates
 
 // Get the log file from the environment variable, default to 'latest.log' if not set
 const logFile = process.env.LOG_FILE || "";
@@ -25,7 +24,7 @@ if (startupCmd.length < 1) {
 	process.exit();
 }
 
-const seenPercentage = {};
+const seenPatterns = new Set(); // Track seen patterns instead of full messages
 let rconConnected = false;
 let lastSize = 0;
 let watcher;
@@ -33,8 +32,10 @@ let watcher;
 function filterAndOutput(data) {
 	const str = data.toString().trim();
 
-	if (seenMessages.has(str)) return; // Prevent duplicate messages
-	seenMessages.add(str); // Add message to seen set
+	// Use a regex pattern to match and track specific log lines
+	const pattern = str.replace(/\d+/g, ""); // Example: Remove all numbers for pattern matching
+	if (seenPatterns.has(pattern)) return; // Skip if pattern was already seen
+	seenPatterns.add(pattern); // Add pattern to seen set
 
 	// Filtering logic
 	if (str.startsWith("Fallback handler could not load library")) return;
@@ -43,9 +44,9 @@ function filterAndOutput(data) {
 	if (str.includes("WARNING: Shader ")) return;
 	if (str.startsWith("Loading Prefab Bundle ")) {
 		const percentage = str.substr("Loading Prefab Bundle ".length);
-		if (seenPercentage[percentage]) return;
+		if (seenPatterns.has(percentage)) return;
 
-		seenPercentage[percentage] = true;
+		seenPatterns.add(percentage);
 	}
 
 	console.log(str);
