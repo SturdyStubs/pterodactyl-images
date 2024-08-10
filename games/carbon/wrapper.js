@@ -2,7 +2,11 @@
 
 var startupCmd = "";
 const fs = require("fs");
-fs.writeFile("latest.log", "", (err) => {
+
+// Get the log file from the environment variable, default to 'latest.log' if not set
+const logFile = process.env.LOG_FILE || "";
+
+fs.writeFile(logFile, "", (err) => {
 	if (err) console.log("Callback error in appendFile:" + err);
 });
 
@@ -111,8 +115,7 @@ var poll = function () {
 			if (json !== undefined) {
 				if (json.Message !== undefined && json.Message.length > 0) {
 					console.log(json.Message);
-					const fs = require("fs");
-					fs.appendFile("latest.log", "\n" + json.Message, (err) => {
+					fs.appendFile(logFile, "\n" + json.Message, (err) => {
 						if (err) console.log("Callback error in appendFile:" + err);
 					});
 				}
@@ -142,3 +145,21 @@ var poll = function () {
 	});
 }
 poll();
+
+// Watch the log file and output new data to the console
+let lastSize = 0;
+
+fs.watchFile(logFile, (curr, prev) => {
+	fs.open(logFile, 'r', (err, fd) => {
+		if (err) return console.error('Error opening log file:', err);
+		const bufferSize = curr.size - lastSize;
+		const buffer = Buffer.alloc(bufferSize);
+		fs.read(fd, buffer, 0, bufferSize, lastSize, (err, bytesRead, buffer) => {
+			if (err) return console.error('Error reading log file:', err);
+			if (bytesRead > 0) {
+				console.log(buffer.toString('utf8'));
+				lastSize = curr.size;
+			}
+		});
+	});
+});
