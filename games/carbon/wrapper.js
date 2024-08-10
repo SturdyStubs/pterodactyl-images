@@ -2,54 +2,56 @@
 
 var startupCmd = "";
 const fs = require("fs");
+const path = require("path");
 
-// Get the log file from the environment variable, default to 'latest.log' if not set
-const logFile = process.env.LOG_FILE || "";
+// Get the log file from the environment variable, default to an empty string if not set
+const logFile = process.env.LOG_FILE ? path.join(process.cwd(), "logs", `${new Date().toISOString().replace(/:/g, "-")}.log`) : "";
 
-fs.writeFile(logFile, "", (err) => {
-	if (err) console.log("Callback error in appendFile:" + err);
-});
+if (logFile) {
+    // Ensure the directory exists before trying to write the file
+    fs.mkdirSync(path.dirname(logFile), { recursive: true });
+
+    // Initialize the log file
+    fs.writeFile(logFile, "", (err) => {
+        if (err) console.log("Callback error in appendFile: " + err);
+    });
+} else {
+    console.log("LOG_FILE is not defined or empty. Skipping log file handling.");
+}
 
 var args = process.argv.splice(process.execArgv.length + 2);
 for (var i = 0; i < args.length; i++) {
-	if (i === args.length - 1) {
-		startupCmd += args[i];
-	} else {
-		startupCmd += args[i] + " ";
-	}
+    if (i === args.length - 1) {
+        startupCmd += args[i];
+    } else {
+        startupCmd += args[i] + " ";
+    }
 }
 
 if (startupCmd.length < 1) {
-	console.log("Error: Please specify a startup command.");
-	process.exit();
+    console.log("Error: Please specify a startup command.");
+    process.exit();
 }
 
-const seenPatterns = new Set(); // Track seen patterns instead of full messages
 let rconConnected = false;
 let lastSize = 0;
 let watcher;
 
 function filterAndOutput(data) {
-	const str = data.toString().trim();
+    const str = data.toString().trim();
 
-	// Use a regex pattern to match and track specific log lines
-	const pattern = str.replace(/\d+/g, ""); // Example: Remove all numbers for pattern matching
-	if (seenPatterns.has(pattern)) return; // Skip if pattern was already seen
-	seenPatterns.add(pattern); // Add pattern to seen set
+    // Filtering logic
+    if (str.startsWith("Fallback handler could not load library")) return;
+    if (str.includes("Filename:")) return;
+    if (str.includes("ERROR: Shader ")) return;
+    if (str.includes("WARNING: Shader ")) return;
+    if (str.startsWith("Loading Prefab Bundle ")) {
+        const percentage = str.substr("Loading Prefab Bundle ".length);
+        console.log(percentage);
+        return;
+    }
 
-	// Filtering logic
-	if (str.startsWith("Fallback handler could not load library")) return;
-	if (str.includes("Filename:")) return;
-	if (str.includes("ERROR: Shader ")) return;
-	if (str.includes("WARNING: Shader ")) return;
-	if (str.startsWith("Loading Prefab Bundle ")) {
-		const percentage = str.substr("Loading Prefab Bundle ".length);
-		if (seenPatterns.has(percentage)) return;
-
-		seenPatterns.add(percentage);
-	}
-
-	console.log(str);
+    console.log(str);
 }
 
 var exec = require("child_process").exec;
@@ -60,140 +62,142 @@ const gameProcess = exec(startupCmd);
 gameProcess.stdout.on('data', filterAndOutput);
 gameProcess.stderr.on('data', filterAndOutput);
 gameProcess.on('exit', function (code, signal) {
-	exited = true;
+    exited = true;
 
-	if (code) {
-		console.log("Main game process exited with code " + code);
-		// process.exit(code);
-	}
+    if (code) {
+        console.log("Main game process exited with code " + code);
+        // process.exit(code);
+    }
 });
 
 function initialListener(data) {
-	const command = data.toString().trim();
-	if (command === 'quit') {
-		gameProcess.kill('SIGTERM');
-	} else {
-		console.log('Unable to run "' + command + '" due to RCON not being connected yet.');
-	}
+    const command = data.toString().trim();
+    if (command === 'quit') {
+        gameProcess.kill('SIGTERM');
+    } else {
+        console.log('Unable to run "' + command + '" due to RCON not being connected yet.');
+    }
 }
 process.stdin.resume();
 process.stdin.setEncoding("utf8");
 process.stdin.on('data', initialListener);
 
 process.on('exit', function (code) {
-	if (exited) return;
+    if (exited) return;
 
-	console.log("Received request to stop the process, stopping the game...");
-	gameProcess.kill('SIGTERM');
+    console.log("Received request to stop the process, stopping the game...");
+    gameProcess.kill('SIGTERM');
 });
 
 var waiting = true;
 var poll = function () {
-	function createPacket(command) {
-		var packet = {
-			Identifier: -1,
-			Message: command,
-			Name: "WebRcon"
-		};
-		return JSON.stringify(packet);
-	}
+    function createPacket(command) {
+        var packet = {
+            Identifier: -1,
+            Message: command,
+            Name: "WebRcon"
+        };
+        return JSON.stringify(packet);
+    }
 
-	var serverHostname = process.env.RCON_IP ? process.env.RCON_IP : "localhost";
-	var serverPort = process.env.RCON_PORT;
-	var serverPassword = process.env.RCON_PASS;
-	var WebSocket = require("ws");
-	var ws = new WebSocket("ws://" + serverHostname + ":" + serverPort + "/" + serverPassword);
+    var serverHostname = process.env.RCON_IP ? process.env.RCON_IP : "localhost";
+    var serverPort = process.env.RCON_PORT;
+    var serverPassword = process.env.RCON_PASS;
+    var WebSocket = require("ws");
+    var ws = new WebSocket("ws://" + serverHostname + ":" + serverPort + "/" + serverPassword);
 
-	ws.on("open", function open() {
-		console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
-		rconConnected = true;
-		waiting = false;
+    ws.on("open", function open() {
+        console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
+        rconConnected = true;
+        waiting = false;
 
-		// Stop file watching when RCON is connected
-		if (watcher) {
-			watcher.close();
-		}
+        // Stop file watching when RCON is connected
+        if (watcher) {
+            watcher.close();
+        }
 
-		// Hack to fix broken console output
-		ws.send(createPacket('status'));
+        // Hack to fix broken console output
+        ws.send(createPacket('status'));
 
-		process.stdin.removeListener('data', initialListener);
-		gameProcess.stdout.removeListener('data', filterAndOutput);
-		gameProcess.stderr.removeListener('data', filterAndOutput);
-		process.stdin.on('data', function (text) {
-			ws.send(createPacket(text));
-		});
-	});
+        process.stdin.removeListener('data', initialListener);
+        gameProcess.stdout.removeListener('data', filterAndOutput);
+        gameProcess.stderr.removeListener('data', filterAndOutput);
+        process.stdin.on('data', function (text) {
+            ws.send(createPacket(text));
+        });
+    });
 
-	ws.on("message", function (data, flags) {
-		try {
-			var json = JSON.parse(data);
-			if (json !== undefined) {
-				if (json.Message !== undefined && json.Message.length > 0) {
-					fs.appendFile(logFile, "\n" + json.Message, (err) => {
-						if (err) console.log("Callback error in appendFile:" + err);
-					});
-					filterAndOutput(json.Message); // Apply filtering to WebSocket messages
-				}
-			} else {
-				console.log("Error: Invalid JSON received");
-			}
-		} catch (e) {
-			if (e) {
-				console.log(e);
-			}
-		}
-	});
+    ws.on("message", function (data, flags) {
+        try {
+            var json = JSON.parse(data);
+            if (json !== undefined) {
+                if (json.Message !== undefined && json.Message.length > 0) {
+                    if (logFile) {
+                        fs.appendFile(logFile, "\n" + json.Message, (err) => {
+                            if (err) console.log("Callback error in appendFile: " + err);
+                        });
+                    }
+                    filterAndOutput(json.Message); // Apply filtering to WebSocket messages
+                }
+            } else {
+                console.log("Error: Invalid JSON received");
+            }
+        } catch (e) {
+            if (e) {
+                console.log(e);
+            }
+        }
+    });
 
-	ws.on("error", function (err) {
-		waiting = true;
-		console.log("Waiting for RCON to come up...");
-		setTimeout(poll, 5000);
-	});
+    ws.on("error", function (err) {
+        waiting = true;
+        console.log("Waiting for RCON to come up...");
+        setTimeout(poll, 5000);
+    });
 
-	ws.on("close", function () {
-		if (!waiting) {
-			console.log("Connection to server closed.");
+    ws.on("close", function () {
+        if (!waiting) {
+            console.log("Connection to server closed.");
 
-			exited = true;
-			process.exit();
-		}
-	});
+            exited = true;
+            process.exit();
+        }
+    });
 }
 poll();
 
 // Function to handle new log data
 function handleNewLogData(chunk) {
-	if (!rconConnected) {
-		filterAndOutput(chunk); // Apply filtering to log data from the file
-		lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize to reflect the latest read position
-	}
+    if (!rconConnected) {
+        filterAndOutput(chunk); // Apply filtering to log data from the file
+        lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize to reflect the latest read position
+    }
 }
 
 // Set up the initial file watcher
-if (!rconConnected) {
-	// First read any existing data in the file
-	fs.stat(logFile, (err, stats) => {
-		if (err) return console.error(err);
+if (!rconConnected && logFile) {
+    // First read any existing data in the file
+    fs.stat(logFile, (err, stats) => {
+        if (err) return console.error(err);
 
-		if (stats.size > lastSize) {
-			logStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
-			logStream.on('data', handleNewLogData);
-			logStream.on('end', () => {
-				// Set up file watcher after reading initial data
-				watcher = fs.watch(logFile, (event, filename) => {
-					if (filename && event === 'change' && !rconConnected) {
-						fs.stat(logFile, (err, stats) => {
-							if (err) return console.error(err);
+        if (stats.size > lastSize) {
+            const logStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
+            logStream.on('data', handleNewLogData);
+            logStream.on('end', () => {
+                // Set up file watcher after reading initial data
+                watcher = fs.watch(logFile, (event, filename) => {
+                    if (filename && event === 'change' && !rconConnected) {
+                        fs.stat(logFile, (err, stats) => {
+                            if (err) return console.error(err);
 
-							if (stats.size > lastSize) {
-								const newLogStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
-								newLogStream.on('data', handleNewLogData);
-							}
-						});
-					}
-				});
-			});
-		}
-	});
+                            if (stats.size > lastSize) {
+                                const newLogStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
+                                newLogStream.on('data', handleNewLogData);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+    });
 }
