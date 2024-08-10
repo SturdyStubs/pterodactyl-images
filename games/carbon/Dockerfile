@@ -30,36 +30,37 @@ LABEL       org.opencontainers.image.licenses=MIT
 ENV         DEBIAN_FRONTEND=noninteractive
 
 # Disable IPv6 - fix for npm install "ideaTree"
-RUN        echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf \
-           && echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf \
-           && echo "net.ipv6.conf.lo.disable_ipv6 = 1" >> /etc/sysctl.conf \
-           && sysctl -p
+RUN 		apt-get update && apt-get install -y procps \
+    		&& echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf \
+    		&& echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf \
+    		&& echo "net.ipv6.conf.lo.disable_ipv6 = 1" >> /etc/sysctl.conf \
+    		&& sysctl -p
 
 # Install Dependancies
-RUN         dpkg --add-architecture i386 \
-            && apt update \
-            && apt upgrade -y \
-            && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 jq
+RUN         	dpkg --add-architecture i386 \
+            	&& apt update \
+            	&& apt upgrade -y \
+            	&& apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 jq
 
 # Install NodeJS
-RUN			curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh \
-            && bash nodesource_setup.sh \
-		    && apt-get install -y nodejs \
-		    && node --version \ 
-		    && npm --version
+RUN		curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh \
+            	&& bash nodesource_setup.sh \
+		&& apt-get install -y nodejs \
+		&& node --version \ 
+		&& npm --version
 
 # Install Websocket NPM Package
-RUN			mkdir -p /node_modules/ws /tmp/ws \
-			&& curl -L $(curl -s https://api.github.com/repos/websockets/ws/releases/latest | jq -r '.zipball_url') -o ws-latest.zip \
-			&& unzip ws-latest.zip -d /tmp/ws \
-			&& mv /tmp/ws/*/* /node_modules/ws \
-			&& rm -rf /tmp/ws \
-   			&& npm install bufferutil
+RUN		mkdir -p /node_modules/ws /tmp/ws \
+		&& curl -L $(curl -s https://api.github.com/repos/websockets/ws/releases/latest | jq -r '.zipball_url') -o ws-latest.zip \
+		&& unzip ws-latest.zip -d /tmp/ws \
+		&& mv /tmp/ws/*/* /node_modules/ws \
+		&& rm -rf /tmp/ws \
+   		&& npm install bufferutil
 
 # Define user environment
 RUN 		useradd -d /home/container -m container
-USER        container
-ENV         USER=container HOME=/home/container
+USER        	container
+ENV         	USER=container HOME=/home/container
 
 # Switch to the container of the server
 WORKDIR     /home/container
