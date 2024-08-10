@@ -44,7 +44,7 @@ if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
     # Go to this function
     SteamCMD_Validate
     Clean_RustDedicated
-elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
+elif [[ "${FRAMEWORK}" == "vanilla" || "${FRAMEWORK}" == "vanilla-staging" ]]; then
     Info "Vanilla framework detected!"
     Info "Forcing validation of game server..."
     SteamCMD_Validate
