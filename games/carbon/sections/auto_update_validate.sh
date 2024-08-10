@@ -38,26 +38,56 @@ Info "Handling Auto Update and Validation..."
 
 # If the switch is occurring from oxide to rust, we want to validate all the steam files first before
 # downloading carbon every time. Force validation. This will remove all references to oxide in the files.
-if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
-    Info "Carbon Switch Detected!"
-    Info "Forcing validation of game server..."
-    # Go to this function
-    SteamCMD_Validate
-    Clean_RustDedicated
-elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
-    Info "Vanilla framework detected!"
-    Info "Forcing validation of game server..."
-    SteamCMD_Validate
-    Clean_RustDedicated
-elif [[ "${AUTO_UPDATE}" == "1" ]]; then # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
-    
-    # Check if we're going to validate after updating
-    if [ "${VALIDATE}" == "1" ]; then
-        # If VALIDATE set to true, validate game server via this function
+if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
+    if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
+        Info "Carbon Switch Detected!"
+        Info "Forcing validation of game server..."
+        # Go to this function
         SteamCMD_Validate
-    else
-        # Else don't validate via this function
-        SteamCMD_No_Validation
+        Clean_RustDedicated
+    elif [[ "${FRAMEWORK}" == "vanilla" || "${FRAMEWORK}" == "vanilla-staging" ]]; then
+        Info "Vanilla or Vanilla-Staging framework detected!"
+        Info "Forcing validation of game server..."
+        SteamCMD_Validate
+        Clean_RustDedicated
+    elif [[ "${AUTO_UPDATE}" == "1" ]]; then
+        # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
+        # Check if we're going to validate after updating
+        if [ "${VALIDATE}" == "1" ]; then
+            # If VALIDATE set to true, validate game server via this function
+            SteamCMD_Validate
+        else
+            # Else don't validate via this function
+            SteamCMD_No_Validation
+        fi
+    fi
+else
+    # Else don't update or validate server
+    Warn "Not updating server, auto update set to false."
+fi
+
+if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
+    if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
+        Info "Carbon Switch Detected!"
+        Info "Forcing validation of game server..."
+        # Go to this function
+        DepotDownloader_Validate
+        Clean_RustDedicated
+    elif [[ "${FRAMEWORK}" == "vanilla" || "${FRAMEWORK}" == "vanilla-staging" ]]; then
+        Info "Vanilla or Vanilla-Staging framework detected!"
+        Info "Forcing validation of game server..."
+        DepotDownloader_Validate
+        Clean_RustDedicated
+    elif [[ "${AUTO_UPDATE}" == "1" ]]; then
+        # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
+        # Check if we're going to validate after updating
+        if [ "${VALIDATE}" == "1" ]; then
+            # If VALIDATE set to true, validate game server via this function
+            DepotDownloader_Validate
+        else
+            # Else don't validate via this function
+            DepotDownloader_No_Validation
+        fi
     fi
 else
     # Else don't update or validate server
