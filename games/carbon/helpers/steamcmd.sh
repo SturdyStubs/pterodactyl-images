@@ -60,3 +60,49 @@ function SteamCMD_No_Validation() {
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
     fi
 }
+
+# Validate when downloading
+function DepotDownloader_Validate() {
+	Debug "Inside Function: SteamCMD_Validate()"
+
+    if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Aux1 Files - Validation On!"
+        dotnet DepotDownloader.dll -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux01 -validate -username anonymous
+    elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Aux2 Files - Validation On!"
+        dotnet DepotDownloader.dll -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux02 -validate -username anonymous
+    elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Staging Files - Validation On!"
+        dotnet DepotDownloader.dll -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta staging -validate -username anonymous
+    else
+        Delete_SteamApps_Directory
+        Info "Downloading Default Files - Validation On!"
+        dotnet DepotDownloader.dll -dir /home/container -app 258550 -depot 258552 -depot 258554 -validate -username anonymous
+    fi
+}
+
+# Don't validate while downloading
+function DepotDownloader_No_Validation() {
+	Debug "Inside Function: SteamCMD_No_Validation()"
+
+    if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Aux1 Files - Validation On!"
+        dotnet DepotDownloader.dll -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux01 -username anonymous
+    elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Aux2 Files - Validation On!"
+        dotnet DepotDownloader.dll -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux02 -username anonymous
+    elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Staging Files - Validation On!"
+        dotnet DepotDownloader.dll -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta staging -username anonymous
+    else
+        Delete_SteamApps_Directory
+        Info "Downloading Default Files - Validation On!"
+        dotnet DepotDownloader.dll -dir /home/container -app 258550 -depot 258552 -depot 258554 -username anonymous
+    fi
+}
