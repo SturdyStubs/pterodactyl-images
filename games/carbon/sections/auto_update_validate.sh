@@ -56,10 +56,10 @@ if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
     if [ -d /home/container/steamcmd ]; then
         echo "SteamCMD found. Skipping installation."
     else
-        mkdir -p steamcmd
+        mkdir -p /home/container/steamcmd
         curl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
-        tar -xzvf steamcmd.tar.gz -C /steamcmd
-        mkdir -p steamapps # Fix steamcmd disk write error when this folder is missing
+        tar -xzvf steamcmd.tar.gz -C /home/container/steamcmd
+        mkdir -p /home/containersteamapps # Fix steamcmd disk write error when this folder is missing
         # SteamCMD fails otherwise for some reason, even running as root.
         # This is changed at the end of the install process anyways.
         chown +x /home/container/steamcmd
