@@ -1,17 +1,25 @@
 #!/bin/bash
 
-# Define ANSI escape codes for colors
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-BLUE='\033[0;34m'
-NC='\033[0m\n'
+# Display the splash screen
+/bin/bash /splash_screen.sh
 
+# Source some files
+source /helpers/colors.sh
+source /helpers/messages.sh
+
+# Is debug mode enabled? Do you want to see more messages?
+if [[ "${EGG_DEBUG}" == "1" ]]; then
+    echo "Egg Debug Mode Enabled!"
+fi
+
+# Change Directory
 cd /home/container
 
-# Make internal Docker IP address available to processes.
-export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
+########################
+#  APP PUBLIC IP FIX   #
+########################
 
+<<<<<<< HEAD
 printf "╭───────────────────────────────────────────────╮\n"
 printf "│                 AIO RUST EGG                  │\n"
 printf "│            Created By: SturdyStubs            │\n"
@@ -109,125 +117,120 @@ elif
 else
     echo -e "Auto update set to false. Not validating game files or updating game."
     echo -e "${BLUE}Starting server..."
+=======
+if [ -f /sections/app_public_ip.sh ]; then
+  Debug "/sections/app_public_ip.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/app_public_ip.sh
+else
+  Error "/sections/app_public_ip.sh does not exist or cannot be found." "1"
+>>>>>>> 33fb0a38dcde3494f5d004fae40484c072f9be98
 fi
 
-# Replace Startup Variables
-MODIFIED_STARTUP=$(eval echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
-echo ":/home/container$ ${MODIFIED_STARTUP}"
+####################################
+# MODDING ROOT FOLDER EXISTS CHECK #
+####################################
 
-if [[ "$OXIDE" == "1" ]] || [[ "${FRAMEWORK}" == "oxide" ]]; then
-    # Oxide: https://github.com/OxideMod/Oxide.Rust
-    echo "Updating uMod..."
-    curl -sSL "https://github.com/OxideMod/Oxide.Rust/releases/latest/download/Oxide.Rust-linux.zip" > umod.zip
-    unzip -o -q umod.zip
-    rm umod.zip
-    echo "Done updating uMod!"
+if [ -f /sections/modding_root_check.sh ]; then
+  Debug "/sections/modding_root_check.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/modding_root_check.sh
+else
+  Error "/sections/modding_root_check.sh does not exist or cannot be found." "1"
+fi
 
-elif [[ "${FRAMEWORK}" == "carbon" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon.Core/releases/download/production_build/Carbon.Linux.Release.tar.gz" | tar zx
-    echo "Done updating Carbon!"
+################################
+# OXIDE -> CARBON SWITCH CHECK #
+################################
 
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
+if [ -f /sections/oxide_carbon_switch.sh ]; then
+  Debug "/sections/oxide_carbon_switch.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/oxide_carbon_switch.sh
+else
+  Error "/sections/oxide_carbon_switch.sh does not exist or cannot be found." "1"
+fi
 
-elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon Minimal..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/production_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-    echo "Done updating Carbon!"
+###################################
+# HANDLE AUTO UPDATE / VALIDATION #
+###################################
 
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
+if [ -f /sections/auto_update_validate.sh ]; then
+  Debug "/sections/auto_update_validate.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/auto_update_validate.sh
+else
+  Error "/sections/auto_update_validate.sh does not exist or cannot be found." "1"
+fi
 
-elif [[ "${FRAMEWORK}" == "carbon-edge" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon Edge..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Debug.tar.gz" | tar zx
-    echo "Done updating Carbon!"
+#############################
+# REPLACE STARTUP VARIABLES #
+#############################
 
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-    
-elif [[ "${FRAMEWORK}" == "carbon-edge-minimal" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon Edge Minimal..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/edge_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-    echo "Done updating Carbon!"
+if [ -f /sections/replace_startup_variables.sh ]; then
+  Debug "/sections/replace_startup_variables.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/replace_startup_variables.sh
+else
+  Error "/sections/replace_startup_variables.sh does not exist or cannot be found." "1"
+fi
 
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
+####################################
+# UPDATE OXIDE / CARBON FRAMEWORKS #
+####################################
 
-elif [[ "${FRAMEWORK}" == "carbon-staging" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon Staging..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Debug.tar.gz" | tar zx
-    echo "Done updating Carbon!"
+# We need to grab the modding_root_update function out of this helper file first
+if [ -f /helpers/modding_root_update.sh ]; then
+  Debug "/helpers/modding_root_update.sh exists and is found!"
+  # Directly run the script without chmod
+  source /helpers/modding_root_update.sh
+else
+  Error "/helpers/modding_root_update.sh does not exist or cannot be found." "1"
+fi
 
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
+# Update Oxide First
+# It will continue on automatically if oxide is not the framework being used!
+if [ -f /sections/update_oxide.sh ]; then
+  Debug "/sections/update_oxide.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/update_oxide.sh
+else
+  Error "/sections/update_oxide.sh does not exist or cannot be found." "1"
+fi
 
-elif [[ "${FRAMEWORK}" == "carbon-staging-minimal" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon Staging Minimal..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_staging_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-    echo "Done updating Carbon!"
+# Update Carbon Next
+if [ -f /sections/update_carbon.sh ]; then
+  Debug "/sections/update_carbon.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/update_carbon.sh
+else
+  Error "/sections/update_carbon.sh does not exist or cannot be found." "1"
+fi
 
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
+########################
+# EXTENSION DOWNLOADER #
+########################
 
-elif [[ "${FRAMEWORK}" == "carbon-aux1" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon Aux1..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Debug.tar.gz" | tar zx
-    echo "Done updating Carbon!"
-
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-
-elif [[ "${FRAMEWORK}" == "carbon-aux1-minimal" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon Aux1 Minimal..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux01_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-    echo "Done updating Carbon!"
-
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-
-elif [[ "${FRAMEWORK}" == "carbon-aux2" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon Aux2..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz" | tar zx
-    echo "Done updating Carbon!"
-
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-
-elif [[ "${FRAMEWORK}" == "carbon-aux2-minimal" ]]; then
-    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
-    echo "Updating Carbon Aux2 Minimal..."
-    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux02_build/Carbon.Linux.Minimal.tar.gz" | tar zx
-    echo "Done updating Carbon!"
-
-    export DOORSTOP_ENABLED=1
-    export DOORSTOP_TARGET_ASSEMBLY="$(pwd)/${MODDING_ROOT}/managed/Carbon.Preloader.dll"
-    MODIFIED_STARTUP="LD_PRELOAD=$(pwd)/libdoorstop.so ${MODIFIED_STARTUP}"
-
-# else Vanilla, do nothing
+# If the framework isn't vanilla
+if [[ ${FRAMEWORK} != "vanilla" ]]; then
+    # Handle the extension downloads
+    if [ -f /sections/extension_download.sh ]; then
+      Debug "/sections/extension_download.sh exists and is found!"
+      # Directly run the script without chmod
+      source /sections/extension_download.sh
+    else
+      Error "/sections/extension_download.sh does not exist or cannot be found." "1"
+    fi
+else # The framework is vanilla
+    Info "Skipping Extension Downloads, Vanilla Framework Detected!"
 fi
 
 # Fix for Rust not starting
+Debug "Defining the Library Path..."
 export LD_LIBRARY_PATH=$(pwd)/RustDedicated_Data/Plugins/x86_64:$(pwd)
+
+# Display Ending Splash Screen
+/bin/bash /end_screen.sh
 
 # Run the Server
 node /wrapper.js "${MODIFIED_STARTUP}"

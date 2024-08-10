@@ -1,22 +1,15 @@
-name: Build Games
+name: Build Staging Branch
+
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 0 1 * *"
   push:
     branches:
-      - main
+      - staging
     paths:
       - games/**
 jobs:
   push:
-    name: "games:${{ matrix.game }}"
+    name: "aioegg:staging"
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        game:
-          - february2022
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -29,9 +22,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/build-push-action@v6
         with:
-          context: ./games/${{ matrix.game }}
-          file: ./games/${{ matrix.game }}/Dockerfile
+          context: ./games/carbon
+          file: ./games/carbon/Dockerfile
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/sturdystubs/games:${{ matrix.game }}
+            ghcr.io/sturdystubs/aioegg:staging
