@@ -90,19 +90,19 @@ function DepotDownloader_No_Validation() {
 
     if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
         Delete_SteamApps_Directory
-        Info "Downloading Aux1 Files - Validation On!"
+        Info "Downloading Aux1 Files - Validation Off!"
         ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux01
     elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
         Delete_SteamApps_Directory
-        Info "Downloading Aux2 Files - Validation On!"
+        Info "Downloading Aux2 Files - Validation Off!"
         ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux02
     elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
         Delete_SteamApps_Directory
-        Info "Downloading Staging Files - Validation On!"
+        Info "Downloading Staging Files - Validation Off!"
         ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta staging
     else
         Delete_SteamApps_Directory
-        Info "Downloading Default Files - Validation On!"
+        Info "Downloading Default Files - Validation Off!"
         ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554
     fi
 }

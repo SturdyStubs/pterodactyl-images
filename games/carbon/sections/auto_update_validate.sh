@@ -70,7 +70,7 @@ source /helpers/messages.sh
 Debug "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 Debug "Inside /sections/auto_update_validate.sh file!"
 
-Info "Handling Auto Update and Validation..."
+echo "Handling Auto Update and Validation..."
 
 # If the switch is occurring from oxide to rust, we want to validate all the steam files first before
 # downloading carbon every time. Force validation. This will remove all references to oxide in the files.
@@ -81,7 +81,7 @@ if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
         # Go to this function
         SteamCMD_Validate
         Clean_RustDedicated
-    elif [[ "${FRAMEWORK}" == "vanilla" || "${FRAMEWORK}" == "vanilla-staging" ]]; then
+    elif [[ "${FRAMEWORK}" =~ "vanilla"]]; then
         Info "Vanilla or Vanilla-Staging framework detected!"
         Info "Forcing validation of game server..."
         SteamCMD_Validate
@@ -109,7 +109,7 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
         # Go to this function
         DepotDownloader_Validate
         Clean_RustDedicated
-    elif [[ "${FRAMEWORK}" == "vanilla" || "${FRAMEWORK}" == "vanilla-staging" ]]; then
+    elif [[ "${FRAMEWORK}" =~ "vanilla"]]; then
         Info "Vanilla or Vanilla-Staging framework detected!"
         Info "Forcing validation of game server..."
         DepotDownloader_Validate
