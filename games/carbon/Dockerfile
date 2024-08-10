@@ -30,11 +30,7 @@ LABEL       org.opencontainers.image.licenses=MIT
 ENV         DEBIAN_FRONTEND=noninteractive
 
 # Disable IPv6 - fix for npm install "ideaTree"
-RUN 		apt-get update && apt-get install -y procps \
-    		&& echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf \
-    		&& echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf \
-    		&& echo "net.ipv6.conf.lo.disable_ipv6 = 1" >> /etc/sysctl.conf \
-    		&& sysctl -p
+RUN 		sed -i 's/^::1/#::1/' /etc/hosts
 
 # Install Dependancies
 RUN         	dpkg --add-architecture i386 \
