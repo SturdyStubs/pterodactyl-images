@@ -65,7 +65,7 @@ function Clean_RustDedicated() {
 			Debug "Can not find DISCORD: ${DISCORD}"
 		fi
 
-	elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
+	elif [[ "${FRAMEWORK}" =~ "vanilla" ]]; then
 		Debug "Vanilla framework detected!"
 
 		shopt -s nullglob # This ensures that if no files match the pattern, the result is an empty list rather than the pattern itself.
