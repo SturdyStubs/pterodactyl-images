@@ -32,10 +32,10 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
     Info "Depot Downloader method selected."
 
     # Check if DepotDownloader.dll already exists
-    if [ -f /home/container/DepotDownloader.dll ]; then
-        Info "DepotDownloader.dll found. Skipping installation."
+    if [ -f /home/container/DepotDownloader ]; then
+        Info "DepotDownloader found. Skipping installation."
     else
-        Info "DepotDownloader.dll not found. Installing DepotDownloader..."
+        Info "DepotDownloader not found. Installing DepotDownloader..."
         # Create a temporary directory for download
         cd /tmp
         # Download DepotDownloader from the provided URL
