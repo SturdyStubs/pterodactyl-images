@@ -27,7 +27,6 @@ if (startupCmd.length < 1) {
 const seenPercentage = {};
 let rconConnected = false;
 let lastSize = 0;
-let logStream;
 let watcher;
 
 function filter(data) {
@@ -103,10 +102,7 @@ var poll = function () {
 		rconConnected = true;
 		waiting = false;
 
-		// Stop log streaming and file watching when RCON is connected
-		if (logStream) {
-			logStream.close();
-		}
+		// Stop file watching when RCON is connected
 		if (watcher) {
 			watcher.close();
 		}
@@ -159,25 +155,37 @@ var poll = function () {
 }
 poll();
 
-// Stream the log file and output new data to the console until RCON is connected
+// Function to handle new log data
+function handleNewLogData(chunk) {
+	if (!rconConnected) {
+		console.log(chunk);
+		lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize to reflect the latest read position
+	}
+}
+
+// Set up the initial file watcher
 if (!rconConnected) {
-	logStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
-	logStream.on('data', (chunk) => {
-		if (!rconConnected) {
-			console.log(chunk);
-			lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize to reflect the latest read position
-		}
-	});
-	logStream.on('end', () => {
-		if (!rconConnected) {
-			watcher = fs.watch(logFile, (event, filename) => {
-				if (filename && event === 'change' && !rconConnected) {
-					const newLogStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
-					newLogStream.on('data', (chunk) => {
-						console.log(chunk);
-						lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize as new data is read
-					});
-				}
+	// First read any existing data in the file
+	fs.stat(logFile, (err, stats) => {
+		if (err) return console.error(err);
+
+		if (stats.size > lastSize) {
+			logStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
+			logStream.on('data', handleNewLogData);
+			logStream.on('end', () => {
+				// Set up file watcher after reading initial data
+				watcher = fs.watch(logFile, (event, filename) => {
+					if (filename && event === 'change' && !rconConnected) {
+						fs.stat(logFile, (err, stats) => {
+							if (err) return console.error(err);
+
+							if (stats.size > lastSize) {
+								const newLogStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
+								newLogStream.on('data', handleNewLogData);
+							}
+						});
+					}
+				});
 			});
 		}
 	});
