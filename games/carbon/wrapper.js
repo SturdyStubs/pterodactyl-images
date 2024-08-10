@@ -2,11 +2,7 @@
 
 var startupCmd = "";
 const fs = require("fs");
-
-// Get the log file from the environment variable, default to 'latest.log' if not set
-const logFile = process.env.LOG_FILE || "";
-
-fs.writeFile(logFile, "", (err) => {
+fs.writeFile("latest.log", "", (err) => {
 	if (err) console.log("Callback error in appendFile:" + err);
 });
 
@@ -24,32 +20,22 @@ if (startupCmd.length < 1) {
 	process.exit();
 }
 
-const seenPatterns = new Set(); // Track seen patterns instead of full messages
-let rconConnected = false;
-let lastSize = 0;
-let watcher;
+const seenPercentage = {};
 
-function filterAndOutput(data) {
-	const str = data.toString().trim();
+function filter(data) {
+    const str = data.toString();
+    if(str.startsWith("Fallback handler could not load library")) return; // Remove fallback
+    if(str.includes("Filename:")) return; //Remove bindings.h
+	if(str.includes("ERROR: Shader ")) return; //Remove shader errors
+	if(str.includes("WARNING: Shader ")) return; //Remove shader errors
+    if (str.startsWith("Loading Prefab Bundle ")) { // Rust seems to spam the same percentage, so filter out any duplicates.
+        const percentage = str.substr("Loading Prefab Bundle ".length);
+        if (seenPercentage[percentage]) return;
 
-	// Use a regex pattern to match and track specific log lines
-	const pattern = str.replace(/\d+/g, ""); // Example: Remove all numbers for pattern matching
-	if (seenPatterns.has(pattern)) return; // Skip if pattern was already seen
-	seenPatterns.add(pattern); // Add pattern to seen set
+        seenPercentage[percentage] = true;
+    }
 
-	// Filtering logic
-	if (str.startsWith("Fallback handler could not load library")) return;
-	if (str.includes("Filename:")) return;
-	if (str.includes("ERROR: Shader ")) return;
-	if (str.includes("WARNING: Shader ")) return;
-	if (str.startsWith("Loading Prefab Bundle ")) {
-		const percentage = str.substr("Loading Prefab Bundle ".length);
-		if (seenPatterns.has(percentage)) return;
-
-		seenPatterns.add(percentage);
-	}
-
-	console.log(str);
+    console.log(str);
 }
 
 var exec = require("child_process").exec;
@@ -57,8 +43,8 @@ console.log("Starting Rust...");
 
 var exited = false;
 const gameProcess = exec(startupCmd);
-gameProcess.stdout.on('data', filterAndOutput);
-gameProcess.stderr.on('data', filterAndOutput);
+gameProcess.stdout.on('data', filter);
+gameProcess.stderr.on('data', filter);
 gameProcess.on('exit', function (code, signal) {
 	exited = true;
 
@@ -106,20 +92,14 @@ var poll = function () {
 
 	ws.on("open", function open() {
 		console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
-		rconConnected = true;
 		waiting = false;
-
-		// Stop file watching when RCON is connected
-		if (watcher) {
-			watcher.close();
-		}
 
 		// Hack to fix broken console output
 		ws.send(createPacket('status'));
 
 		process.stdin.removeListener('data', initialListener);
-		gameProcess.stdout.removeListener('data', filterAndOutput);
-		gameProcess.stderr.removeListener('data', filterAndOutput);
+		gameProcess.stdout.removeListener('data', filter);
+		gameProcess.stderr.removeListener('data', filter);
 		process.stdin.on('data', function (text) {
 			ws.send(createPacket(text));
 		});
@@ -130,10 +110,11 @@ var poll = function () {
 			var json = JSON.parse(data);
 			if (json !== undefined) {
 				if (json.Message !== undefined && json.Message.length > 0) {
-					fs.appendFile(logFile, "\n" + json.Message, (err) => {
+					console.log(json.Message);
+					const fs = require("fs");
+					fs.appendFile("latest.log", "\n" + json.Message, (err) => {
 						if (err) console.log("Callback error in appendFile:" + err);
 					});
-					filterAndOutput(json.Message); // Apply filtering to WebSocket messages
 				}
 			} else {
 				console.log("Error: Invalid JSON received");
@@ -161,39 +142,3 @@ var poll = function () {
 	});
 }
 poll();
-
-// Function to handle new log data
-function handleNewLogData(chunk) {
-	if (!rconConnected) {
-		filterAndOutput(chunk); // Apply filtering to log data from the file
-		lastSize += Buffer.byteLength(chunk, 'utf8'); // Update lastSize to reflect the latest read position
-	}
-}
-
-// Set up the initial file watcher
-if (!rconConnected) {
-	// First read any existing data in the file
-	fs.stat(logFile, (err, stats) => {
-		if (err) return console.error(err);
-
-		if (stats.size > lastSize) {
-			logStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
-			logStream.on('data', handleNewLogData);
-			logStream.on('end', () => {
-				// Set up file watcher after reading initial data
-				watcher = fs.watch(logFile, (event, filename) => {
-					if (filename && event === 'change' && !rconConnected) {
-						fs.stat(logFile, (err, stats) => {
-							if (err) return console.error(err);
-
-							if (stats.size > lastSize) {
-								const newLogStream = fs.createReadStream(logFile, { encoding: 'utf8', start: lastSize });
-								newLogStream.on('data', handleNewLogData);
-							}
-						});
-					}
-				});
-			});
-		}
-	});
-}
