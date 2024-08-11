@@ -32,6 +32,7 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
     # Check if ./DepotDownloader already exists
     if [ -f /home/container/DepotDownloader ]; then
         echo "DepotDownloader found. Skipping installation."
+        chmod +x /home/container/RustDedicated
     else
         echo "DepotDownloader not found. Installing DepotDownloader..."
         # Create a temporary directory for download
@@ -43,6 +44,7 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
         # Navigate to the DepotDownloader directory
         rm -rf /tmp/*
         chmod +x /home/container/DepotDownloader
+        chmod +x /home/container/RustDedicated
         echo "DepotDownloader installation completed successfully. We need to restart your system in order to complete the install..."
         exit 1
     fi
@@ -56,6 +58,7 @@ if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
     # Check if ./DepotDownloader already exists
     if [ -d /home/container/steamcmd ]; then
         echo "SteamCMD found. Skipping installation."
+        chmod +x /home/container/RustDedicated
     else
         mkdir -p /home/container/steamcmd
         curl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
@@ -64,6 +67,7 @@ if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
         # SteamCMD fails otherwise for some reason, even running as root.
         # This is changed at the end of the install process anyways.
         chown +x /home/container/steamcmd
+        chmod +x /home/container/RustDedicated
         echo "SteamCMD installation completed successfully."
     fi
     if [ -f /home/container/DepotDownloader ]; then
