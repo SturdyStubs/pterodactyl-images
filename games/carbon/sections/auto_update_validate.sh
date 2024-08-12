@@ -60,7 +60,6 @@ else
     # This is changed at the end of the install process anyways.
     chown +x /home/container/steamcmd
     echo "SteamCMD installation completed successfully."
-    fi
 fi
 
 # If RustDedicated does not have the permissions, give it permissions
