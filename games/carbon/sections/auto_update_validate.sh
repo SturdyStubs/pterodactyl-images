@@ -42,9 +42,8 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
         unzip DepotDownloader.zip -d /home/container
         # Navigate to the DepotDownloader directory
         rm -rf /tmp/*
-        chmod +x /home/container/DepotDownloader
         Info "DepotDownloader installation completed successfully. We need to restart your system in order to complete the install..."
-        exit 1
+        exit 0
     fi
 fi
 
@@ -58,7 +57,6 @@ else
     mkdir -p /home/containersteamapps # Fix steamcmd disk write error when this folder is missing
     # SteamCMD fails otherwise for some reason, even running as root.
     # This is changed at the end of the install process anyways.
-    chown +x /home/container/steamcmd
     echo "SteamCMD installation completed successfully."
 fi
 
