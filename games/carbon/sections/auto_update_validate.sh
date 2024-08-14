@@ -43,7 +43,7 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
         # Navigate to the DepotDownloader directory
         rm -rf /tmp/*
         chmod +x /home/container/DepotDownloader
-        Info "DepotDownloader installation completed successfully. We need to restart your system in order to complete the install..."
+        Warn "DepotDownloader installation completed successfully. We need to restart your system in order to complete the install..."
         exit 0
     fi
 fi
@@ -58,7 +58,15 @@ else
     mkdir -p /home/containersteamapps # Fix steamcmd disk write error when this folder is missing
     # SteamCMD fails otherwise for some reason, even running as root.
     # This is changed at the end of the install process anyways.
-    echo "SteamCMD installation completed successfully."
+    
+    ## set up 32 bit libraries
+    mkdir -p /home/container/.steam/sdk32
+    cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+    ## set up 64 bit libraries
+    mkdir -p /home/container/.steam/sdk64
+    cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
+    Warn "SteamCMD installation completed successfully, restarting server to apply changes..."
+    exit 1
 fi
 
 # If RustDedicated does not have the permissions, give it permissions
