@@ -27,6 +27,14 @@ if [[ "$FRAMEWORK_UPDATE" == "1" ]]; then
 	    Success "Done updating Carbon!"
 	    Doorstop_Startup_Carbon
 
+	elif [[ "${FRAMEWORK}" == "carbon-release" ]]; then
+	    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
+	    Info "Updating Carbon Release..."
+	    curl -sSL "https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_release_build/Carbon.Linux.Release.tar.gz" | tar zx
+	    Check_Modding_Root_Folder
+	    Success "Done updating Carbon!"
+	    Doorstop_Startup_Carbon
+
 	elif [[ "${FRAMEWORK}" == "carbon-minimal" ]]; then
 	    # Carbon: https://github.com/CarbonCommunity/Carbon.Core
 	    Info "Updating Carbon Minimal..."
