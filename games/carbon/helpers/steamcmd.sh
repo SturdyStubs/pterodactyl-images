@@ -76,7 +76,7 @@ function DepotDownloader_Validate() {
     elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Staging Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta staging -validate
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -beta staging -validate
     else
         Delete_SteamApps_Directory
         Info "Downloading Default Files - Validation On!"
