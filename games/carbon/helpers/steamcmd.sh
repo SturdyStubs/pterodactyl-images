@@ -68,11 +68,11 @@ function DepotDownloader_Validate() {
     if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Aux1 Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux01 -validate
+        ./DepotDownloader -dir /home/container -app 258550 -os linux  -beta aux01 -validate
     elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Aux2 Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux02 -validate
+        ./DepotDownloader -dir /home/container -app 258550 -os linux  -beta aux02 -validate
     elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Staging Files - Validation On!"
@@ -80,7 +80,7 @@ function DepotDownloader_Validate() {
     else
         Delete_SteamApps_Directory
         Info "Downloading Default Files - Validation On!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -validate
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -validate
     fi
 }
 
@@ -91,18 +91,18 @@ function DepotDownloader_No_Validation() {
     if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Aux1 Files - Validation Off!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux01
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -beta aux01
     elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Aux2 Files - Validation Off!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta aux02
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -beta aux02
     elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
         Delete_SteamApps_Directory
         Info "Downloading Staging Files - Validation Off!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554 -beta staging
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -beta staging
     else
         Delete_SteamApps_Directory
         Info "Downloading Default Files - Validation Off!"
-        ./DepotDownloader -dir /home/container -app 258550 -depot 258552 -depot 258554
+        ./DepotDownloader -dir /home/container -app 258550 -os linux 
     fi
 }
