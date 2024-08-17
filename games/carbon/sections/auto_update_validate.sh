@@ -122,9 +122,6 @@ if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
             SteamCMD_No_Validation
         fi
     fi
-else
-    # Else don't update or validate server
-    Warn "Not updating server, auto update set to false."
 fi
 
 if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
@@ -150,7 +147,4 @@ if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
             DepotDownloader_No_Validation
         fi
     fi
-else
-    # Else don't update or validate server
-    Warn "Not updating server, auto update set to false."
 fi
