@@ -21,10 +21,11 @@ if (startupCmd.length < 1) {
 }
 
 const seenPercentage = {};
+let rconConnected = false;  // Track RCON connection status
 
 function filter(data) {
-    const str = data.toString();
-    
+    const str = data.toString().trim();  // Trim extra line breaks and spaces
+
     // Filters for specific log messages
     if (str.startsWith("Fallback handler could not load library")) return; // Remove fallback handler messages
     if (str.includes("Filename:")) return; // Remove bindings.h errors
@@ -32,14 +33,16 @@ function filter(data) {
     if (str.includes("WARNING: Shader ")) return; // Remove shader warnings
     if (str.includes("The referenced script on this Behaviour")) return; // Remove specific Behaviour script errors
     if (str.includes("RuntimeNavMeshBuilder:")) return; // Remove RuntimeNavMeshBuilder messages
-    if (str.startsWith("Loading Prefab Bundle ")) { // Rust spams the same percentage, filter out duplicates
+    if (str.startsWith("Loading Prefab Bundle ")) { // Filter duplicate percentages
         const percentage = str.substr("Loading Prefab Bundle ".length);
         if (seenPercentage[percentage]) return;
         seenPercentage[percentage] = true;
     }
 
-    // Output the remaining logs
-    console.log(str);
+    // Only output meaningful log lines
+    if (str.length > 0) {
+        console.log(str);
+    }
 }
 
 var exec = require("child_process").exec;
@@ -63,7 +66,7 @@ function initialListener(data) {
     const command = data.toString().trim();
     if (command === 'quit') {
         gameProcess.kill('SIGTERM');
-    } else {
+    } else if (!rconConnected) {  // Only log if RCON is not connected
         console.log('Unable to run "' + command + '" due to RCON not being connected yet.');
     }
 }
@@ -77,7 +80,6 @@ process.on('exit', function (code) {
     gameProcess.kill('SIGTERM');
 });
 
-var waiting = true;
 var poll = function () {
     function createPacket(command) {
         var packet = {
@@ -96,7 +98,7 @@ var poll = function () {
 
     ws.on("open", function open() {
         console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
-        waiting = false;
+        rconConnected = true;
 
         // Send a status check to ensure RCON connection works
         ws.send(createPacket('status'));
@@ -128,13 +130,13 @@ var poll = function () {
     });
 
     ws.on("error", function (err) {
-        waiting = true;
+        rconConnected = false;
         console.log("Waiting for RCON to come up...");
         setTimeout(poll, 5000);  // Retry RCON connection every 5 seconds if not available
     });
 
     ws.on("close", function () {
-        if (!waiting) {
+        if (!rconConnected) {
             console.log("Connection to server closed.");
             exited = true;
             process.exit();
