@@ -23,9 +23,9 @@ if (startupCmd.length < 1) {
 const seenPercentage = {};
 
 function filter(data) {
-    const str = data.toString();
-    
-    // Filters for specific log messages
+    const str = data.toString().trim();
+
+    // string filters
     if (str.startsWith("Fallback handler could not load library")) return; // Remove fallback handler messages
     if (str.includes("Filename:")) return; // Remove bindings.h errors
     if (str.includes("ERROR: Shader ")) return; // Remove shader errors
@@ -38,8 +38,9 @@ function filter(data) {
         seenPercentage[percentage] = true;
     }
 
-    // Output the remaining logs
-    console.log(str);
+    if (str.length > 0) {
+        console.log(str);
+    }
 }
 
 var exec = require("child_process").exec;
