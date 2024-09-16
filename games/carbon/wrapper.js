@@ -48,9 +48,6 @@ console.log("Starting Rust...");
 var exited = false;
 const gameProcess = exec(startupCmd);
 
-// These will always remain listening for logs from the Rust server
-gameProcess.stdout.on('data', filter);
-
 gameProcess.on('exit', function (code, signal) {
     exited = true;
     if (code) {
