@@ -21,11 +21,10 @@ if (startupCmd.length < 1) {
 }
 
 const seenPercentage = {};
-let rconConnected = false;  // Track RCON connection status
 
 function filter(data) {
-    const str = data.toString().trim();  // Trim extra line breaks and spaces
-
+    const str = data.toString();
+    
     // Filters for specific log messages
     if (str.startsWith("Fallback handler could not load library")) return; // Remove fallback handler messages
     if (str.includes("Filename:")) return; // Remove bindings.h errors
@@ -33,16 +32,14 @@ function filter(data) {
     if (str.includes("WARNING: Shader ")) return; // Remove shader warnings
     if (str.includes("The referenced script on this Behaviour")) return; // Remove specific Behaviour script errors
     if (str.includes("RuntimeNavMeshBuilder:")) return; // Remove RuntimeNavMeshBuilder messages
-    if (str.startsWith("Loading Prefab Bundle ")) { // Filter duplicate percentages
+    if (str.startsWith("Loading Prefab Bundle ")) { // Rust spams the same percentage, filter out duplicates
         const percentage = str.substr("Loading Prefab Bundle ".length);
         if (seenPercentage[percentage]) return;
         seenPercentage[percentage] = true;
     }
 
-    // Only output meaningful log lines
-    if (str.length > 0) {
-        console.log(str);
-    }
+    // Output the remaining logs
+    console.log(str);
 }
 
 var exec = require("child_process").exec;
@@ -51,6 +48,7 @@ console.log("Starting Rust...");
 var exited = false;
 const gameProcess = exec(startupCmd);
 
+// These will always remain listening for logs from the Rust server
 gameProcess.stdout.on('data', filter);
 
 gameProcess.on('exit', function (code, signal) {
@@ -64,7 +62,7 @@ function initialListener(data) {
     const command = data.toString().trim();
     if (command === 'quit') {
         gameProcess.kill('SIGTERM');
-    } else if (!rconConnected) {  // Only log if RCON is not connected
+    } else {
         console.log('Unable to run "' + command + '" due to RCON not being connected yet.');
     }
 }
@@ -78,6 +76,7 @@ process.on('exit', function (code) {
     gameProcess.kill('SIGTERM');
 });
 
+var waiting = true;
 var poll = function () {
     function createPacket(command) {
         var packet = {
@@ -96,52 +95,49 @@ var poll = function () {
 
     ws.on("open", function open() {
         console.log("Connected to RCON. You can now send commands.");
-        rconConnected = true;
+        waiting = false;
 
-        // Send an initial status check
+        // Send a status check to ensure RCON connection works
         ws.send(createPacket('status'));
 
-        // Allow input to be sent via RCON
         process.stdin.removeListener('data', initialListener);
         process.stdin.on('data', function (text) {
-            if (rconConnected) {
-                ws.send(createPacket(text));
-            } else {
-                console.log('RCON is not connected.');
-            }
+            ws.send(createPacket(text));
         });
     });
 
-    // Handle incoming RCON messages
-    ws.on("message", function (data) {
+    ws.on("message", function (data, flags) {
         try {
             var json = JSON.parse(data);
-            if (json && json.Message) {
-                console.log(json.Message);
-                fs.appendFile("latest.log", "\n" + json.Message, (err) => {
-                    if (err) console.log("Error writing to log file: " + err);
-                });
+            if (json !== undefined) {
+                if (json.Message !== undefined && json.Message.length > 0) {
+                    console.log(json.Message);
+                    fs.appendFile("latest.log", "\n" + json.Message, (err) => {
+                        if (err) console.log("Callback error in appendFile:" + err);
+                    });
+                }
+            } else {
+                console.log("Error: Invalid JSON received");
             }
         } catch (e) {
-            console.log("Error parsing RCON message: ", e);
+            if (e) {
+                console.log(e);
+            }
         }
     });
 
-    // Handle WebSocket errors
     ws.on("error", function (err) {
-        rconConnected = false;
-        console.log("Error connecting to RCON: ", err);
-        setTimeout(poll, 10000);  // Retry connecting to RCON in 10 seconds
+        waiting = true;
+        console.log("Waiting for RCON to come up...");
+        setTimeout(poll, 5000);  // Retry RCON connection every 5 seconds if not available
     });
 
-    // Gracefully handle WebSocket close
     ws.on("close", function () {
-        if (rconConnected) {
-            console.log("RCON connection closed unexpectedly.");
-            rconConnected = false;
-            setTimeout(poll, 10000);  // Retry connecting after a delay
+        if (!waiting) {
+            console.log("Connection to server closed.");
+            exited = true;
+            process.exit();
         }
     });
-};
-
+}
 poll();
