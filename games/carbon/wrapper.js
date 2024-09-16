@@ -33,7 +33,7 @@ function filter(data) {
         if (seenPercentage[percentage]) return;
         seenPercentage[percentage] = true;
     }
-    console.log(str);
+    console.log(str);  // Continue logging everything
 }
 
 var exec = require("child_process").exec;
@@ -41,8 +41,11 @@ console.log("Starting Rust...");
 
 var exited = false;
 const gameProcess = exec(startupCmd);
+
+// These will always remain listening for logs from the Rust server
 gameProcess.stdout.on('data', filter);
 gameProcess.stderr.on('data', filter);
+
 gameProcess.on('exit', function (code, signal) {
     exited = true;
     if (code) {
@@ -86,14 +89,13 @@ var poll = function () {
     var ws = new WebSocket("ws://" + serverHostname + ":" + serverPort + "/" + serverPassword);
 
     ws.on("open", function open() {
-        console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
+        console.log("Connected to RCON. You can now send commands.");
         waiting = false;
 
-        // hack to fix broken console output
+        // Send a status check to ensure RCON connection works
         ws.send(createPacket('status'));
 
         process.stdin.removeListener('data', initialListener);
-        // fix for filtering out gameProcess.stdout/stderr
         process.stdin.on('data', function (text) {
             ws.send(createPacket(text));
         });
@@ -122,7 +124,7 @@ var poll = function () {
     ws.on("error", function (err) {
         waiting = true;
         console.log("Waiting for RCON to come up...");
-        setTimeout(poll, 5000);
+        setTimeout(poll, 5000);  // Retry RCON connection every 5 seconds if not available
     });
 
     ws.on("close", function () {
