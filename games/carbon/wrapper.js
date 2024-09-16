@@ -24,16 +24,22 @@ const seenPercentage = {};
 
 function filter(data) {
     const str = data.toString();
-    if (str.startsWith("Fallback handler could not load library")) return; // Remove fallback
-    if (str.includes("Filename:")) return; //Remove bindings.h
-    if (str.includes("ERROR: Shader ")) return; //Remove shader errors
-    if (str.includes("WARNING: Shader ")) return; //Remove shader warnings
-    if (str.startsWith("Loading Prefab Bundle ")) { // Filter duplicate percentages
+    
+    // Filters for specific log messages
+    if (str.startsWith("Fallback handler could not load library")) return; // Remove fallback handler messages
+    if (str.includes("Filename:")) return; // Remove bindings.h errors
+    if (str.includes("ERROR: Shader ")) return; // Remove shader errors
+    if (str.includes("WARNING: Shader ")) return; // Remove shader warnings
+    if (str.includes("The referenced script on this Behaviour")) return; // Remove specific Behaviour script errors
+    if (str.includes("RuntimeNavMeshBuilder:")) return; // Remove RuntimeNavMeshBuilder messages
+    if (str.startsWith("Loading Prefab Bundle ")) { // Rust spams the same percentage, filter out duplicates
         const percentage = str.substr("Loading Prefab Bundle ".length);
         if (seenPercentage[percentage]) return;
         seenPercentage[percentage] = true;
     }
-    console.log(str);  // Continue logging everything
+
+    // Output the remaining logs
+    console.log(str);
 }
 
 var exec = require("child_process").exec;
