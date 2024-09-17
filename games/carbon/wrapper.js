@@ -21,10 +21,16 @@ if (startupCmd.length < 1) {
 }
 
 const seenPercentage = {};
+let hostnameDetected = false;  // Flag to detect when hostname has been logged
 
 function filter(data) {
     const str = data.toString();
     
+    // Prevent double logging after hostname is detected
+    if (hostnameDetected) {
+        return;  // Exit if we've already detected the hostname
+    }
+
     // Filters for specific log messages
     if (str.startsWith("Fallback handler could not load library")) return; // Remove fallback handler messages
     if (str.includes("Filename:")) return; // Remove bindings.h errors
@@ -36,6 +42,11 @@ function filter(data) {
         const percentage = str.substr("Loading Prefab Bundle ".length);
         if (seenPercentage[percentage]) return;
         seenPercentage[percentage] = true;
+    }
+
+    // Detect when hostname has been logged
+    if (str.startsWith("hostname:")) {
+        hostnameDetected = true;  // Set the flag to true after first occurrence
     }
 
     // Output the remaining logs
