@@ -107,6 +107,18 @@ else
   Error "/sections/update_carbon.sh does not exist or cannot be found." "1"
 fi
 
+##################
+# LOG FILE CHECK #
+##################
+
+if [ -f /sections/log_file.sh ]; then
+  Debug "/sections/log_file.sh exists and is found!"
+  # Directly run the script without chmod
+  source /sections/log_file.sh
+else
+  Error "/sections/log_file.sh does not exist or cannot be found." "1"
+fi
+
 ########################
 # EXTENSION DOWNLOADER #
 ########################

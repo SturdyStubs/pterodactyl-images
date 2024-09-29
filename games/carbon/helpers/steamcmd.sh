@@ -60,3 +60,49 @@ function SteamCMD_No_Validation() {
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
     fi
 }
+
+# Validate when downloading
+function DepotDownloader_Validate() {
+	Debug "Inside Function: SteamCMD_Validate()"
+
+    if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Aux1 Files - Validation On!"
+        ./DepotDownloader -dir /home/container -app 258550 -os linux  -beta aux01 -validate
+    elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Aux2 Files - Validation On!"
+        ./DepotDownloader -dir /home/container -app 258550 -os linux  -beta aux02 -validate
+    elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Staging Files - Validation On!"
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -beta staging -validate
+    else
+        Delete_SteamApps_Directory
+        Info "Downloading Default Files - Validation On!"
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -validate
+    fi
+}
+
+# Don't validate while downloading
+function DepotDownloader_No_Validation() {
+	Debug "Inside Function: SteamCMD_No_Validation()"
+
+    if [[ "${FRAMEWORK}" == *"aux1"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Aux1 Files - Validation Off!"
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -beta aux01
+    elif [[ "${FRAMEWORK}" == *"aux2"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Aux2 Files - Validation Off!"
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -beta aux02
+    elif [[ "${FRAMEWORK}" == *"staging"* ]]; then
+        Delete_SteamApps_Directory
+        Info "Downloading Staging Files - Validation Off!"
+        ./DepotDownloader -dir /home/container -app 258550 -os linux -beta staging
+    else
+        Delete_SteamApps_Directory
+        Info "Downloading Default Files - Validation Off!"
+        ./DepotDownloader -dir /home/container -app 258550 -os linux 
+    fi
+}

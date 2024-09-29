@@ -13,6 +13,67 @@ else
   Error "/helpers/steamcmd.sh does not exist or cannot be found." "1"
 fi
 
+##############################################
+# SET DEFAULT DOWNLOAD METHOD IF NOT DEFINED #
+##############################################
+
+if [ -z "${DOWNLOAD_METHOD}" ]; then
+    Warn "DOWNLOAD_METHOD variable not found. Update your egg at https://github.com/SturdyStubs/AIO.Egg. Defaulting to SteamCMD..."
+    DOWNLOAD_METHOD="SteamCMD"
+else
+    echo "DOWNLOAD_METHOD is set to '${DOWNLOAD_METHOD}'."
+fi
+
+########################################
+# DOWNLOAD AND CLEANUP DOWNLOAD METHOD #
+########################################
+
+if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
+    # Check if ./DepotDownloader already exists
+    if [ -f /home/container/DepotDownloader ]; then
+        echo "DepotDownloader found. Skipping installation."
+    else
+        echo "DepotDownloader not found. Installing DepotDownloader..."
+        # Create a temporary directory for download
+        cd /tmp
+        # Download DepotDownloader from the provided URL
+        curl -sSL -o DepotDownloader.zip https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.6.0/DepotDownloader-linux-x64.zip
+        # Unzip the DepotDownloader package to /home/container
+        unzip DepotDownloader.zip -d /home/container
+        # Navigate to the DepotDownloader directory
+        rm -rf /tmp/*
+        chmod +x /home/container/DepotDownloader
+        Warn "DepotDownloader installation completed successfully. We need to restart your system in order to complete the install..."
+        exit 0
+    fi
+fi
+
+# SteamCMD is required for the server to boot up, check that its installed
+if [ -d /home/container/steamcmd ]; then
+    echo "SteamCMD found. Skipping installation."
+else
+    mkdir -p /home/container/steamcmd
+    curl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+    tar -xzvf steamcmd.tar.gz -C /home/container/steamcmd
+    mkdir -p /home/containersteamapps # Fix steamcmd disk write error when this folder is missing
+    # SteamCMD fails otherwise for some reason, even running as root.
+    # This is changed at the end of the install process anyways.
+    
+    ## set up 32 bit libraries
+    mkdir -p /home/container/.steam/sdk32
+    cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+    ## set up 64 bit libraries
+    mkdir -p /home/container/.steam/sdk64
+    cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
+    Warn "SteamCMD installation completed successfully, restarting server to apply changes..."
+    exit 1
+fi
+
+# If RustDedicated does not have the permissions, give it permissions
+if [ "$(stat -c "%a" /home/container/RustDedicated)" -ne 755 ]; then
+    chmod +x /home/container/RustDedicated
+fi
+
 #######################################################
 # CLEAN RUSTDEDICATED_DATA FOLDER OF OXIDE EXTENSIONS #
 #######################################################
@@ -34,32 +95,56 @@ source /helpers/messages.sh
 Debug "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 Debug "Inside /sections/auto_update_validate.sh file!"
 
-Info "Handling Auto Update and Validation..."
+echo "Handling Auto Update and Validation..."
 
 # If the switch is occurring from oxide to rust, we want to validate all the steam files first before
 # downloading carbon every time. Force validation. This will remove all references to oxide in the files.
-if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
-    Info "Carbon Switch Detected!"
-    Info "Forcing validation of game server..."
-    # Go to this function
-    SteamCMD_Validate
-    Clean_RustDedicated
-elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
-    Info "Vanilla framework detected!"
-    Info "Forcing validation of game server..."
-    SteamCMD_Validate
-    Clean_RustDedicated
-elif [[ "${AUTO_UPDATE}" == "1" ]]; then # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
-    
-    # Check if we're going to validate after updating
-    if [ "${VALIDATE}" == "1" ]; then
-        # If VALIDATE set to true, validate game server via this function
+if [[ "${DOWNLOAD_METHOD}" == "SteamCMD" ]]; then
+    if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
+        Info "Carbon Switch Detected!"
+        Info "Forcing validation of game server..."
+        # Go to this function
         SteamCMD_Validate
-    else
-        # Else don't validate via this function
-        SteamCMD_No_Validation
+        Clean_RustDedicated
+    elif [[ "${FRAMEWORK}" == "*vanilla*" ]]; then
+        Info "Vanilla or Vanilla-Staging framework detected!"
+        Info "Forcing validation of game server..."
+        SteamCMD_Validate
+        Clean_RustDedicated
+    elif [[ "${AUTO_UPDATE}" == "1" ]]; then
+        # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
+        # Check if we're going to validate after updating
+        if [ "${VALIDATE}" == "1" ]; then
+            # If VALIDATE set to true, validate game server via this function
+            SteamCMD_Validate
+        else
+            # Else don't validate via this function
+            SteamCMD_No_Validation
+        fi
     fi
-else
-    # Else don't update or validate server
-    Warn "Not updating server, auto update set to false."
+fi
+
+if [[ "${DOWNLOAD_METHOD}" == "Depot Downloader" ]]; then
+    if [[ "${CARBONSWITCH}" == "TRUE" ]]; then
+        Info "Carbon Switch Detected!"
+        Info "Forcing validation of game server..."
+        # Go to this function
+        DepotDownloader_Validate
+        Clean_RustDedicated
+    elif [[ "${FRAMEWORK}" == "*vanilla*" ]]; then
+        Info "Vanilla or Vanilla-Staging framework detected!"
+        Info "Forcing validation of game server..."
+        DepotDownloader_Validate
+        Clean_RustDedicated
+    elif [[ "${AUTO_UPDATE}" == "1" ]]; then
+        # Else, we're going to handle the auto update. If the auto update is set to true, or is null or doesn't exist
+        # Check if we're going to validate after updating
+        if [ "${VALIDATE}" == "1" ]; then
+            # If VALIDATE set to true, validate game server via this function
+            DepotDownloader_Validate
+        else
+            # Else don't validate via this function
+            DepotDownloader_No_Validation
+        fi
+    fi
 fi

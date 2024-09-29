@@ -65,7 +65,7 @@ function Clean_RustDedicated() {
 			Debug "Can not find DISCORD: ${DISCORD}"
 		fi
 
-	elif [[ "${FRAMEWORK}" == "vanilla" ]]; then
+	elif [[ "${FRAMEWORK}" =~ "vanilla" ]]; then
 		Debug "Vanilla framework detected!"
 
 		shopt -s nullglob # This ensures that if no files match the pattern, the result is an empty list rather than the pattern itself.
@@ -82,6 +82,7 @@ function Clean_RustDedicated() {
 	        Info "Moving Oxide Files to the trash..."
 	        # Remove all files that match the Oxide.*.dll pattern
     		rm -v /home/container/RustDedicated_Data/Managed/Oxide.*.dll
+			rm -v /home/container/Oxide.Compiler
 
 	        Success "Removed all Oxide files from RustDedicated_Data/Managed"
 	    else
