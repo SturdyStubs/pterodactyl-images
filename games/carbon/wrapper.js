@@ -22,13 +22,14 @@ if (startupCmd.length < 1) {
 
 const seenPercentage = {};
 let hostnameDetected = false;  // Flag to detect when hostname has been logged
+let rconConnected = false;     // Track RCON connection status
 
 function filter(data, logToFile = true) {
     const str = data.toString();
-    
+
     // Prevent double logging after hostname is detected
-    if (hostnameDetected) {
-        return;  // Exit if we've already detected the hostname
+    if (hostnameDetected && rconConnected) {
+        return;  // Exit if we've already detected the hostname and RCON is connected
     }
 
     // Filters for specific log messages
@@ -52,6 +53,7 @@ function filter(data, logToFile = true) {
     // Output the remaining logs
     console.log(str);
 
+    // Write to log file if logToFile is enabled
     if (logToFile) {
         fs.appendFile("latest.log", "\n" + str, (err) => {
             if (err) console.log("Callback error in appendFile:" + err);
@@ -65,9 +67,10 @@ console.log("Starting Rust...");
 var exited = false;
 const gameProcess = exec(startupCmd);
 
+// LOG_FILE environment variable logic
 const logFileEnabled = process.env.LOG_FILE === "1" || process.env.LOG_FILE === "true";
 
-// case for handling logging and duplicates
+// Always use the filter for console output to avoid duplicates
 gameProcess.stdout.on('data', (data) => filter(data, logFileEnabled));
 gameProcess.stderr.on('data', (data) => filter(data, logFileEnabled));
 
@@ -117,8 +120,10 @@ var poll = function () {
 
     ws.on("open", function open() {
         console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
+        rconConnected = true; // RCON is now connected, avoiding further duplicate logs
         waiting = false;
 
+        // Send a status check to ensure RCON connection works
         ws.send(createPacket('status'));
 
         process.stdin.removeListener('data', initialListener);
