@@ -22,14 +22,13 @@ if (startupCmd.length < 1) {
 
 const seenPercentage = {};
 let hostnameDetected = false;  // Flag to detect when hostname has been logged
-let rconConnected = false;     // Track RCON connection status
 
-function filter(data, logToFile = true) {
+function filter(data) {
     const str = data.toString();
-
+    
     // Prevent double logging after hostname is detected
-    if (hostnameDetected && rconConnected) {
-        return;  // Exit if we've already detected the hostname and RCON is connected
+    if (hostnameDetected) {
+        return;  // Exit if we've already detected the hostname
     }
 
     // Filters for specific log messages
@@ -38,7 +37,7 @@ function filter(data, logToFile = true) {
     if (str.includes("ERROR: Shader ")) return; // Remove shader errors
     if (str.includes("WARNING: Shader ")) return; // Remove shader warnings
     if (str.includes("The referenced script on this Behaviour")) return; // Remove specific Behaviour script errors
-    if (str.includes("RuntimeNavMeshBuilder:")) return; // Remove RuntimeNavMeshBuilder messages
+    if (str.startsWith("RuntimeNavMeshBuilder:")) return; // Remove RuntimeNavMeshBuilder messages
     if (str.startsWith("Loading Prefab Bundle ")) { // Rust spams the same percentage, filter out duplicates
         const percentage = str.substr("Loading Prefab Bundle ".length);
         if (seenPercentage[percentage]) return;
@@ -52,13 +51,6 @@ function filter(data, logToFile = true) {
 
     // Output the remaining logs
     console.log(str);
-
-    // Write to log file if logToFile is enabled
-    if (logToFile) {
-        fs.appendFile("latest.log", "\n" + str, (err) => {
-            if (err) console.log("Callback error in appendFile:" + err);
-        });
-    }
 }
 
 var exec = require("child_process").exec;
@@ -67,14 +59,12 @@ console.log("Starting Rust...");
 var exited = false;
 const gameProcess = exec(startupCmd);
 
-// LOG_FILE environment variable logic
-const logFileEnabled = process.env.LOG_FILE === "1" || process.env.LOG_FILE === "true";
+// These will always remain listening for logs from the Rust server
+gameProcess.stdout.on('data', filter);
+gameProcess.stderr.on('data', filter);
 
-// Always use the filter for console output to avoid duplicates
-gameProcess.stdout.on('data', (data) => filter(data, logFileEnabled));
-gameProcess.stderr.on('data', (data) => filter(data, logFileEnabled));
 
-// Game process exit handler
+
 gameProcess.on('exit', function (code, signal) {
     exited = true;
     if (code) {
@@ -90,7 +80,6 @@ function initialListener(data) {
         console.log('Unable to run "' + command + '" due to RCON not being connected yet.');
     }
 }
-
 process.stdin.resume();
 process.stdin.setEncoding("utf8");
 process.stdin.on('data', initialListener);
@@ -120,7 +109,6 @@ var poll = function () {
 
     ws.on("open", function open() {
         console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
-        rconConnected = true; // RCON is now connected, avoiding further duplicate logs
         waiting = false;
 
         // Send a status check to ensure RCON connection works
@@ -137,12 +125,15 @@ var poll = function () {
             var json = JSON.parse(data);
             if (json !== undefined) {
                 if (json.Message !== undefined && json.Message.length > 0) {
-                    console.log(json.Message);
-                    if (logFileEnabled) {
-                        fs.appendFile("latest.log", "\n" + json.Message, (err) => {
-                            if (err) console.log("Callback error in appendFile:" + err);
-                        });
+                    // Only log to the console if LOG_FILE is true
+                    if (process.env.LOG_FILE === "true") {
+                        console.log(json.Message);
                     }
+                    
+                    // Always write to the log file
+                    fs.appendFile("latest.log", "\n" + json.Message, (err) => {
+                        if (err) console.log("Callback error in appendFile:" + err);
+                    });
                 }
             } else {
                 console.log("Error: Invalid JSON received");
@@ -152,7 +143,7 @@ var poll = function () {
                 console.log(e);
             }
         }
-    });
+    });    
 
     ws.on("error", function (err) {
         waiting = true;
