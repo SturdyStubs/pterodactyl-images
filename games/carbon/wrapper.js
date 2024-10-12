@@ -129,52 +129,65 @@ var poll = function () {
             var json = JSON.parse(data);
             if (json !== undefined) {
                 if (json.Message !== undefined && json.Message.length > 0) {
-                    // Define important logs that should always appear in the console
-                    const importantKeywords = [
-                        "Asset Warmup",
-                        "Loaded Plugin",
-                        "UpdateNavMesh",
-                        "Starting Navmesh Source Collecting",
-                        "Navmesh Build",
-                        "Monument Navmesh Build",
-                        "Dungeon Navmesh Build",
-                        "entities from map",
-                        "entities from save",
-                        "GlobalNetworkHandler",
-                        "Initializing entity links",
-                        "Stability supports",
-                        "Conditional models",
-                        "Entity save caches",
-                        "Gamemode Convar",
-                        "Server startup complete",
-                        "SteamServer Initialized",
-                        "Spawning",
-                        "Enforcing SpawnPopulation Limits"
-                    ];
-
-                    // Check if the log message contains any of the important keywords
-                    const isImportantLog = importantKeywords.some(keyword => json.Message.includes(keyword));
-
+    
+                    // map loading metrics
+                    const isMapLoadingLog = json.Message.match(/\[\d+(\.\d+)?s\]/) ||  // timestamps
+                                           json.Message.includes("Spawning World") || 
+                                           json.Message.includes("Terrain Mesh") ||
+                                           json.Message.includes("Rail Meshes") ||
+                                           json.Message.includes("Train Track Collation") ||
+                                           json.Message.includes("Processing World") ||
+                                           json.Message.includes("Finalizing World") ||
+                                           json.Message.includes("Cleaning Up") ||
+                                           json.Message.includes("Generated ocean patrol path") ||
+                                           json.Message.includes("Unloading") ||
+                                           json.Message.includes("Asset Warmup") ||
+                                           json.Message.includes("Loaded Plugin");
+    
+                    // send all this too
+                    const isImportantLog = json.Message.includes("Asset Warmup") ||
+                                           json.Message.includes("Loaded Plugin") ||
+                                           json.Message.includes("UpdateNavMesh") ||
+                                           json.Message.includes("Starting Navmesh Source Collecting") ||
+                                           json.Message.includes("Navmesh Build") ||
+                                           json.Message.includes("Monument Navmesh Build") ||
+                                           json.Message.includes("Dungeon Navmesh Build") ||
+                                           json.Message.includes("entities from map") ||
+                                           json.Message.includes("entities from save") ||
+                                           json.Message.includes("GlobalNetworkHandler") ||
+                                           json.Message.includes("Initializing entity links") ||
+                                           json.Message.includes("Stability supports") ||
+                                           json.Message.includes("Conditional models") ||
+                                           json.Message.includes("Entity save caches") ||
+                                           json.Message.includes("Gamemode Convar") ||
+                                           json.Message.includes("Server startup complete") ||
+                                           json.Message.includes("SteamServer Initialized") ||
+                                           json.Message.includes("Spawning") ||
+                                           json.Message.includes("Enforcing SpawnPopulation Limits");
+    
+                    // Regex to capture percentage-based progress messages (e.g., "1%", "99%")
+                    const isPercentageLog = json.Message.match(/^\d+%$/);
+    
                     // If "Server startup complete" is detected, set the flag to true
                     if (json.Message.includes("Server startup complete")) {
                         startupComplete = true;
                     }
-
+    
                     // After server startup is complete, log all messages to the console
-                    if (startupComplete) {
+                    if (startupComplete || isMapLoadingLog || isImportantLog || isPercentageLog) {
                         console.log(json.Message);
                     } else {
-                        // Always log important messages to the console before startup is complete
-                        if (isImportantLog) {
+                        // Only log important messages, map loading info, or percentage logs before startup is complete
+                        if (isImportantLog || isMapLoadingLog || isPercentageLog) {
                             console.log(json.Message);
                         }
-
+    
                         // Only log to the console if LOG_FILE is true for non-important messages before startup
-                        if (!isImportantLog && process.env.LOG_FILE === "true") {
+                        if (!isImportantLog && !isMapLoadingLog && !isPercentageLog && process.env.LOG_FILE === "true") {
                             console.log(json.Message);
                         }
                     }
-
+    
                     // Always write to the log file
                     fs.appendFile("latest.log", "\n" + json.Message, (err) => {
                         if (err) console.log("Callback error in appendFile:" + err);
@@ -187,7 +200,7 @@ var poll = function () {
             console.log(e);
         }
     });
-
+    
     ws.on("error", function (err) {
         waiting = true;
         console.log("Waiting for RCON to come up...");
