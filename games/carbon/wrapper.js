@@ -112,23 +112,37 @@ var poll = function () {
         return JSON.stringify(packet);
     }
 
-    var serverHostname = process.env.RCON_IP ? process.env.RCON_IP : "localhost";
+    var serverHostname = process.env.RCON_IP ? process.env.RCON_IP : "127.0.0.1";  // Use IPv4 address
     var serverPort = process.env.RCON_PORT;
     var serverPassword = process.env.RCON_PASS;
     var WebSocket = require("ws");
     var ws = new WebSocket("ws://" + serverHostname + ":" + serverPort + "/" + serverPassword);
-
+    
     ws.on("open", function open() {
         console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
         waiting = false;
-
+    
         // Send a status check to ensure RCON connection works
         ws.send(createPacket('status'));
-
+    
         process.stdin.removeListener('data', initialListener);
         process.stdin.on('data', function (text) {
             ws.send(createPacket(text));
         });
+    });
+    
+    ws.on("error", function (err) {
+        console.log("Error connecting to RCON:", err.message);
+        waiting = true;
+        setTimeout(poll, 5000);  // Retry RCON connection every 5 seconds if not available
+    });
+    
+    ws.on("close", function () {
+        if (!waiting) {
+            console.log("Connection to server closed.");
+            exited = true;
+            process.exit();
+        }
     });
 
     let startupComplete = false;  // Flag to track if the server startup is complete
