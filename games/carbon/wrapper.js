@@ -123,15 +123,16 @@ var poll = function () {
     });
 
     let startupComplete = false;  // Flag to track if the server startup is complete
-
+    const recentLogs = new Set();  // Set to store recent log entries to avoid duplicates
+    
     ws.on("message", function (data, flags) {
         try {
             var json = JSON.parse(data);
             if (json !== undefined) {
                 if (json.Message !== undefined && json.Message.length > 0) {
     
-                    // map loading metrics
-                    const isMapLoadingLog = json.Message.match(/\[\d+(\.\d+)?s\]/) ||  // timestamps
+                    // Define checks for map loading, timestamps, and performance metrics
+                    const isMapLoadingLog = json.Message.match(/\[\d+(\.\d+)?s\]/) ||  // Captures logs with timestamps like [54.2s]
                                            json.Message.includes("Spawning World") || 
                                            json.Message.includes("Terrain Mesh") ||
                                            json.Message.includes("Rail Meshes") ||
@@ -142,9 +143,10 @@ var poll = function () {
                                            json.Message.includes("Generated ocean patrol path") ||
                                            json.Message.includes("Unloading") ||
                                            json.Message.includes("Asset Warmup") ||
+                                           json.Message.includes("asset_warmup") ||
                                            json.Message.includes("Loaded Plugin");
     
-                    // send all this too
+                    // Define checks for the important logs you provided
                     const isImportantLog = json.Message.includes("Asset Warmup") ||
                                            json.Message.includes("Loaded Plugin") ||
                                            json.Message.includes("UpdateNavMesh") ||
@@ -163,6 +165,7 @@ var poll = function () {
                                            json.Message.includes("Server startup complete") ||
                                            json.Message.includes("SteamServer Initialized") ||
                                            json.Message.includes("Spawning") ||
+                                           json.Message.includes("Failed compiling") ||
                                            json.Message.includes("Enforcing SpawnPopulation Limits");
     
                     // Regex to capture percentage-based progress messages (e.g., "1%", "99%")
@@ -173,19 +176,12 @@ var poll = function () {
                         startupComplete = true;
                     }
     
-                    // After server startup is complete, log all messages to the console
-                    if (startupComplete || isMapLoadingLog || isImportantLog || isPercentageLog) {
+                    // Always log important logs and map loading logs regardless of the server startup status
+                    if (isImportantLog || isMapLoadingLog || isPercentageLog) {
                         console.log(json.Message);
-                    } else {
-                        // Only log important messages, map loading info, or percentage logs before startup is complete
-                        if (isImportantLog || isMapLoadingLog || isPercentageLog) {
-                            console.log(json.Message);
-                        }
-    
-                        // Only log to the console if LOG_FILE is true for non-important messages before startup
-                        if (!isImportantLog && !isMapLoadingLog && !isPercentageLog && process.env.LOG_FILE === "true") {
-                            console.log(json.Message);
-                        }
+                    } else if (startupComplete) {
+                        // Log all other messages only after the server startup is complete
+                        console.log(json.Message);
                     }
     
                     // Always write to the log file
@@ -200,13 +196,6 @@ var poll = function () {
             console.log(e);
         }
     });
-    
-    ws.on("error", function (err) {
-        waiting = true;
-        console.log("Waiting for RCON to come up...");
-        setTimeout(poll, 5000);  // Retry RCON connection every 5 seconds if not available
-    });
-
     ws.on("close", function () {
         if (!waiting) {
             console.log("Connection to server closed.");
