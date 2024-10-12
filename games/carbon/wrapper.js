@@ -2,12 +2,9 @@
 
 var startupCmd = "";
 const fs = require("fs");
-
-if (process.env.LOG_FILE !== "false") { // Check if LOG_FILE is not set to false
-    fs.writeFile("latest.log", "", (err) => {
-        if (err) console.log("Callback error in appendFile:" + err);
-    });
-}
+fs.writeFile("latest.log", "", (err) => {
+    if (err) console.log("Callback error in appendFile:" + err);
+});
 
 var args = process.argv.splice(process.execArgv.length + 2);
 for (var i = 0; i < args.length; i++) {
@@ -26,7 +23,7 @@ if (startupCmd.length < 1) {
 const seenPercentage = {};
 let hostnameDetected = false;  // Flag to detect when hostname has been logged
 
-function filter(data) {
+function filter(data, logToFile = true) {
     const str = data.toString();
     
     // Prevent double logging after hostname is detected
@@ -54,6 +51,12 @@ function filter(data) {
 
     // Output the remaining logs
     console.log(str);
+
+    if (logToFile) {
+        fs.appendFile("latest.log", "\n" + str, (err) => {
+            if (err) console.log("Callback error in appendFile:" + err);
+        });
+    }
 }
 
 var exec = require("child_process").exec;
@@ -62,10 +65,13 @@ console.log("Starting Rust...");
 var exited = false;
 const gameProcess = exec(startupCmd);
 
-// These will always remain listening for logs from the Rust server
-gameProcess.stdout.on('data', filter);
-gameProcess.stderr.on('data', filter);
+const logFileEnabled = process.env.LOG_FILE === "1" || process.env.LOG_FILE === "true";
 
+// case for handling logging and duplicates
+gameProcess.stdout.on('data', (data) => filter(data, logFileEnabled));
+gameProcess.stderr.on('data', (data) => filter(data, logFileEnabled));
+
+// Game process exit handler
 gameProcess.on('exit', function (code, signal) {
     exited = true;
     if (code) {
@@ -81,6 +87,7 @@ function initialListener(data) {
         console.log('Unable to run "' + command + '" due to RCON not being connected yet.');
     }
 }
+
 process.stdin.resume();
 process.stdin.setEncoding("utf8");
 process.stdin.on('data', initialListener);
@@ -109,10 +116,9 @@ var poll = function () {
     var ws = new WebSocket("ws://" + serverHostname + ":" + serverPort + "/" + serverPassword);
 
     ws.on("open", function open() {
-        console.log("Connected to RCON. You can now send commands.");
+        console.log("Connected to RCON. Generating the map now. Please wait until the server status switches to \"Running\".");
         waiting = false;
 
-        // Send a status check to ensure RCON connection works
         ws.send(createPacket('status'));
 
         process.stdin.removeListener('data', initialListener);
@@ -127,7 +133,7 @@ var poll = function () {
             if (json !== undefined) {
                 if (json.Message !== undefined && json.Message.length > 0) {
                     console.log(json.Message);
-                    if (process.env.LOG_FILE !== "false") { // Only log if LOG_FILE is not false
+                    if (logFileEnabled) {
                         fs.appendFile("latest.log", "\n" + json.Message, (err) => {
                             if (err) console.log("Callback error in appendFile:" + err);
                         });
