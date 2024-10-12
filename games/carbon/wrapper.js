@@ -2,6 +2,10 @@
 
 var startupCmd = "";
 const fs = require("fs");
+
+// Set the LD_LIBRARY_PATH environment variable
+process.env.LD_LIBRARY_PATH = `${process.env.LD_LIBRARY_PATH || ""}:${process.cwd()}`;
+
 fs.writeFile("latest.log", "", (err) => {
     if (err) console.log("Callback error in appendFile:" + err);
 });
@@ -63,8 +67,6 @@ const gameProcess = exec(startupCmd);
 gameProcess.stdout.on('data', filter);
 gameProcess.stderr.on('data', filter);
 
-
-
 gameProcess.on('exit', function (code, signal) {
     exited = true;
     if (code) {
@@ -120,16 +122,59 @@ var poll = function () {
         });
     });
 
+    let startupComplete = false;  // Flag to track if the server startup is complete
+
     ws.on("message", function (data, flags) {
         try {
             var json = JSON.parse(data);
             if (json !== undefined) {
                 if (json.Message !== undefined && json.Message.length > 0) {
-                    // Only log to the console if LOG_FILE is true
-                    if (process.env.LOG_FILE === "true") {
-                        console.log(json.Message);
+                    // Define important logs that should always appear in the console
+                    const importantKeywords = [
+                        "Asset Warmup",
+                        "Loaded Plugin",
+                        "UpdateNavMesh",
+                        "Starting Navmesh Source Collecting",
+                        "Navmesh Build",
+                        "Monument Navmesh Build",
+                        "Dungeon Navmesh Build",
+                        "entities from map",
+                        "entities from save",
+                        "GlobalNetworkHandler",
+                        "Initializing entity links",
+                        "Stability supports",
+                        "Conditional models",
+                        "Entity save caches",
+                        "Gamemode Convar",
+                        "Server startup complete",
+                        "SteamServer Initialized",
+                        "Spawning",
+                        "Enforcing SpawnPopulation Limits"
+                    ];
+
+                    // Check if the log message contains any of the important keywords
+                    const isImportantLog = importantKeywords.some(keyword => json.Message.includes(keyword));
+
+                    // If "Server startup complete" is detected, set the flag to true
+                    if (json.Message.includes("Server startup complete")) {
+                        startupComplete = true;
                     }
-                    
+
+                    // After server startup is complete, log all messages to the console
+                    if (startupComplete) {
+                        console.log(json.Message);
+                    } else {
+                        // Always log important messages to the console before startup is complete
+                        if (isImportantLog) {
+                            console.log(json.Message);
+                        }
+
+                        // Only log to the console if LOG_FILE is true for non-important messages before startup
+                        if (!isImportantLog && process.env.LOG_FILE === "true") {
+                            console.log(json.Message);
+                        }
+                    }
+
                     // Always write to the log file
                     fs.appendFile("latest.log", "\n" + json.Message, (err) => {
                         if (err) console.log("Callback error in appendFile:" + err);
@@ -139,11 +184,9 @@ var poll = function () {
                 console.log("Error: Invalid JSON received");
             }
         } catch (e) {
-            if (e) {
-                console.log(e);
-            }
+            console.log(e);
         }
-    });    
+    });
 
     ws.on("error", function (err) {
         waiting = true;
