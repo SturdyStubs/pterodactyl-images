@@ -25,11 +25,12 @@ if (startupCmd.length < 1) {
 }
 
 const seenPercentage = {};
+const seenLogs = new Set(); // Store unique logs to prevent duplicates
 let hostnameDetected = false;  // Flag to detect when hostname has been logged
 
 function filter(data) {
     const str = data.toString();
-    
+
     // Prevent double logging after hostname is detected
     if (hostnameDetected) {
         return;  // Exit if we've already detected the hostname
@@ -53,8 +54,17 @@ function filter(data) {
         hostnameDetected = true;  // Set the flag to true after first occurrence
     }
 
-    // Output the remaining logs
+    // Check if log message has been seen before (to avoid duplicates)
+    if (seenLogs.has(str)) return;
+    seenLogs.add(str); // Mark log message as seen
+
+    // Output the remaining logs to the console
     console.log(str);
+
+    // Always write important logs to file regardless of LOG_FILE setting
+    fs.appendFile("latest.log", "\n" + str, (err) => {
+        if (err) console.log("Callback error in appendFile:" + err);
+    });
 }
 
 var exec = require("child_process").exec;
@@ -129,7 +139,7 @@ var poll = function () {
             var json = JSON.parse(data);
             if (json !== undefined) {
                 if (json.Message !== undefined && json.Message.length > 0) {
-    
+
                     // map loading metrics
                     const isMapLoadingLog = json.Message.match(/\[\d+(\.\d+)?s\]/) ||  // timestamps
                                            json.Message.includes("Spawning World") || 
@@ -143,64 +153,29 @@ var poll = function () {
                                            json.Message.includes("Unloading") ||
                                            json.Message.includes("Asset Warmup") ||
                                            json.Message.includes("Loaded Plugin");
-    
-                    // send all this too
-                    const isImportantLog = json.Message.includes("Asset Warmup") ||
-                                           json.Message.includes("Loaded Plugin") ||
-                                           json.Message.includes("UpdateNavMesh") ||
-                                           json.Message.includes("Starting Navmesh Source Collecting") ||
-                                           json.Message.includes("Navmesh Build") ||
-                                           json.Message.includes("Monument Navmesh Build") ||
-                                           json.Message.includes("Dungeon Navmesh Build") ||
-                                           json.Message.includes("entities from map") ||
-                                           json.Message.includes("entities from save") ||
-                                           json.Message.includes("GlobalNetworkHandler") ||
-                                           json.Message.includes("Initializing entity links") ||
-                                           json.Message.includes("Stability supports") ||
-                                           json.Message.includes("Conditional models") ||
-                                           json.Message.includes("Entity save caches") ||
-                                           json.Message.includes("Gamemode Convar") ||
-                                           json.Message.includes("Server startup complete") ||
-                                           json.Message.includes("SteamServer Initialized") ||
-                                           json.Message.includes("Spawning") ||
-                                           json.Message.includes("Enforcing SpawnPopulation Limits");
-    
+
                     // Regex to capture percentage-based progress messages (e.g., "1%", "99%")
                     const isPercentageLog = json.Message.match(/^\d+%$/);
-    
-                    // If "Server startup complete" is detected, set the flag to true
-                    if (json.Message.includes("Server startup complete")) {
-                        startupComplete = true;
-                    }
-    
-                    // After server startup is complete, log all messages to the console
-                    if (startupComplete || isMapLoadingLog || isImportantLog || isPercentageLog) {
+
+                    // Log important messages, map loading info, or percentage logs
+                    if (isMapLoadingLog || isPercentageLog) {
                         console.log(json.Message);
-                    } else {
-                        // Only log important messages, map loading info, or percentage logs before startup is complete
-                        if (isImportantLog || isMapLoadingLog || isPercentageLog) {
-                            console.log(json.Message);
-                        }
-    
-                        // Only log to the console if LOG_FILE is true for non-important messages before startup
-                        if (!isImportantLog && !isMapLoadingLog && !isPercentageLog && process.env.LOG_FILE === "true") {
-                            console.log(json.Message);
-                        }
                     }
-    
-                    // Always write to the log file
+
+                    // Always write to the log file, regardless of LOG_FILE setting
                     fs.appendFile("latest.log", "\n" + json.Message, (err) => {
                         if (err) console.log("Callback error in appendFile:" + err);
                     });
+
+                } else {
+                    console.log("Error: Invalid JSON received");
                 }
-            } else {
-                console.log("Error: Invalid JSON received");
             }
         } catch (e) {
             console.log(e);
         }
     });
-    
+
     ws.on("error", function (err) {
         waiting = true;
         console.log("Waiting for RCON to come up...");
