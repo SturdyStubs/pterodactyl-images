@@ -6,6 +6,7 @@ const fs = require("fs");
 // Set the LD_LIBRARY_PATH environment variable
 process.env.LD_LIBRARY_PATH = `${process.env.LD_LIBRARY_PATH || ""}:${process.cwd()}`;
 
+// Ensure the latest.log file is created or cleared at the start
 fs.writeFile("latest.log", "", (err) => {
     if (err) console.log("Callback error in appendFile:" + err);
 });
@@ -27,9 +28,17 @@ if (startupCmd.length < 1) {
 const seenPercentage = {};
 let hostnameDetected = false;  // Flag to detect when hostname has been logged
 
+// Deduplication for logs
+const recentLogs = new Set();  // Set to store recent log entries to avoid duplicates
+
 function filter(data) {
     const str = data.toString();
-    
+
+    // Check if the log was recently logged to avoid duplicates
+    if (recentLogs.has(str)) return;
+    recentLogs.add(str);
+    setTimeout(() => recentLogs.delete(str), 2000); // Remove from recent logs after 2 seconds
+
     // Prevent double logging after hostname is detected
     if (hostnameDetected) {
         return;  // Exit if we've already detected the hostname
@@ -123,13 +132,17 @@ var poll = function () {
     });
 
     let startupComplete = false;  // Flag to track if the server startup is complete
-    const recentLogs = new Set();  // Set to store recent log entries to avoid duplicates
     
     ws.on("message", function (data, flags) {
         try {
             var json = JSON.parse(data);
             if (json !== undefined) {
                 if (json.Message !== undefined && json.Message.length > 0) {
+    
+                    // Deduplicate logs
+                    if (recentLogs.has(json.Message)) return;
+                    recentLogs.add(json.Message);
+                    setTimeout(() => recentLogs.delete(json.Message), 2000); // Remove from recent logs after 2 seconds
     
                     // Define checks for map loading, timestamps, and performance metrics
                     const isMapLoadingLog = json.Message.match(/\[\d+(\.\d+)?s\]/) ||  // Captures logs with timestamps like [54.2s]
@@ -146,7 +159,7 @@ var poll = function () {
                                            json.Message.includes("asset_warmup") ||
                                            json.Message.includes("Loaded Plugin");
     
-                    // Define checks for the important logs you provided
+                    // Define checks for the important logs
                     const isImportantLog = json.Message.includes("Asset Warmup") ||
                                            json.Message.includes("Loaded Plugin") ||
                                            json.Message.includes("UpdateNavMesh") ||
