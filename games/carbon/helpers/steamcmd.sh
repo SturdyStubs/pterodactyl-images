@@ -38,7 +38,7 @@ function SteamCMD_Validate() {
     else
         Delete_SteamApps_Directory
         Info "Downloading Default Files - Validation On!"
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 validate +quit
+        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta public validate +quit
     fi
 }
 
@@ -57,6 +57,6 @@ function SteamCMD_No_Validation() {
         ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta staging +quit
     else
         Info "Downloading Default Files - Validation Off!"
-        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 +quit
+        ./steamcmd/steamcmd.sh +force_install_dir /home/container +login anonymous +app_update 258550 -beta public +quit
     fi
 }
