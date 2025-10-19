@@ -59,11 +59,7 @@ WORKDIR     /home/container
 
 # Copy some files over to the container
 COPY        ./wrapper.js /wrapper.js
-COPY        ./entrypoint.sh /entrypoint.sh
-COPY        --chmod=0755 ./splash_screen.sh /splash_screen.sh
-COPY        --chmod=0755 ./end_screen.sh /end_screen.sh
+COPY        ./entrypoint.js /entrypoint.js
+COPY        ./js /js
 
-COPY        --chmod=0755 ./sections /sections
-COPY        --chmod=0755 ./helpers /helpers
-
-CMD         [ "/bin/bash", "/entrypoint.sh" ]
+CMD         [ "node", "/entrypoint.js" ]
