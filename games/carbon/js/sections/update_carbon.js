@@ -76,6 +76,18 @@ async function updateCarbon(modifiedStartup) {
       Check_Modding_Root_Folder();
       Success('Done updating Carbon!');
       modifiedStartup = doorstopStartupCarbon(modifiedStartup);
+    } else if (fw === 'carbon-aux3-minimal') {
+      Info('Updating Carbon Aux3 Minimal...');
+      await streamTarGz('https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux03_build/Carbon.Linux.Debug.tar.gz');
+      Check_Modding_Root_Folder();
+      Success('Done updating Carbon!');
+      modifiedStartup = doorstopStartupCarbon(modifiedStartup);
+    } else if (fw === 'carbon-aux3') {
+      Info('Updating Carbon Aux3 Minimal...');
+      await streamTarGz('https://github.com/CarbonCommunity/Carbon/releases/download/rustbeta_aux03_build/Carbon.Linux.Minimal.tar.gz');
+      Check_Modding_Root_Folder();
+      Success('Done updating Carbon!');
+      modifiedStartup = doorstopStartupCarbon(modifiedStartup);
     }
   } else {
     Error('Skipping framework auto update! Did you mean to do this? If not set the Framework Update variable to true!');

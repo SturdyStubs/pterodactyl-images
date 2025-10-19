@@ -9,10 +9,12 @@ function deleteSteamApps() {
 
 function frameworkFlag() {
   const fw = process.env.FRAMEWORK || '';
+  if (fw.includes('public')) return '-beta public';
   if (fw.includes('aux1')) return '-beta aux01';
   if (fw.includes('aux2')) return '-beta aux02';
   if (fw.includes('staging')) return '-beta staging';
-  return '';
+  // Default to public branch if none specified
+  return '-beta public';
 }
 
 async function SteamCMD_Validate() {
