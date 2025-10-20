@@ -1,4 +1,4 @@
-const { Red, Info } = require('../helpers/messages');
+const { Yellow, Info } = require('../helpers/messages');
 
 function splash() {
   // ASCII art from bash was not portable; keep simple banner for clarity.

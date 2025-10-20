@@ -1,4 +1,4 @@
-const { Red, Info } = require('../helpers/messages');
+const { Yellow, Info } = require('../helpers/messages');
 
 function endScreen() {
   Yellow('=== RUST SERVER LAUNCH ===');
@@ -8,4 +8,3 @@ function endScreen() {
 }
 
 module.exports = { endScreen };
-
