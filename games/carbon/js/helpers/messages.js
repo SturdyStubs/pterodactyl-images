@@ -30,6 +30,6 @@ function Debug(msg) {
 }
 
 function Red(msg) { log(colors.RED, '', msg); }
+function Yellow(msg) { log(colors.YELLOW, '', msg); }
 
-module.exports = { Error, Warn, Info, Success, Debug, Red };
-
+module.exports = { Error, Warn, Info, Success, Debug, Red, Yellow };
