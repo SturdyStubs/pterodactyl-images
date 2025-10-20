@@ -13,12 +13,8 @@ async function autoUpdateValidate(CARBONSWITCH) {
     Info('Forcing validation of game server...');
     await SteamCMD_Validate();
     Clean_RustDedicated();
-  } else if ((process.env.FRAMEWORK || '') === 'vanilla') {
-    Info('Vanilla framework detected!');
-    Info('Forcing validation of game server...');
-    await SteamCMD_Validate();
-    Clean_RustDedicated();
   } else if (process.env.AUTO_UPDATE === '1') {
+    // Respect VALIDATE setting regardless of framework, unless switching to Carbon
     if (process.env.VALIDATE === '1') {
       await SteamCMD_Validate();
     } else {
