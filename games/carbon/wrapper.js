@@ -41,6 +41,14 @@ function filter(data) {
 const { spawn } = require("child_process");
 console.log("Starting Rust...");
 
+// Networking/runtime mitigations for Mono/Unity
+// - Disable IPv6 in Mono to avoid dual-stack socket issues on some hosts
+process.env.MONO_DISABLE_IPV6 = process.env.MONO_DISABLE_IPV6 || '1';
+process.env.DOTNET_SYSTEM_NET_DISABLEIPV6 = process.env.DOTNET_SYSTEM_NET_DISABLEIPV6 || '1';
+// - Increase Mono logging for diagnostics
+process.env.MONO_LOG_LEVEL = process.env.MONO_LOG_LEVEL || 'debug';
+process.env.MONO_LOG_MASK = process.env.MONO_LOG_MASK || 'all';
+
 // Prefer keeping stdin (fd 0) open to avoid Mono fd reuse
 // Spawn via bash -lc to preserve shell expansions present in the startup string
 var exited = false;
