@@ -64,8 +64,24 @@ const gameProcess = spawn('bash', ['-lc', startupCmd], {
     stdio: ['ignore', 'pipe', 'pipe'],
     env: process.env
 });
-gameProcess.stdout.on('data', filter);
-gameProcess.stderr.on('data', filter);
+// If MONO_LOGGING is enabled, tee raw stdout/stderr to mono-debug.log as a fallback
+let monoLogStream = null;
+if (_monoLogging) {
+    try {
+        monoLogStream = fs.createWriteStream('/home/container/mono-debug.log', { flags: 'a' });
+    } catch (e) {
+        console.log('Failed to open mono-debug.log for writing: ' + (e?.message || e));
+    }
+}
+
+gameProcess.stdout.on('data', (data) => {
+    if (monoLogStream) monoLogStream.write(data);
+    filter(data);
+});
+gameProcess.stderr.on('data', (data) => {
+    if (monoLogStream) monoLogStream.write(data);
+    filter(data);
+});
 gameProcess.on('exit', function (code, signal) {
 	exited = true;
 
@@ -73,6 +89,9 @@ gameProcess.on('exit', function (code, signal) {
 		console.log("Main game process exited with code " + code);
 		// process.exit(code);
 	}
+    if (monoLogStream) {
+        try { monoLogStream.end(); } catch {}
+    }
 });
 
 function initialListener(data) {
