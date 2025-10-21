@@ -44,8 +44,10 @@ console.log("Starting Rust...");
 // Prefer keeping stdin (fd 0) open to avoid Mono fd reuse
 // Spawn via bash -lc to preserve shell expansions present in the startup string
 var exited = false;
+// Ensure child stdin (fd 0) is a valid file descriptor (map to /dev/null)
+// This avoids Mono reusing fd 0 for sockets/files and aborting.
 const gameProcess = spawn('bash', ['-lc', startupCmd], {
-    stdio: ['inherit', 'pipe', 'pipe'],
+    stdio: ['ignore', 'pipe', 'pipe'],
     env: process.env
 });
 gameProcess.stdout.on('data', filter);
