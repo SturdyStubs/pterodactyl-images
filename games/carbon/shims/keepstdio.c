@@ -16,7 +16,7 @@ static int (*real_dup2)(int, int) = NULL;
 #ifdef __GLIBC__
 static int (*real_dup3)(int, int, int) = NULL;
 #endif
-static int (*real_close_range)(unsigned int, unsigned int, unsigned int) = NULL;
+static int (*real_close_range)(unsigned int, unsigned int, int) = NULL;
 
 __attribute__((constructor)) static void init_keepstdio(void) {
     real_close = (int (*)(int))dlsym(RTLD_NEXT, "close");
@@ -26,7 +26,7 @@ __attribute__((constructor)) static void init_keepstdio(void) {
 #ifdef __GLIBC__
     real_dup3 = (int (*)(int,int,int))dlsym(RTLD_NEXT, "dup3");
 #endif
-    real_close_range = (int (*)(unsigned int,unsigned int,unsigned int))dlsym(RTLD_NEXT, "close_range");
+    real_close_range = (int (*)(unsigned int,unsigned int,int))dlsym(RTLD_NEXT, "close_range");
 }
 
 int close(int fd) {
@@ -93,8 +93,8 @@ int dup3(int oldfd, int newfd, int flags) {
 #endif
 
 // Prevent closing stdio via close_range
-int close_range(unsigned int first, unsigned int last, unsigned int flags) {
-    if (!real_close_range) real_close_range = (int (*)(unsigned int,unsigned int,unsigned int))dlsym(RTLD_NEXT, "close_range");
+int close_range(unsigned int first, unsigned int last, int flags) {
+    if (!real_close_range) real_close_range = (int (*)(unsigned int,unsigned int,int))dlsym(RTLD_NEXT, "close_range");
     if (first <= 2) first = 3;
     if (first > last) {
         errno = 0;
