@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 static int (*real_close)(int) = NULL;
 static int (*real_fclose)(FILE *) = NULL;
@@ -15,7 +16,7 @@ static int (*real_dup2)(int, int) = NULL;
 #ifdef __GLIBC__
 static int (*real_dup3)(int, int, int) = NULL;
 #endif
-static int (*real_fcntl)(int, int, ...) = NULL;
+static int (*real_close_range)(unsigned int, unsigned int, unsigned int) = NULL;
 
 __attribute__((constructor)) static void init_keepstdio(void) {
     real_close = (int (*)(int))dlsym(RTLD_NEXT, "close");
@@ -25,7 +26,7 @@ __attribute__((constructor)) static void init_keepstdio(void) {
 #ifdef __GLIBC__
     real_dup3 = (int (*)(int,int,int))dlsym(RTLD_NEXT, "dup3");
 #endif
-    real_fcntl = (int (*)(int,int,...))dlsym(RTLD_NEXT, "fcntl");
+    real_close_range = (int (*)(unsigned int,unsigned int,unsigned int))dlsym(RTLD_NEXT, "close_range");
 }
 
 int close(int fd) {
@@ -55,11 +56,16 @@ int dup(int oldfd) {
     if (!real_dup) real_dup = (int (*)(int))dlsym(RTLD_NEXT, "dup");
     int fd = real_dup(oldfd);
     if (fd >= 0 && fd <= 2) {
-        // Avoid returning stdio fds accidentally
-        int newfd = fcntl(fd, F_DUPFD, 3);
-        if (newfd >= 0) {
+        // Avoid returning stdio fds accidentally; duplicate until >= 3
+        int tmp = fd;
+        while (tmp >= 0 && tmp <= 2) {
+            int next = real_dup(fd);
+            if (next < 0) break;
+            tmp = next;
+        }
+        if (tmp >= 3) {
             real_close(fd);
-            return newfd;
+            return tmp;
         }
     }
     return fd;
@@ -86,27 +92,22 @@ int dup3(int oldfd, int newfd, int flags) {
 }
 #endif
 
-int fcntl(int fd, int cmd, ...) {
-    if (!real_fcntl) real_fcntl = (int (*)(int,int,...))dlsym(RTLD_NEXT, "fcntl");
-    va_list ap;
-    va_start(ap, cmd);
-    int ret;
-    if (cmd == F_DUPFD || cmd == F_DUPFD_CLOEXEC) {
-        int start = va_arg(ap, int);
-        if (start <= 2) start = 3;
-        ret = real_fcntl(fd, cmd, start);
-        if (ret >= 0 && ret <= 2) {
-            int newfd = real_fcntl(fd, cmd, 3);
-            if (newfd >= 0) {
-                real_close(ret);
-                ret = newfd;
-            }
-        }
-    } else {
-        // Pass through other commands, extracting the right argument type is caller-specific;
-        // for simplicity, forward the original va_list (undefined in strict C), but glibc tolerates it.
-        ret = real_fcntl(fd, cmd, ap);
+// Prevent closing stdio via close_range
+int close_range(unsigned int first, unsigned int last, unsigned int flags) {
+    if (!real_close_range) real_close_range = (int (*)(unsigned int,unsigned int,unsigned int))dlsym(RTLD_NEXT, "close_range");
+    if (first <= 2) first = 3;
+    if (first > last) {
+        errno = 0;
+        return 0;
     }
-    va_end(ap);
-    return ret;
+    if (real_close_range) {
+        return real_close_range(first, last, flags);
+    }
+    // Fallback: best-effort loop with a safety cap
+    unsigned int max = last > 65535 ? 65535 : last;
+    for (unsigned int i = first; i <= max; ++i) {
+        if (i <= 2) continue;
+        real_close(i);
+    }
+    return 0;
 }
