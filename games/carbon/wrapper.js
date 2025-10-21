@@ -38,11 +38,16 @@ function filter(data) {
     console.log(str);
 }
 
-var exec = require("child_process").exec;
+const { spawn } = require("child_process");
 console.log("Starting Rust...");
 
+// Prefer keeping stdin (fd 0) open to avoid Mono fd reuse
+// Spawn via bash -lc to preserve shell expansions present in the startup string
 var exited = false;
-const gameProcess = exec(startupCmd);
+const gameProcess = spawn('bash', ['-lc', startupCmd], {
+    stdio: ['inherit', 'pipe', 'pipe'],
+    env: process.env
+});
 gameProcess.stdout.on('data', filter);
 gameProcess.stderr.on('data', filter);
 gameProcess.on('exit', function (code, signal) {
