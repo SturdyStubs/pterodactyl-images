@@ -45,9 +45,15 @@ console.log("Starting Rust...");
 // - Disable IPv6 in Mono to avoid dual-stack socket issues on some hosts
 process.env.MONO_DISABLE_IPV6 = process.env.MONO_DISABLE_IPV6 || '1';
 process.env.DOTNET_SYSTEM_NET_DISABLEIPV6 = process.env.DOTNET_SYSTEM_NET_DISABLEIPV6 || '1';
-// - Increase Mono logging for diagnostics
-process.env.MONO_LOG_LEVEL = process.env.MONO_LOG_LEVEL || 'debug';
-process.env.MONO_LOG_MASK = process.env.MONO_LOG_MASK || 'all';
+// Optional: enable verbose Mono logging via env toggle MONO_LOGGING
+// Accepts: 1/true/yes/on (case-insensitive)
+const _monoLoggingRaw = (process.env.MONO_LOGGING || '').toLowerCase();
+const _monoLogging = _monoLoggingRaw === '1' || _monoLoggingRaw === 'true' || _monoLoggingRaw === 'yes' || _monoLoggingRaw === 'on';
+if (_monoLogging) {
+    process.env.MONO_LOG_LEVEL = process.env.MONO_LOG_LEVEL || 'debug';
+    process.env.MONO_LOG_MASK = process.env.MONO_LOG_MASK || 'all';
+    process.env.MONO_LOG_DEST = process.env.MONO_LOG_DEST || 'file:/home/container/mono-debug.log';
+}
 
 // Prefer keeping stdin (fd 0) open to avoid Mono fd reuse
 // Spawn via bash -lc to preserve shell expansions present in the startup string
