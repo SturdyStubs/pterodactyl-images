@@ -60,7 +60,15 @@ if (_monoLogging) {
 var exited = false;
 // Ensure child stdin (fd 0) is a valid file descriptor (map to /dev/null)
 // This avoids Mono reusing fd 0 for sockets/files and aborting.
-const gameProcess = spawn('bash', ['-lc', startupCmd], {
+// When MONO_LOGGING is enabled, also run under a PTY via `script` to provide a
+// controlling terminal which further reduces the chance of stdio being closed.
+const usePty = _monoLogging; // tie PTY usage to MONO_LOGGING as requested
+const spawnCmd = usePty ? 'script' : 'bash';
+const spawnArgs = usePty
+    ? ['-qfec', startupCmd, '/dev/null']
+    : ['-lc', startupCmd];
+
+const gameProcess = spawn(spawnCmd, spawnArgs, {
     stdio: ['ignore', 'pipe', 'pipe'],
     env: process.env
 });
