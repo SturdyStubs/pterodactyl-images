@@ -55,6 +55,17 @@ if (_monoLogging) {
     process.env.MONO_LOG_DEST = process.env.MONO_LOG_DEST || 'file:/home/container/mono-debug.log';
 }
 
+// Optional: prevent stdio fds (0/1/2) from being closed via LD_PRELOAD shim
+// Controlled by PREVENT_FD toggle: 1/true/yes/on
+const _preventFdRaw = (process.env.PREVENT_FD || '').toLowerCase();
+const _preventFd = _preventFdRaw === '1' || _preventFdRaw === 'true' || _preventFdRaw === 'yes' || _preventFdRaw === 'on';
+if (_preventFd) {
+    const preloadPath = '/usr/local/lib/libkeepstdio.so';
+    process.env.LD_PRELOAD = process.env.LD_PRELOAD
+        ? `${preloadPath}:${process.env.LD_PRELOAD}`
+        : preloadPath;
+}
+
 // Prefer keeping stdin (fd 0) open to avoid Mono fd reuse
 // Spawn via bash -lc to preserve shell expansions present in the startup string
 var exited = false;

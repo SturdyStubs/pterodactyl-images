@@ -33,7 +33,8 @@ ENV         DEBIAN_FRONTEND=noninteractive
 RUN         dpkg --add-architecture i386 \
             && apt update \
             && apt upgrade -y \
-            && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 jq util-linux
+            && apt install -y lib32gcc-s1 lib32stdc++6 unzip curl iproute2 tzdata libgdiplus libsdl2-2.0-0:i386 jq util-linux gcc libc6-dev \
+            && rm -rf /var/lib/apt/lists/*
 
 # Install NodeJS
 RUN			curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh \
@@ -41,6 +42,11 @@ RUN			curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh \
 		    && apt-get install -y nodejs \
 		    && node --version \ 
 		    && npm --version
+
+# Build LD_PRELOAD shim to keep stdio fds open
+COPY        ./shims /shims
+RUN         gcc -shared -fPIC -O2 -o /usr/local/lib/libkeepstdio.so /shims/keepstdio.c -ldl \
+            && rm -rf /shims
 
 # Install Websocket NPM Package
 RUN			mkdir -p /node_modules/ws /tmp/ws \
