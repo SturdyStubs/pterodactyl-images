@@ -4,7 +4,7 @@ const { Debug, Info, Error } = require('./js/helpers/messages');
 const { splash } = require('./js/screens/splash_screen');
 const { endScreen } = require('./js/screens/end_screen');
 const { appPublicIp } = require('./js/sections/app_public_ip');
-const { applyFrameworkEnv } = require('./js/helpers/framework');
+const { applyFrameworkEnv, validateFrameworkVersion } = require('./js/helpers/framework');
 const { moddingRootCheck } = require('./js/sections/modding_root_check');
 const { oxideCarbonSwitch } = require('./js/sections/oxide_carbon_switch');
 const { autoUpdateValidate } = require('./js/sections/auto_update_validate');
@@ -26,6 +26,12 @@ const { spawn } = require('child_process');
 
     // Normalize FRAMEWORK/VERSION into effective values (backward-compatible)
     applyFrameworkEnv();
+    // Validate split selections (e.g., Oxide does not support aux branches)
+    const valid = validateFrameworkVersion();
+    if (!valid.ok) {
+      Error(valid.message, 1);
+      return;
+    }
 
     // App public IP fix
     console.time('app_public_ip');

@@ -107,4 +107,29 @@ function applyFrameworkEnv() {
   }
 }
 
-module.exports = { getServerBranch, getEffectiveFramework, applyFrameworkEnv, normalizePlatform, parseVersion };
+function validateFrameworkVersion() {
+  const rawFramework = process.env.FRAMEWORK || '';
+  const rawVersion = process.env.VERSION || '';
+  // Only enforce when using the new split model
+  if (!rawVersion) return { ok: true };
+
+  const platform = normalizePlatform(rawFramework);
+  const ver = parseVersion(rawVersion);
+
+  if (platform === 'oxide') {
+    const unsupportedBranch = ver.branch !== 'public' && ver.branch !== 'staging';
+    const unsupportedFlavor = ver.edge === true; // debug/edge not available for Oxide
+    if (unsupportedBranch || unsupportedFlavor) {
+      const reason = unsupportedFlavor ? 'debug/edge builds are not available for Oxide.' : `branch '${ver.branch}' is not supported by Oxide.`;
+      return {
+        ok: false,
+        message: `Selected VERSION '${rawVersion}' is not supported for framework 'Oxide' — ${reason} Use 'Public/Release' or 'Staging'.`,
+      };
+    }
+  }
+
+  // Vanilla and Carbon accept listed branches; allow silently
+  return { ok: true };
+}
+
+module.exports = { getServerBranch, getEffectiveFramework, applyFrameworkEnv, normalizePlatform, parseVersion, validateFrameworkVersion };
