@@ -73,7 +73,9 @@ var exited = false;
 // This avoids Mono reusing fd 0 for sockets/files and aborting.
 // When MONO_LOGGING is enabled, also run under a PTY via `script` to provide a
 // controlling terminal which further reduces the chance of stdio being closed.
-const usePty = _monoLogging; // tie PTY usage to MONO_LOGGING as requested
+let usePty = _monoLogging; // tie PTY usage to MONO_LOGGING as requested
+// If PREVENT_FD is enabled, prefer launching directly via bash to avoid any env sanitization by `script`
+if (_preventFd) usePty = false;
 const spawnCmd = usePty ? 'script' : 'bash';
 const spawnArgs = usePty
     ? ['-qfec', startupCmd, '/dev/null']

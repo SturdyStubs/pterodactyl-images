@@ -1,4 +1,5 @@
 const { Info, Debug } = require('./messages');
+const { getServerBranch } = require('./framework');
 const { spawnStreaming } = require('../utils/proc');
 const fs = require('fs');
 const path = require('path');
@@ -9,22 +10,14 @@ function deleteSteamApps() {
 }
 
 function frameworkFlag() {
-  const fw = process.env.FRAMEWORK || '';
-  if (fw.includes('public')) return '-beta public';
-  if (fw.includes('aux1')) return '-beta aux01';
-  if (fw.includes('aux2')) return '-beta aux02';
-  if (fw.includes('staging')) return '-beta staging';
-  // Default to public branch if none specified
-  return '-beta public';
+  // Prefer VERSION when provided; fall back to legacy FRAMEWORK detection
+  const branch = getServerBranch();
+  return `-beta ${branch}`;
 }
 
 function frameworkBranch() {
-  // Convert our internal framework flag to DepotDownloader branch name
-  const flag = frameworkFlag();
-  const parts = flag.trim().split(/\s+/);
-  const idx = parts.findIndex(p => p === '-beta');
-  if (idx !== -1 && parts[idx + 1]) return parts[idx + 1];
-  return 'public';
+  // Directly return the computed branch (public|staging|aux01|aux02|aux03)
+  return getServerBranch();
 }
 
 function getDownloadMethod() {

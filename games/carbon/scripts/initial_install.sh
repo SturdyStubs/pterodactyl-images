@@ -10,15 +10,30 @@ SRCDS_APPID=258550
 DOWNLOAD_METHOD="${DOWNLOAD_METHOD:-${download_method:-SteamCMD}}"
 METHOD_LC="$(echo "${DOWNLOAD_METHOD}" | tr '[:upper:]' '[:lower:]')"
 
-# Resolve branch from FRAMEWORK
-# public | aux01 | aux02 | staging (default: public)
-FRAMEWORK="${FRAMEWORK:-public}"
-case "$(echo "${FRAMEWORK}" | tr '[:upper:]' '[:lower:]')" in
-  *aux1*)    BRANCH="aux01" ;;
-  *aux2*)    BRANCH="aux02" ;;
-  *staging*) BRANCH="staging" ;;
-  *)         BRANCH="public" ;;
-esac
+# Resolve branch from VERSION (preferred) or legacy FRAMEWORK
+# Accepts public | aux01 | aux1 | aux-1 | aux02 | aux2 | aux-2 | aux03 | aux3 | aux-3 | staging (default: public)
+BRANCH="public"
+if [ -n "${VERSION:-}" ]; then
+  _ver=$(echo "${VERSION}" | tr '[:upper:]' '[:lower:]')
+  case "${_ver}" in
+    release|*public*)  BRANCH="public" ;;
+    staging)   BRANCH="staging" ;;
+    aux01-staging|aux01|aux-1|aux1|aux01*) BRANCH="aux01" ;;
+    aux02|aux-2|aux2|aux02*) BRANCH="aux02" ;;
+    aux03|aux-3|aux3|aux03*) BRANCH="aux03" ;;
+    last-month|lastmonth) BRANCH="public" ;;
+    *)         BRANCH="public" ;;
+  esac
+else
+  FRAMEWORK="${FRAMEWORK:-public}"
+  case "$(echo "${FRAMEWORK}" | tr '[:upper:]' '[:lower:]')" in
+    *aux1*)    BRANCH="aux01" ;;
+    *aux2*)    BRANCH="aux02" ;;
+    *aux3*)    BRANCH="aux03" ;;
+    *staging*) BRANCH="staging" ;;
+    *)         BRANCH="public" ;;
+  esac
+fi
 
 ## just in case someone removed the defaults.
 if [ "${STEAM_USER:-}" == "" ]; then
@@ -86,4 +101,3 @@ cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
 ## set up 64 bit libraries
 mkdir -p /mnt/server/.steam/sdk64
 cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
-
