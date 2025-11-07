@@ -73,9 +73,16 @@ RUN         set -eux; \
 # Copy LD_PRELOAD shim from builder
 COPY        --from=builder /out/libkeepstdio.so /usr/local/lib/libkeepstdio.so
 
-# Install ws via npm (no dev deps), then clean npm cache
-RUN         npm install --omit=dev --no-audit --no-fund --loglevel=error --prefix / ws \
-            && npm cache clean --force
+# Install ws via npm into /node_modules without using --prefix to avoid npm tracker issues
+RUN         set -eux; \
+            mkdir -p /node_modules /tmp/ws; \
+            cd /tmp/ws; \
+            npm init -y > /dev/null 2>&1; \
+            npm install --omit=dev --no-audit --no-fund --loglevel=error ws; \
+            mv node_modules/ws /node_modules/; \
+            cd /; \
+            rm -rf /tmp/ws; \
+            npm cache clean --force
 
 # Define user environment
 RUN         useradd -d /home/container -m container
