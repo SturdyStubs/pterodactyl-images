@@ -11,14 +11,14 @@ DOWNLOAD_METHOD="${DOWNLOAD_METHOD:-${download_method:-SteamCMD}}"
 METHOD_LC="$(echo "${DOWNLOAD_METHOD}" | tr '[:upper:]' '[:lower:]')"
 
 # Resolve branch from VERSION (preferred) or legacy FRAMEWORK
-# Accepts public | aux01 | aux1 | aux-1 | aux02 | aux2 | aux-2 | aux03 | aux3 | aux-3 | staging (default: public)
+# Accepts public | aux01-staging | aux01 | aux1 | aux-1 | aux02 | aux2 | aux-2 | aux03 | aux3 | aux-3 | staging (default: public)
 BRANCH="public"
 if [ -n "${VERSION:-}" ]; then
   _ver=$(echo "${VERSION}" | tr '[:upper:]' '[:lower:]')
   case "${_ver}" in
     release|*public*)  BRANCH="public" ;;
     staging)   BRANCH="staging" ;;
-    aux01-staging|aux01|aux-1|aux1|aux01*) BRANCH="aux01" ;;
+    aux01-staging|aux01|aux-1|aux1|aux01*) BRANCH="aux01-staging" ;;
     aux02|aux-2|aux2|aux02*) BRANCH="aux02" ;;
     aux03|aux-3|aux3|aux03*) BRANCH="aux03" ;;
     last-month|lastmonth) BRANCH="public" ;;
@@ -27,7 +27,7 @@ if [ -n "${VERSION:-}" ]; then
 else
   FRAMEWORK="${FRAMEWORK:-public}"
   case "$(echo "${FRAMEWORK}" | tr '[:upper:]' '[:lower:]')" in
-    *aux1*)    BRANCH="aux01" ;;
+    *aux1*)    BRANCH="aux01-staging" ;;
     *aux2*)    BRANCH="aux02" ;;
     *aux3*)    BRANCH="aux03" ;;
     *staging*) BRANCH="staging" ;;
