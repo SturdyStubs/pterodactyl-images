@@ -31,7 +31,8 @@ RUN         apt-get update \
             && apt-get install -y --no-install-recommends gcc libc6-dev ca-certificates \
             && rm -rf /var/lib/apt/lists/*
 COPY        ./shims /shims
-RUN         gcc -shared -fPIC -O2 -o /out/libkeepstdio.so /shims/keepstdio.c -ldl \
+RUN         mkdir -p /out \
+            && gcc -shared -fPIC -O2 -o /out/libkeepstdio.so /shims/keepstdio.c -ldl \
             && strip /out/libkeepstdio.so
 
 # Final stage
