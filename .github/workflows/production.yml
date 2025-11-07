@@ -6,6 +6,8 @@ on:
       - production
     paths:
       - games/**
+  workflow_dispatch:
+
 jobs:
   push:
     name: "aioegg:production"
