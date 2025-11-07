@@ -50,6 +50,7 @@ RUN         dpkg --add-architecture i386 \
             && apt-get install -y --no-install-recommends \
                 ca-certificates \
                 curl \
+                unzip \
                 iproute2 \
                 tzdata \
                 libgdiplus \
