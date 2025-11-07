@@ -38,13 +38,71 @@ function filter(data) {
     console.log(str);
 }
 
-var exec = require("child_process").exec;
+const { spawn } = require("child_process");
 console.log("Starting Rust...");
 
+// Networking/runtime mitigations for Mono/Unity
+// - Disable IPv6 in Mono to avoid dual-stack socket issues on some hosts
+process.env.MONO_DISABLE_IPV6 = process.env.MONO_DISABLE_IPV6 || '1';
+process.env.DOTNET_SYSTEM_NET_DISABLEIPV6 = process.env.DOTNET_SYSTEM_NET_DISABLEIPV6 || '1';
+// Optional: enable verbose Mono logging via env toggle MONO_LOGGING
+// Accepts: 1/true/yes/on (case-insensitive)
+const _monoLoggingRaw = (process.env.MONO_LOGGING || '').toLowerCase();
+const _monoLogging = _monoLoggingRaw === '1' || _monoLoggingRaw === 'true' || _monoLoggingRaw === 'yes' || _monoLoggingRaw === 'on';
+if (_monoLogging) {
+    process.env.MONO_LOG_LEVEL = process.env.MONO_LOG_LEVEL || 'debug';
+    process.env.MONO_LOG_MASK = process.env.MONO_LOG_MASK || 'all';
+    process.env.MONO_LOG_DEST = process.env.MONO_LOG_DEST || 'file:/home/container/mono-debug.log';
+}
+
+// Optional: prevent stdio fds (0/1/2) from being closed via LD_PRELOAD shim
+// Controlled by PREVENT_FD toggle: 1/true/yes/on
+const _preventFdRaw = (process.env.PREVENT_FD || '').toLowerCase();
+const _preventFd = _preventFdRaw === '1' || _preventFdRaw === 'true' || _preventFdRaw === 'yes' || _preventFdRaw === 'on';
+if (_preventFd) {
+    const preloadPath = '/usr/local/lib/libkeepstdio.so';
+    process.env.LD_PRELOAD = process.env.LD_PRELOAD
+        ? `${preloadPath}:${process.env.LD_PRELOAD}`
+        : preloadPath;
+}
+
+// Prefer keeping stdin (fd 0) open to avoid Mono fd reuse
+// Spawn via bash -lc to preserve shell expansions present in the startup string
 var exited = false;
-const gameProcess = exec(startupCmd);
-gameProcess.stdout.on('data', filter);
-gameProcess.stderr.on('data', filter);
+// Ensure child stdin (fd 0) is a valid file descriptor (map to /dev/null)
+// This avoids Mono reusing fd 0 for sockets/files and aborting.
+// When MONO_LOGGING is enabled, also run under a PTY via `script` to provide a
+// controlling terminal which further reduces the chance of stdio being closed.
+let usePty = _monoLogging; // tie PTY usage to MONO_LOGGING as requested
+// If PREVENT_FD is enabled, prefer launching directly via bash to avoid any env sanitization by `script`
+if (_preventFd) usePty = false;
+const spawnCmd = usePty ? 'script' : 'bash';
+const spawnArgs = usePty
+    ? ['-qfec', startupCmd, '/dev/null']
+    : ['-lc', startupCmd];
+
+const gameProcess = spawn(spawnCmd, spawnArgs, {
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: process.env
+});
+// If MONO_LOGGING is enabled, tee raw stdout/stderr to mono-debug.log as a fallback
+let monoLogStream = null;
+if (_monoLogging) {
+    try {
+        monoLogStream = fs.createWriteStream('/home/container/mono-debug.log', { flags: 'a' });
+    } catch (e) {
+        console.log('Failed to open mono-debug.log for writing: ' + (e?.message || e));
+    }
+}
+
+gameProcess.stdout.on('data', (data) => {
+    if (monoLogStream) monoLogStream.write(data);
+    filter(data);
+});
+gameProcess.stderr.on('data', (data) => {
+    if (monoLogStream) monoLogStream.write(data);
+    filter(data);
+});
 gameProcess.on('exit', function (code, signal) {
 	exited = true;
 
@@ -52,6 +110,9 @@ gameProcess.on('exit', function (code, signal) {
 		console.log("Main game process exited with code " + code);
 		// process.exit(code);
 	}
+    if (monoLogStream) {
+        try { monoLogStream.end(); } catch {}
+    }
 });
 
 function initialListener(data) {
