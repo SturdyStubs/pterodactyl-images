@@ -24,8 +24,8 @@ function parseVersion(input) {
   // branch aliases
   if (/^public$/.test(v) || /^release$/.test(v)) out.branch = 'public';
   else if (/^staging$/.test(v)) out.branch = 'staging';
-  // Aux01 beta branch has moved to 'aux01-staging'; normalize all aux1 aliases to that branch
-  else if (/aux0?1(?:-staging)?/.test(v) || /aux-?1(?:-staging)?/.test(v)) out.branch = 'aux01-staging';
+  // Aux01 beta branch has moved to 'aux01-staging'; normalize common aliases (including plain 'aux') to that branch
+  else if (/^aux(?:0?1)?(?:-staging)?$/.test(v) || /^aux-?1(?:-staging)?$/.test(v)) out.branch = 'aux01-staging';
   else if (/aux0?2/.test(v) || /aux-?2/.test(v)) out.branch = 'aux02';
   else if (/aux0?3/.test(v) || /aux-?3/.test(v)) out.branch = 'aux03';
   else if (/last-?month/.test(v)) {
@@ -41,8 +41,8 @@ function deriveFromLegacyFramework(framework) {
   const f = lc(framework);
   const result = { platform: normalizePlatform(f), branch: 'public', minimal: false, edge: false };
   if (/staging/.test(f)) result.branch = 'staging';
-  // Legacy FRAMEWORK values that mention aux1 should use the new 'aux01-staging' branch
-  else if (/aux0?1/.test(f)) result.branch = 'aux01-staging';
+  // Legacy FRAMEWORK values that mention aux/aux1 should use the new 'aux01-staging' branch
+  else if (/aux(?:0?1)?/.test(f)) result.branch = 'aux01-staging';
   else if (/aux0?2/.test(f)) result.branch = 'aux02';
   else if (/aux0?3/.test(f)) result.branch = 'aux03';
 
@@ -120,7 +120,7 @@ function validateFrameworkVersion() {
   const ver = parseVersion(rawVersion);
 
   if (platform === 'oxide') {
-    const unsupportedBranch = ver.branch !== 'public' && ver.branch !== 'staging';
+    const unsupportedBranch = !(['public', 'staging', 'aux01-staging'].includes(ver.branch));
     const unsupportedFlavor = ver.edge === true; // debug/edge not available for Oxide
     if (unsupportedBranch || unsupportedFlavor) {
       const reason = unsupportedFlavor ? 'debug/edge builds are not available for Oxide.' : `branch '${ver.branch}' is not supported by Oxide.`;
@@ -136,3 +136,4 @@ function validateFrameworkVersion() {
 }
 
 module.exports = { getServerBranch, getEffectiveFramework, applyFrameworkEnv, normalizePlatform, parseVersion, validateFrameworkVersion };
+
