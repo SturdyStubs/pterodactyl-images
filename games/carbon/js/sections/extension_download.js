@@ -25,7 +25,7 @@ async function extensionDownload() {
       }
       if (CHAOS_EXT === '1') {
         Debug('Downloading Chaos Code Extension');
-        tasks.push(fetchToFile('https://chaoscode.io/oxide/Oxide.Ext.Chaos.dll', '/home/container/temp/Oxide.Ext.Chaos.dll'));
+        tasks.push(fetchToFile('https://oxide.chaoscode.io/Oxide.Ext.Chaos.dll', '/home/container/temp/Oxide.Ext.Chaos.dll'));
       }
       await Promise.all(tasks);
       if (tasks.length > 0) Success('All extension downloads completed!');
